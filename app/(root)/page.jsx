@@ -4,9 +4,19 @@ import { useUser } from "@clerk/nextjs";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import lazada from "@/public/lazada.svg";
 import shopee from "@/public/shopee.svg";
+import Form from "next/form";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 function HomePage() {
+  const router = useRouter();
   const { user } = useUser();
+  const [search, setSearch] = useState("");
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!search.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(search)}`);
+  }
   return (
     <>
       <div className="min-h-screen">
@@ -17,12 +27,16 @@ function HomePage() {
         </div>
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           <div className="relative" style={{ width: "50%" }}>
-            <input
-              className="glass-input w-full"
-              style={{ paddingLeft: "2.5rem" }}
-              placeholder="Start your smart online shopping"
-              type="text"
-            />
+            <Form onSubmit={handleSubmit}>
+              <input
+                className="glass-input w-full"
+                style={{ paddingLeft: "2.5rem" }}
+                placeholder="Start your smart online shopping"
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Form>
             <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black-500" />
           </div>
           <div

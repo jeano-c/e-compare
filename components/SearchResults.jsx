@@ -1,54 +1,61 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Card from "@/components/Card";
-const dummyData = [
-  {
-    id: 1,
-    name: "This is some very long text that will be cut off",
-    shopName: "Shop One",
-    price: "$25",
-    merchant: "Merchant X",
-  },
-  {
-    id: 2,
-    name: "Product B",
-    shopName: "Shop Two",
-    price: "$40",
-    merchant: "Merchant Y",
-  },
-  {
-    id: 3,
-    name: "Product C",
-    shopName: "Shop Three",
-    price: "$15",
-    merchant: "Merchant Z",
-  },
-  {
-    id: 4,
-    name: "Product D",
-    shopName: "Shop Four",
-    price: "$60",
-    merchant: "Merchant X",
-  },
-  {
-    id: 5,
-    name: "Product E",
-    shopName: "Shop Five",
-    price: "$30",
-    merchant: "Merchant Y",
-  },
-];
-function SearchResults() {
+import axios from "axios";
+
+function SearchResults({ query }) {
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  async function GetProducts() {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `/api/search?keyword=${encodeURIComponent(query)}`
+      );
+      const lazadaItems =
+        res.data.lazada?.mods?.listItems?.map((item) => ({
+          source: "Lazada",
+          name: item.name,
+          image: item.image,
+          merchant: item.sellerName,
+          price: parseFloat(item.price.replace(/[^\d.]/g, "")), // remove ₱, commas
+          link:
+            item.productUrl || `https://www.lazada.com.ph/products/${item.nid}`,
+        })) || [];
+      const shopeeItems =
+        res.data.shopee?.items?.map((item) => ({
+          source: "Shopee",
+          name: item.item_basic.name,
+          merchant: "shop",
+          image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+          price: item.item_basic.price / 100000, // Shopee prices are *100000
+          link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+        })) || [];
+      const merged = [...lazadaItems, ...shopeeItems].sort(
+        (a, b) => a.price - b.price
+      );
+      setProducts(merged);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    if (query) GetProducts(query);
+  }, [query]);
   return (
     <>
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-        {dummyData.map((product) => (
-          <Card key={product.id} product={product} />
+        {products.map((product) => (
+          <Card key={product.id} products={product} />
         ))}
       </div>
       <button className="fixed bottom-5 right-5 text-2xl text-white px-5 py-3 rounded-full inner-shadow-y font-bold w-50 ">
         Compare
       </button>
-
     </>
   );
 }

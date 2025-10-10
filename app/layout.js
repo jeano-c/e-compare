@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { dark } from "@clerk/themes";
 import ShaderBackground from "@/components/BackGround";
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function RootLayout({ children }) {
             {children}
           </body>
         </html>
+        <Toaster />
       </ClerkProvider>
     </>
   );

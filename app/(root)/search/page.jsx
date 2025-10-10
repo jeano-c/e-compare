@@ -1,4 +1,3 @@
-
 import SearchResults from "@/components/SearchResults";
 
 async function SearchResult({ searchParams }) {
