@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { dark } from '@clerk/themes'
-
+import { dark } from "@clerk/themes";
+import ShaderBackground from "@/components/BackGround";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -58,21 +58,24 @@ const vagRounded = localFont({
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      afterSignOutUrl="/sign-in"
-      appearance={{
-        baseTheme: dark,
-      }}
-    >
-      <html lang="en">
-        <body
-          className={`${myFont.variable} ${vagRounded.variable} antialiased`}
-        >
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <>
+      <ShaderBackground />
+      <ClerkProvider
+        signInUrl="/sign-in"
+        signUpUrl="/sign-up"
+        afterSignOutUrl="/sign-in"
+        appearance={{
+          baseTheme: dark,
+        }}
+      >
+        <html lang="en">
+          <body
+            className={`${myFont.variable} ${vagRounded.variable} antialiased`}
+          >
+            {children}
+          </body>
+        </html>
+      </ClerkProvider>
+    </>
   );
 }

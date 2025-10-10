@@ -8,7 +8,6 @@ export default function AuthLayout({ children }) {
         style={{
           position: "relative",
           zIndex: 1,
-          color: "white",
           textAlign: "center",
           fontSize: "2rem",
         }}
