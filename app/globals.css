@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin 'tailwind-scrollbar';
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -44,7 +46,6 @@
 }
 
 .glass-button {
-
   font-family: var(--font-vag-rounded);
   font-weight: 300; /* light */
   font-size: 1.25rem; /* text-xl */
@@ -101,10 +102,6 @@
     inset 0.21px 1.99px 4px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-* {
-  scrollbar-width: auto; /* "auto" or "thin" */
-  scrollbar-color: #4b5563 transparent; /* thumb and track color */
 }
 
 :root {
@@ -182,5 +179,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+@layer utilities {
+  .scrollbar-custom {
+    scrollbar-width: auto;
+    scrollbar-color: #4b5563 transparent;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 6px;
   }
 }

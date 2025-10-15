@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import axios from "axios";
+import SkeletonResult from "./SkeletonResult";
 
 function SearchResults({ query }) {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   async function GetProducts() {
     try {
@@ -49,9 +50,14 @@ function SearchResults({ query }) {
   return (
     <>
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
-          <Card key={product.id} products={product} />
-        ))}
+        {}
+        {loading ? (
+          <SkeletonResult />
+        ) : (
+          products.map((product) => (
+            <Card key={product.id} products={product} />
+          ))
+        )}
       </div>
       <button className="fixed bottom-5 right-5 text-2xl text-white px-5 py-3 rounded-full inner-shadow-y font-bold w-50 ">
         Compare

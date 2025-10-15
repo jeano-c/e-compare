@@ -1,4 +1,6 @@
 import SearchResults from "@/components/SearchResults";
+import SkeletonResult from "@/components/SkeletonResult";
+import { Skeleton } from "@/components/ui/skeleton";
 
 async function SearchResult({ searchParams }) {
   const sp = await searchParams;
@@ -12,7 +14,9 @@ async function SearchResult({ searchParams }) {
         </div>
       </div>
       <div className="w-full mt-8">
-        <SearchResults query={q} />
+        
+        {/* <SearchResults query={q} /> */}
+        <SkeletonResult />
       </div>
     </div>
   );

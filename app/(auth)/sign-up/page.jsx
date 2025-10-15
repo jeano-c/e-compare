@@ -5,7 +5,6 @@ import { FcGoogle } from "react-icons/fc";
 import { ImFacebook2 } from "react-icons/im";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
-import { toast } from "sonner"
 
 function Signup() {
   const router = useRouter();
@@ -16,7 +15,7 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(""); // Track which button is loading
   const [error, setError] = useState("");
 
   // Handle email/password sign up
@@ -25,13 +24,13 @@ function Signup() {
 
     if (!isLoaded) return;
 
-    setLoading(true);
+    setLoadingButton("signup");
     setError("");
 
     // Validate passwords match
     if (password !== confirmPassword) {
       setError("Passwords do not match");
-      setLoading(false);
+      setLoadingButton("");
       return;
     }
 
@@ -54,7 +53,7 @@ function Signup() {
       console.error(JSON.stringify(err, null, 2));
       setError(err.errors?.[0]?.message || "An error occurred during sign up");
     } finally {
-      setLoading(false);
+      setLoadingButton("");
     }
   };
 
@@ -64,7 +63,7 @@ function Signup() {
 
     if (!isLoaded) return;
 
-    setLoading(true);
+    setLoadingButton("verify");
     setError("");
 
     try {
@@ -86,13 +85,15 @@ function Signup() {
       console.error(JSON.stringify(err, null, 2));
       setError(err.errors?.[0]?.message || "Invalid verification code");
     } finally {
-      setLoading(false);
+      setLoadingButton("");
     }
   };
 
   // Handle OAuth sign up
   const handleOAuthSignUp = (provider) => {
     if (!isLoaded) return;
+
+    setLoadingButton(provider);
 
     signUp.authenticateWithRedirect({
       strategy: provider,
@@ -153,10 +154,10 @@ function Signup() {
             <div className="flex flex-col items-center justify-between gap-8">
               <button
                 type="submit"
-                disabled={loading || !isLoaded}
+                disabled={loadingButton !== "" || !isLoaded}
                 className="px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
               >
-                {loading ? (
+                {loadingButton === "verify" ? (
                   <span className="flex items-center justify-center gap-2">
                     <VscLoading className="animate-spin" />
                     Verifying...
@@ -169,7 +170,8 @@ function Signup() {
               <button
                 type="button"
                 onClick={() => setVerifying(false)}
-                className="text-white underline underline-offset-2"
+                disabled={loadingButton !== ""}
+                className="text-white underline underline-offset-2 disabled:opacity-50"
               >
                 Back to sign up
               </button>
@@ -212,7 +214,7 @@ function Signup() {
       </div>
 
       {/* right side */}
-      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y">
+      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y scrollbar scrollbar-thumb-gray-600 scrollbar-track-transparent">
         <form onSubmit={handleSubmit}>
           <div className="mb-7 sm:mb-10">
             <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
@@ -277,10 +279,10 @@ function Signup() {
             <div className="flex items-center justify-center w-full">
               <button
                 type="submit"
-                disabled={loading || !isLoaded}
+                disabled={loadingButton !== "" || !isLoaded}
                 className="px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
               >
-                {loading ? (
+                {loadingButton === "signup" ? (
                   <span className="flex items-center justify-center gap-2">
                     <VscLoading className="animate-spin" />
                     Signing up...
@@ -299,24 +301,60 @@ function Signup() {
               <button
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_google")}
-                disabled={!isLoaded}
+                disabled={loadingButton !== "" || !isLoaded}
                 className="!w-[50%] flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
-                <FcGoogle className="text-3xl sm:text-4xl" />
-                <span className="hidden sm:inline">Continue with Google</span>
-                <span className="sm:hidden">Google</span>
+                {loadingButton === "oauth_google" ? (
+                  <VscLoading className="text-3xl sm:text-4xl animate-spin" />
+                ) : (
+                  <FcGoogle className="text-3xl sm:text-4xl" />
+                )}
+                <span className="hidden sm:inline">
+                  {loadingButton === "oauth_google"
+                    ? "Loading..."
+                    : "Continue with Google"}
+                </span>
+                <span className="sm:hidden">
+                  {loadingButton === "oauth_google" ? "Loading..." : "Google"}
+                </span>
               </button>
               <button
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_facebook")}
-                disabled={!isLoaded}
-                className="!w-[50%] flex flex-row items-center justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                disabled={loadingButton !== "" || !isLoaded}
+                className="!w-[50%] flex flex-row items-center text-white justify-center px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
-                <div className="bg-[#1877F2] p-2 sm:p-3 rounded-md">
-                  <ImFacebook2 className="text-2xl text-white sm:text-3xl" />
-                </div>
-                <span className="hidden sm:inline">Continue with Facebook</span>
-                <span className="sm:hidden">Facebook</span>
+                {loadingButton === "oauth_facebook" ? (
+                  <VscLoading className="text-3xl sm:text-4xl animate-spin" />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    width="50"
+                    height="50"
+                    viewBox="0 0 48 48"
+                  >
+                    <path
+                      fill="#039be5"
+                      d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"
+                    ></path>
+                    <path
+                      fill="#fff"
+                      d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"
+                    ></path>
+                  </svg>
+                )}
+                <span className="hidden sm:inline">
+                  {loadingButton === "oauth_facebook"
+                    ? "Loading..."
+                    : "Continue with Facebook"}
+                </span>
+                <span className="sm:hidden">
+                  {loadingButton === "oauth_facebook"
+                    ? "Loading..."
+                    : "Facebook"}
+                </span>
               </button>
             </div>
 
@@ -324,8 +362,14 @@ function Signup() {
               <p className="font-sans text-sm text-center text-white sm:text-base">
                 Already have an account?{" "}
                 <span
-                  onClick={() => router.push("/sign-in")}
-                  className="font-bold text-white underline cursor-pointer underline-offset-2"
+                  onClick={() =>
+                    loadingButton === "" && router.push("/sign-in")
+                  }
+                  className={`font-bold text-white underline underline-offset-2 ${
+                    loadingButton === ""
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed opacity-50"
+                  }`}
                 >
                   Login
                 </span>

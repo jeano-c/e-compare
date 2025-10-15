@@ -8,14 +8,23 @@ import ShaderBackground from "./BackGround";
 import Form from "next/form";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 function Header() {
-  const { user } = useUser();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
- 
   const isSearchPage = pathname === "/search";
+
+  // Get the search query from the URL
+  const query = searchParams.get("q") || "";
+
+  // Local state for the input
+  const [search, setSearch] = useState(query);
+
+  // Update input if URL changes
+  useEffect(() => {
+    setSearch(query);
+  }, [query]);
 
   return (
     <>
@@ -32,6 +41,8 @@ function Header() {
             <Form className="flex justify-center items-center gap-0 flex-row w-full">
               <input
                 name="q"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="inner-shadow-y py-5 px-5 rounded-tl-3xl rounded-bl-3xl rounded-tr-none rounded-br-none w-full"
                 type="text"
                 placeholder="Search..."

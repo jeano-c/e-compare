@@ -8,6 +8,7 @@ import Form from "next/form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 function HomePage() {
   const router = useRouter();
   const { user } = useUser();
@@ -21,7 +22,7 @@ function HomePage() {
     <>
       <div className="min-h-screen">
         <div className="py-15 px-16">
-          <h1 className="font-vagRounded font-semibold text-2xl">
+          <h1 className="font-vagRounded font-semibold text-2xl text-white">
             Welcome {user?.username || user?.firstName}
           </h1>
         </div>
@@ -37,7 +38,7 @@ function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Form>
-            <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black-500" />
+            <FaMagnifyingGlass className="text-white absolute left-3 top-1/2 transform -translate-y-1/2 text-black-500" />
           </div>
           <div
             className="glass-input flex justify-center items-center flex-row gap-3 font-vagRounded font-semibold text-2xl "

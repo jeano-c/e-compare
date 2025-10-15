@@ -32,18 +32,14 @@ function Signin() {
       });
 
       if (result.status === "complete") {
-        // Set the session with appropriate duration based on rememberMe
         await setActive({
           session: result.createdSessionId,
-          // If rememberMe is true, set a longer session
-          // If false, session expires when browser closes
           beforeEmit: async (session) => {
-            // You can also set custom session properties here if needed
+           
             return session;
           },
         });
 
-        // Store rememberMe preference in localStorage for the session configuration
         if (typeof window !== "undefined") {
           if (rememberMe) {
             localStorage.setItem("clerk_remember_me", "true");
@@ -58,7 +54,6 @@ function Signin() {
 
         router.push("/");
       } else {
-        // Handle other statuses if needed
         const errorMsg = "Sign in incomplete. Please try again.";
         toast.error("Login failed", {
           description: errorMsg,
@@ -83,7 +78,6 @@ function Signin() {
 
     const strategy = provider === "google" ? "oauth_google" : "oauth_facebook";
 
-    // Store rememberMe preference before OAuth redirect
     if (typeof window !== "undefined") {
       if (rememberMe) {
         localStorage.setItem("clerk_remember_me", "true");
@@ -139,7 +133,7 @@ function Signin() {
       </div>
 
       {/* right side */}
-      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto">
+      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
           <div className="mb-7 sm:mb-10">
             <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
