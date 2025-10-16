@@ -19,14 +19,13 @@ const myFont = localFont({
   src: [
     {
       path: "./fonts/BalooChettan-Regular.ttf",
-      weight: "500",
+      weight: "400",
       style: "normal",
     },
   ],
-  variable: "--font-baloo",
-});
-
-
+   variable: "--font-vag-rounded",
+  display: "swap",
+})
 
 export const metadata = {
   title: "Clerk Next.js Quickstart",
@@ -40,26 +39,29 @@ const vagRounded = localFont({
       weight: "300",
       style: "light",
     },
+
     {
-      path: "./fonts/fonnts.com-VAG_Rounded Next SemiBold.ttf",
+      path: "./fonts/VAG Rounded Next Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+
+    {
+      path: "./fonts/VAG Rounded Next SemiBold.ttf",
       weight: "600",
       style: "semibold",
     },
+    
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Bold_It.ttf",
+      path: "./fonts/VAG Rounded Next Bold.ttf",
       weight: "700",
       style: "bold",
     },
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Black.ttf",
+      path: "./fonts/VAG Rounded Next Black.ttf",
       weight: "900",
       style: "black",
-    },
-    {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_ExtraBlack.ttf",
-      weight: "950",
-      style: "superblack",
-    },
+    }
   ],
   variable: "--font-vag-rounded",
   display: "swap",

@@ -19,12 +19,13 @@ function Header() {
 
   return (
     <>
-      <header className=" flex justify-between items-center p-10 py-15 gap-4 h-16 font-vagRounded font-light bg-header-gradient text-white relative z-10">
+      <header className=" flex justify-between items-center p-10 py-15 gap-4 h-16 font font-black bg-header-gradient text-white relative z-10">
         <div className="flex items-center gap-4">
           <Link href={"/"}>
-      <p className="font-vagRounded font-normal text-3xl cursor-pointer">
-  E-COMPARE
+      <p className =" font-baloo text-3xl cursor-pointer">
+  E-COMPARe
 </p>
+
           </Link>
         </div>
         <div className="flex-1 max-w-2xl">
