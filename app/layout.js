@@ -16,9 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 const myFont = localFont({
-  src: "./fonts/BalooChettan-Regular.ttf",
-  variable: "--font-myFont",
+  src: [
+    {
+      path: "./fonts/BalooChettan-Regular.ttf",
+      weight: "500",
+      style: "normal",
+    },
+  ],
+  variable: "--font-baloo",
 });
+
+
 
 export const metadata = {
   title: "Clerk Next.js Quickstart",
@@ -28,29 +36,29 @@ export const metadata = {
 const vagRounded = localFont({
   src: [
     {
-      path: "./fonts/VAG_Rounded_Light.ttf",
+      path: "./fonts/VAG Rounded Next Light.ttf",
       weight: "300",
-      style: "normal",
+      style: "light",
     },
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_SemiBold.ttf",
+      path: "./fonts/fonnts.com-VAG_Rounded Next SemiBold.ttf",
       weight: "600",
-      style: "normal",
+      style: "semibold",
     },
     {
       path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Bold_It.ttf",
       weight: "700",
-      style: "italic",
+      style: "bold",
     },
     {
       path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Black.ttf",
       weight: "900",
-      style: "normal",
+      style: "black",
     },
     {
       path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_ExtraBlack.ttf",
       weight: "950",
-      style: "normal",
+      style: "superblack",
     },
   ],
   variable: "--font-vag-rounded",
@@ -71,7 +79,7 @@ export default function RootLayout({ children }) {
       >
         <html lang="en">
           <body
-            className={`${myFont.variable} ${vagRounded.variable} antialiased`}
+          className={`${myFont.variable} ${vagRounded.variable} antialiased`}
           >
             {children}
           </body>
@@ -80,4 +88,5 @@ export default function RootLayout({ children }) {
       </ClerkProvider>
     </>
   );
+  
 }

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,6 +45,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
 
 .glass-button {
 
@@ -101,6 +105,13 @@
     inset 0.21px 1.99px 4px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+@font-face {
+  font-family: 'BalooChettan';
+  src: url('/app/fonts/BalooChettan-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
 }
 * {
   scrollbar-width: auto; /* "auto" or "thin" */
