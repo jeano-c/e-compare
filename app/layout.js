@@ -10,22 +10,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const myFont = localFont({
-  src: [
-    {
-      path: "./fonts/BalooChettan-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-   variable: "--font-vag-rounded",
+const balooC = localFont({
+  src: "./fonts/BalooChettan-Regular.ttf",
+  weight: "400",
+  style: "normal",
+  variable: "--font-baloo",
   display: "swap",
-})
+});
 
 export const metadata = {
   title: "Clerk Next.js Quickstart",
@@ -47,6 +38,12 @@ const vagRounded = localFont({
     },
 
     {
+    path: "./fonts/VAG Rounded Next Medium.ttf",
+      weight: "400",
+      style: "medium",
+    
+    },
+      {
       path: "./fonts/VAG Rounded Next SemiBold.ttf",
       weight: "600",
       style: "semibold",
@@ -79,13 +76,9 @@ export default function RootLayout({ children }) {
           baseTheme: dark,
         }}
       >
-        <html lang="en">
-          <body
-          className={`${myFont.variable} ${vagRounded.variable} antialiased`}
-          >
-            {children}
-          </body>
-        </html>
+       <html lang="en" className={`${balooC.variable} ${vagRounded.variable}`}>
+      <body className="font-sans">{children}</body>
+    </html>
         <Toaster />
       </ClerkProvider>
     </>

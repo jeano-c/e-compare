@@ -1,5 +1,5 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import lazada from "@/public/lazada.svg";
@@ -35,10 +35,10 @@ function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Form>
-            <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white-500" />
+          <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" />
           </div>
           <div
-            className="flex justify-center items-center flex-row gap-3 font-vagRounded font-semibold text-2xl"
+            className="flex justify-center items-center flex-row gap-3 font-vagRounded text-white font-medium text-1xl"
             style={{ width: "40%" }}
           >
             <p >Powered by </p>
@@ -47,6 +47,8 @@ function HomePage() {
           </div>
         </div>
       </div>
+      {/* ✅ Footer renders below header */}
+      <Footer />
     </>
   );
 }
