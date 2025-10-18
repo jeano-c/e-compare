@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { ImFacebook2 } from "react-icons/im";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
+import { toast } from "sonner";
 
 function Signup() {
   const router = useRouter();
@@ -29,7 +30,7 @@ function Signup() {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Password don't match");
       setLoadingButton("");
       return;
     }
@@ -52,6 +53,9 @@ function Signup() {
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
       setError(err.errors?.[0]?.message || "An error occurred during sign up");
+      toast.error(
+        `${err.errors?.[0]?.message} ` || "An error occurred during sign up"
+      );
     } finally {
       setLoadingButton("");
     }
@@ -80,10 +84,12 @@ function Signup() {
       } else {
         console.error(JSON.stringify(completeSignUp, null, 2));
         setError("Verification incomplete. Please try again.");
+        toast.error(`Verification incomplete. Please try again.`);
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
       setError(err.errors?.[0]?.message || "Invalid verification code");
+      toast.error(`${err.errors?.[0]?.message}`);
     } finally {
       setLoadingButton("");
     }
@@ -144,12 +150,6 @@ function Signup() {
                 placeholder="Enter 6-digit code"
               />
             </div>
-
-            {error && (
-              <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-200">
-                {error}
-              </div>
-            )}
 
             <div className="flex flex-col items-center justify-between gap-8">
               <button
@@ -267,12 +267,6 @@ function Signup() {
               className="glass-input"
             />
           </div>
-
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-200">
-              {error}
-            </div>
-          )}
 
           <div className="flex flex-col items-center justify-between gap-8 sm:gap-15">
             <div id="clerk-captcha"></div>

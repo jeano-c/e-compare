@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ResetWithCodeAndPwd() {
   const { isLoaded, signIn } = useSignIn();
@@ -148,8 +149,8 @@ export default function ResetWithCodeAndPwd() {
   if (!isClient) return null; // Don't render until client-side
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="inner-shadow-y w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
+    <div className="min-h-screen flex justify-center items-center ">
+      <div className=" !inner-shadow-y w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
         {stage === "request" && (
           <>
             <h1 className="text-white text-3xl font-semibold">
@@ -171,7 +172,16 @@ export default function ResetWithCodeAndPwd() {
               <button className="glass-button mt-2 py-2 rounded-md">
                 Send code
               </button>
-              {error && <p className="text-red-500">{error}</p>}
+              <div className="flex justify-center">
+                <Link href={`/sign-up`}>
+                  <button
+                    className="text-white underline text-sm hover:text-gray-300 cursor-pointer"
+                    onClick={handleReset}
+                  >
+                    Back to login
+                  </button>
+                </Link>
+              </div>
             </form>
           </>
         )}
@@ -182,11 +192,17 @@ export default function ResetWithCodeAndPwd() {
               Reset your password
             </h1>
             <p className="text-white mt-2 text-sm">
-              Enter the {CODE_LENGTH}-digit code we sent to your email and your new password.
+              Enter the {CODE_LENGTH}-digit code we sent to your email and your
+              new password.
             </p>
-            <form onSubmit={handleCodeAndPassword} className="flex flex-col gap-4">
+            <form
+              onSubmit={handleCodeAndPassword}
+              className="flex flex-col gap-4"
+            >
               <div>
-                <label className="text-white text-sm block mb-2">Reset Code</label>
+                <label className="text-white text-sm block mb-2">
+                  Reset Code
+                </label>
                 <div className="grid grid-cols-6 gap-2" onPaste={handlePaste}>
                   {codeDigits.map((digit, idx) => (
                     <input
@@ -195,7 +211,7 @@ export default function ResetWithCodeAndPwd() {
                       inputMode="numeric"
                       autoComplete="one-time-code"
                       maxLength={1}
-                      className="glass-input text-center px-2 py-3 rounded-md text-black text-xl"
+                      className="inner-shadow-y text-center px-2 py-3 rounded-md text-white text-xl"
                       value={digit}
                       ref={(el) => (inputRefs.current[idx] = el)}
                       onChange={(e) => handleDigitChange(idx, e.target.value)}
@@ -207,7 +223,9 @@ export default function ResetWithCodeAndPwd() {
               </div>
 
               <div>
-                <label className="text-white text-sm block mb-2">New Password</label>
+                <label className="text-white text-sm block mb-2">
+                  New Password
+                </label>
                 <input
                   type="password"
                   className="glass-input px-3 py-2 rounded-md text-black w-full"
