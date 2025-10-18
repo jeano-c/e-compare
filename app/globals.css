@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @plugin 'tailwind-scrollbar';
 
@@ -85,13 +88,42 @@
 }
 
 .glass-input {
-  @apply w-full py-4 px-4 rounded-2xl text-white;
+  @apply w-full py-4 px-6 rounded-2xl text-gray-200 text-lg font-normal tracking-wide;
+
   background: rgba(255, 255, 255, 0.02);
-  outline: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset -0.21px -1.99px 4px rgba(255, 255, 255, 0.2),
-    inset 0.21px 1.99px 4px rgba(0, 0, 0, 0.4);
+
+  border-width: 0.5px;
+  border-style: solid;
+  border-radius: 23px;
+
+  /* Gradient border confined to the border area */
+  border-image-source: linear-gradient(
+    -97deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1; /* Use full image height */
+  border-image-width: 1;
+
+  /* Inner shadow */
+  box-shadow: inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+
+  /* Background blur*/
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: intersect;
+}
+
+.glass-input:focus-within {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .inner-shadow-y {
@@ -102,6 +134,12 @@
     inset 0.21px 1.99px 4px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+* {
+  scrollbar-width: auto; /* "auto" or "thin" */
+  scrollbar-color: #4b5563 transparent; /* thumb and track color */
+  scrollbar-color: #4b5563 transparent; /* thumb and track color */
 }
 
 :root {
@@ -194,5 +232,13 @@
   .scrollbar-custom::-webkit-scrollbar-thumb {
     background-color: #4b5563;
     border-radius: 6px;
+  }
+
+  .font-baloo {
+    font-family: var(--font-baloo), sans-serif;
+  }
+
+  .font-vag {
+    font-family: var(--font-vag), sans-serif;
   }
 }

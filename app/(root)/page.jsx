@@ -1,5 +1,5 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import lazada from "@/public/lazada.svg";
@@ -25,6 +25,7 @@ function HomePage() {
           <h1 className="font-vagRounded font-semibold text-2xl text-white">
             Welcome {user?.username || user?.firstName}
           </h1>
+          
         </div>
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           <div className="relative" style={{ width: "50%" }}>
@@ -38,18 +39,24 @@ function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Form>
+<<<<<<< HEAD
             <FaMagnifyingGlass className="text-white absolute left-3 top-1/2 transform -translate-y-1/2 text-black-500" />
+=======
+          <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" />
+>>>>>>> 05acc25cfd6d0cab2a23e6efe8d5eac87ef0bfd2
           </div>
           <div
-            className="glass-input flex justify-center items-center flex-row gap-3 font-vagRounded font-semibold text-2xl "
+            className="flex justify-center items-center flex-row gap-3 font-vagRounded text-white font-medium text-1xl"
             style={{ width: "40%" }}
           >
-            <p>Powered by </p>
-            <Image src={lazada} alt="Lazada" width={50} height={50} />
-            <Image src={shopee} alt="Lazada" width={37} height={37} />
+            <p >Powered by </p>
+            <Image src={lazada} alt="Lazada" width={24} height={24} />
+            <Image src={shopee} alt="Shopee" width={16} height={16} />
           </div>
         </div>
       </div>
+      {/* ✅ Footer renders below header */}
+      <Footer />
     </>
   );
 }

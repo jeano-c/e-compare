@@ -11,14 +11,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const myFont = localFont({
+const balooC = localFont({
   src: "./fonts/BalooChettan-Regular.ttf",
-  variable: "--font-myFont",
+  weight: "400",
+  style: "normal",
+  variable: "--font-baloo",
+  display: "swap",
 });
 
 export const metadata = {
@@ -29,30 +27,39 @@ export const metadata = {
 const vagRounded = localFont({
   src: [
     {
-      path: "./fonts/VAG_Rounded_Light.ttf",
+      path: "./fonts/VAG Rounded Next Light.ttf",
       weight: "300",
+      style: "light",
+    },
+
+    {
+      path: "./fonts/VAG Rounded Next Regular.ttf",
+      weight: "400",
       style: "normal",
     },
+
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_SemiBold.ttf",
+    path: "./fonts/VAG Rounded Next Medium.ttf",
+      weight: "400",
+      style: "medium",
+    
+    },
+      {
+      path: "./fonts/VAG Rounded Next SemiBold.ttf",
       weight: "600",
-      style: "normal",
+      style: "semibold",
     },
+    
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Bold_It.ttf",
+      path: "./fonts/VAG Rounded Next Bold.ttf",
       weight: "700",
-      style: "italic",
+      style: "bold",
     },
     {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_Black.ttf",
+      path: "./fonts/VAG Rounded Next Black.ttf",
       weight: "900",
-      style: "normal",
-    },
-    {
-      path: "./fonts/fonnts.com-VAG_Rounded_Next_W05_ExtraBlack.ttf",
-      weight: "950",
-      style: "normal",
-    },
+      style: "black",
+    }
   ],
   variable: "--font-vag-rounded",
   display: "swap",
@@ -60,23 +67,22 @@ const vagRounded = localFont({
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      afterSignOutUrl="/sign-in"
-      appearance={{
-        baseTheme: dark,
-      }}
-    >
-      <html lang="en">
-        <body
-          className={`scrollbar scrollbar-thumb-gray-600 scrollbar-track-transparent ${myFont.variable} ${vagRounded.variable} antialiased`}
-        >
-          <ShaderBackground />
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <>
+      <ShaderBackground />
+      <ClerkProvider
+        signInUrl="/sign-in"
+        signUpUrl="/sign-up"
+        afterSignOutUrl="/sign-in"
+        appearance={{
+          baseTheme: dark,
+        }}
+      >
+       <html lang="en" className={`${balooC.variable} ${vagRounded.variable}`}>
+      <body className="font-sans">{children}</body>
+    </html>
+        <Toaster />
+      </ClerkProvider>
+    </>
   );
+  
 }

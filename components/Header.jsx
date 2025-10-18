@@ -28,12 +28,13 @@ function Header() {
 
   return (
     <>
-      <header className=" flex justify-between items-center p-10 py-15 gap-4 h-16 font-vagRounded font-light bg-header-gradient text-white relative z-10">
+      <header className=" flex justify-between items-center p-15 py-15 gap-4 h-16 font font-black bg-header-gradient text-white relative z-10">
         <div className="flex items-center gap-4">
           <Link href={"/"}>
-            <p className="font-bold font-sans text-3xl cursor-pointer">
-              E-COMPARE
-            </p>
+      <p className =" font-baloo text-3xl cursor-pointer">
+  E-COMPARE
+</p>
+
           </Link>
         </div>
         <div className="flex-1 max-w-2xl">
@@ -60,10 +61,10 @@ function Header() {
         <div className="flex justify-center items-center gap-5">
           <SignedOut>
             <Link href="/sign-in">
-              <button className="text-2xl text-white font-bold">Sign In</button>
+              <button className="font-normal text-[24px] text-white font-vagRounded">Login</button>
             </Link>
             <Link href="/sign-up">
-              <button className="text-2xl text-white font-bold">Sign Up</button>
+              <button className="  font-normal text-[24px] text-white font-vagRounded">Sign Up</button>
             </Link>
           </SignedOut>
           <SignedIn>
@@ -82,6 +83,8 @@ function Header() {
           </SignedIn>
         </div>
       </header>
+
+    
     </>
   );
 }

@@ -28,7 +28,7 @@ export default function ResetWithCodeAndPwd() {
 
   const getCode = () => codeDigits.join("");
 
-  // ✅ Request reset email
+  // request reset email
   const handleRequest = async (e) => {
     e.preventDefault();
     if (!isLoaded || !isClient) return;
