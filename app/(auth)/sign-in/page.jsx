@@ -232,7 +232,7 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-                className="flex flex-row items-center justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="glass-button w-full flex justify-center items-center rounded-l-2xl rounded-r-none"
               >
                 <div className="bg-[#1877F2] p-2 sm:p-3 rounded-md">
                   <ImFacebook2 className="text-2xl text-white sm:text-3xl" />
