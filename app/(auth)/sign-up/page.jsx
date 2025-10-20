@@ -192,16 +192,16 @@ function Signup() {
           <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
-          <p className="font-sans text-5xl font-bold sm:text-6xl lg:text-8xl">
+          <p className="font-baloo text-5xl font-bold sm:text-6xl lg:text-8xl">
             E-Compare
           </p>
-          <p className="font-bold font-sans text-lg sm:text-xl lg:text-2xl mt-2">
-            Sign up for free
+          <p className="font-semibold font-vagRounded text-lg sm:text-xl lg:text-2xl mt-2">
+            Sign up for free.
           </p>
         </div>
 
         <div className="hidden lg:block">
-          <p className="text-xl font-bold">by jeacodes</p>
+          <p className="text-xl font-bold">by Jeacodes</p>
         </div>
       </div>
 
