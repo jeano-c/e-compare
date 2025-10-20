@@ -46,7 +46,6 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-<<<<<<< HEAD
 .glass-loginButton{
   @apply w-full;
   box-sizing: border-box;
@@ -82,16 +81,6 @@
 
   box-sizing: border-box;
   height: 64px; 
-=======
-.glass-button {
-  font-family: var(--font-vag-rounded);
-  font-weight: 300; /* light */
-  font-size: 1.25rem; /* text-xl */
-  padding: 1rem 3rem; /* py-4 px-12 */
-  border-radius: 9999px; /* rounded-full */
-  color: white; /* text color, adjust if needed */
-  border: 1px solid rgba(255, 255, 255, 0.2);
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
   background: rgba(255, 255, 255, 0.02);
   border-width: 0.5px;
   border-style: solid;
@@ -141,7 +130,6 @@
   @apply mr-3 w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
 }
 
-<<<<<<< HEAD
 .glass-search, .search-button {
  @apply py-4  w-full text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
   box-sizing: border-box;
@@ -152,16 +140,6 @@ border-style: solid;
 border-radius: 0;
 border-bottom-left-radius: 23px; /* rounded-full */
 border-top-left-radius: 23px;
-=======
-.glass-input {
-  @apply w-full py-4 px-6 rounded-2xl text-gray-200 text-lg font-normal tracking-wide;
-
-  background: rgba(255, 255, 255, 0.02);
-
-  border-width: 0.5px;
-  border-style: solid;
-  border-radius: 23px;
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 
   /* Gradient border confined to the border area */
   border-image-source: linear-gradient(
@@ -193,7 +171,6 @@ border-top-left-radius: 23px;
   border-bottom-right-radius: 23px;
 }
 
-<<<<<<< HEAD
 
 .glass-input{
  @apply w-full pl-6 text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
@@ -229,11 +206,6 @@ border-top-left-radius: 23px;
     inset 0 2px 4px rgba(0, 0, 0, 0.4),
     inset 0 -2px 4px rgba(255, 255, 255, 0.2),
     0 0 8px rgba(255, 255, 255, 0.3);
-=======
-.glass-input:focus-within {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
-    inset 0 -2px 4px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.3);
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 }
 
 .inner-shadow-y {
@@ -261,7 +233,6 @@ border-top-left-radius: 23px;
   mask-composite: intersect;
 }
 
-<<<<<<< HEAD
 .compare-button{
 
 
@@ -293,8 +264,6 @@ border-top-left-radius: 23px;
 
 
 
-=======
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 * {
   scrollbar-width: auto; /* "auto" or "thin" */
   scrollbar-color: #4b5563 transparent; /* thumb and track color */

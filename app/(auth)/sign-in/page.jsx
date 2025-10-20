@@ -34,7 +34,7 @@ function Signin() {
         await setActive({
           session: result.createdSessionId,
           beforeEmit: async (session) => {
-           
+
             return session;
           },
         });
@@ -132,7 +132,6 @@ function Signin() {
       </div>
 
       {/* right side */}
-            <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y">
 
       <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
@@ -227,22 +226,22 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-               className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
 
               >
-  <div className="p-2 sm:p-1 rounded-md">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 512 512"
-    className="w-7 h-7 sm:w-8 sm:h-8 rounded-md"
-  >
-    <rect width="512" height="512" fill="#1877F2" rx="15" />
-    <path
-      fill="#fff"
-      d="M355.6 330.7l11.3-73.8h-70.8v-47.9c0-20.2 9.9-39.9 41.6-39.9h32.2V105c0 0-29.2-5-57.2-5-58.3 0-96.4 35.4-96.4 99.5v57.3H140v73.8h76.3v178.3c15.3 2.4 30.9 3.7 46.8 3.7s31.5-1.3 46.8-3.7V330.7h45.7z"
-    />
-  </svg>
-</div>
+                <div className="p-2 sm:p-1 rounded-md">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-md"
+                  >
+                    <rect width="512" height="512" fill="#1877F2" rx="15" />
+                    <path
+                      fill="#fff"
+                      d="M355.6 330.7l11.3-73.8h-70.8v-47.9c0-20.2 9.9-39.9 41.6-39.9h32.2V105c0 0-29.2-5-57.2-5-58.3 0-96.4 35.4-96.4 99.5v57.3H140v73.8h76.3v178.3c15.3 2.4 30.9 3.7 46.8 3.7s31.5-1.3 46.8-3.7V330.7h45.7z"
+                    />
+                  </svg>
+                </div>
                 <span className="text-hidden sm:inline">Login with Facebook</span>
                 <span className="sm:hidden">Facebook</span>
               </button>

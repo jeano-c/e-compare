@@ -7,12 +7,7 @@ import shopee from "@/public/shopee.svg";
 import Form from "next/form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
-=======
-import { useState } from "react";
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
-
 function HomePage() {
   const router = useRouter();
   const { user } = useUser();
@@ -52,47 +47,35 @@ function HomePage() {
   return (
     <>
       <div className="min-h-screen">
-<<<<<<< HEAD
         <div className="py-15 px-16"></div>
-
-=======
-        <div className="py-15 px-16">
-          <h1 className="font-vagRounded font-semibold text-2xl text-white">
-            Welcome {user?.username || user?.firstName}
-          </h1>
-          
-        </div>
->>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           {/* Search Section */}
-
           <div className=" flex flex-row justify-center items-center w-full">
             <div className="flex w-[40%] min-w-[300px] relative">
 
               {/* Fading Placeholder */}
               {!search && (
                 <div
-                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${
-                    fadeState === "fade-in" ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${fadeState === "fade-in" ? "opacity-100" : "opacity-0"
+                    }`}
                   style={{ whiteSpace: "nowrap" }}
                   dangerouslySetInnerHTML={{ __html: fadeText }}
                 />
               )}
 
-            {/* Input box */}
-{/* Input box */}
-<div className="relative flex-[22]">
-  <Form onSubmit={handleSubmit}>
-    <input
-      className="glass-search w-full h-[48px] rounded-l-2xl text-white placeholder-white/50 pl-12 text-[16px] font-normal"
-      type="text"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
-    <FaMagnifyingGlass className="absolute left-[20px] top-1/2 -translate-y-1/2 text-white/50 text-[16px]" />
-  </Form>
-</div>
+              {/* Input box */}
+              {/* Input box */}
+              <div className="relative flex-[22]">
+                <Form onSubmit={handleSubmit}>
+                  <input
+                    className="glass-search w-full h-[48px] rounded-l-2xl text-white placeholder-white/50 pl-12 text-[16px] font-normal"
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <FaMagnifyingGlass className="absolute left-[20px] top-1/2 -translate-y-1/2 text-white/50 text-[16px]" />
+                </Form>
+              </div>
               {/* Search Button */}
               <Form onClick={handleSubmit}>
                 <button
