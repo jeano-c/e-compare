@@ -124,7 +124,7 @@ function Signup() {
             </p>
           </div>
           <div className="hidden lg:block">
-            <p className="text-xl font-bold">by jeacodes</p>
+            <p className="text-xl font-bold">by Jeacodes</p>
           </div>
         </div>
 
@@ -196,18 +196,18 @@ function Signup() {
           <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
-          <p className="font-sans text-5xl font-bold sm:text-6xl lg:text-8xl">
+          <p className="font-baloo text-5xl  sm:text-6xl lg:text-8xl">
             E-Compare
           </p>
           <div className="">
-            <p className="font-bold font-sans text-lg sm:text-xl lg:text-2xl">
+            <p className="font-vagRounded text-lg font-regular sm:text-xl lg:text-2xl mt-1">
               Sign up for free
             </p>
           </div>
         </div>
 
         <div className="hidden lg:block">
-          <p className="text-xl font-bold">by jeacodes</p>
+          <p className="text-xl font-bold">by Jeacodes</p>
         </div>
       </div>
 
@@ -223,7 +223,7 @@ function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px] "
             />
           </div>
 
@@ -236,12 +236,12 @@ function Signup() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px] "
             />
           </div>
 
           <div className="mb-7">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded ">
               Password
             </p>
             <input
@@ -249,12 +249,12 @@ function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px] "
             />
           </div>
 
           <div className="mb-7">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded ">
               Confirm Password
             </p>
             <input
@@ -262,7 +262,7 @@ function Signup() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px] "
             />
           </div>
 
@@ -272,16 +272,16 @@ function Signup() {
             </div>
           )}
 
-          <div className="flex flex-col items-center justify-between gap-8 sm:gap-15">
+          <div className="flex flex-col items-center justify-between gap-8 sm:gap-10">
             <div id="clerk-captcha"></div>
             <div className="flex items-center justify-center w-full">
               <button
                 type="submit"
                 disabled={loading || !isLoaded}
-                className="px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
+                className="px-8 text-lg glass-loginButton sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white w-full"
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-2 ">
                     <VscLoading className="animate-spin" />
                     Signing up...
                   </span>
@@ -291,52 +291,63 @@ function Signup() {
               </button>
             </div>
 
-            <div>
-              <p className="text-xl text-center sm:text-2xl text-white">or</p>
-            </div>
-
-            <div className="flex flex-col items-center justify-center w-full gap-4 sm:gap-5">
-              <button
-                type="button"
-                onClick={() => handleOAuthSignUp("oauth_google")}
-                disabled={!isLoaded}
-                className="!w-[50%] flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
-              >
-                <FcGoogle className="text-3xl sm:text-4xl" />
-                <span className="hidden sm:inline">Continue with Google</span>
-                <span className="sm:hidden">Google</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleOAuthSignUp("oauth_facebook")}
-                disabled={!isLoaded}
-                className="!w-[50%] flex flex-row items-center justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
-              >
-                <div className="bg-[#1877F2] p-2 sm:p-3 rounded-md">
-                  <ImFacebook2 className="text-2xl text-white sm:text-3xl" />
-                </div>
-                <span className="hidden sm:inline">Continue with Facebook</span>
-                <span className="sm:hidden">Facebook</span>
-              </button>
-            </div>
-
-            <div>
-              <p className="font-sans text-sm text-center text-white sm:text-base">
-                Already have an account?{" "}
-                <span
-                  onClick={() => router.push("/sign-in")}
-                  className="font-bold text-white underline cursor-pointer underline-offset-2"
-                >
-                  Login
-                </span>
-              </p>
-            </div>
-          </div>
-        </form>
-
+           
+                       <div>
+                         <p className=" text-center text-white font-vagRounded text-[24px]">or</p>
+                       </div>
+           
+                       <div className="flex flex-col items-center justify-center w-full gap-4 sm:gap-5 text-[16px]">
+                         <button
+                           type="button"
+                           onClick={() => handleOAuthSignIn("google")}
+                           disabled={!isLoaded}
+                           className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                         >
+                           <FcGoogle className="text-2xl sm:text-4xl" />
+                           <span className="hidden  sm:inline">Login with Google</span>
+                           <span className="sm:hidden">Google</span>
+                         </button>
+                         <button
+                           type="button"
+                           onClick={() => handleOAuthSignIn("facebook")}
+                           disabled={!isLoaded}
+                          className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+           
+                         >
+             <div className="p-2 sm:p-1 rounded-md">
+             <svg
+               xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 512 512"
+               className="w-7 h-7 sm:w-8 sm:h-8 rounded-md"
+             >
+               <rect width="512" height="512" fill="#1877F2" rx="15" />
+               <path
+                 fill="#fff"
+                 d="M355.6 330.7l11.3-73.8h-70.8v-47.9c0-20.2 9.9-39.9 41.6-39.9h32.2V105c0 0-29.2-5-57.2-5-58.3 0-96.4 35.4-96.4 99.5v57.3H140v73.8h76.3v178.3c15.3 2.4 30.9 3.7 46.8 3.7s31.5-1.3 46.8-3.7V330.7h45.7z"
+               />
+             </svg>
+           </div>
+                           <span className="text-hidden sm:inline">Login with Facebook</span>
+                           <span className="sm:hidden">Facebook</span>
+                         </button>
+                       </div>
+           
+                       <div>
+                         <p className=" text-[16px] text-center text-white ">
+                           Don't have account?{" "}
+                           <span
+                             onClick={() => router.push("/sign-in")}
+                             className="font-vagRounded font-semibold text-[16px] text-white underline cursor-pointer underline-offset-2"
+                           >
+                             Sign up
+                           </span>
+                         </p>
+                       </div>
+                     </div>
+                   </form>
         {/* Mobile footer */}
         <div className="mt-8 text-center lg:hidden">
-          <p className="text-lg font-bold">by jeacodes</p>
+          <p className="text-lg font-bold">by Jeacodes</p>
         </div>
       </div>
     </div>

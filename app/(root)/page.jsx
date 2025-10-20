@@ -34,7 +34,7 @@ function HomePage() {
         setFadeText(textOptions[index]);
         setFadeState("fade-in");
       }, 500); // fade-out duration
-    }, 7000); // each phrase visible for 7s
+    }, 3000); // each phrase visible for 4s
 
     return () => clearInterval(interval);
   }, []);
@@ -53,8 +53,8 @@ function HomePage() {
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           {/* Search Section */}
 
-          <div className="flex flex-row justify-center items-center w-full">
-            <div className="flex w-[40%] relative">
+          <div className=" flex flex-row justify-center items-center w-full">
+            <div className="flex w-[40%] min-w-[300px] relative">
 
               {/* Fading Placeholder */}
               {!search && (

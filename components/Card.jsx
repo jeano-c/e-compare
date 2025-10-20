@@ -2,7 +2,7 @@ import React from "react";
 import { FaRegHeart } from "react-icons/fa";
 function Card({ products }) {
   return (
-    <div className="flex flex-col w-full min-h-[300px] inner-shadow-y rounded-2xl p-4 gap-3">
+    <div className="flex flex-col w-full min-h-[300px] glass-button rounded-2xl p-4 gap-3">
       <div className="flex justify-between items-start gap-3">
         <div className="flex flex-col flex-1 min-w-0">
           <p className="text-xl font-bold text-white truncate">
@@ -23,7 +23,7 @@ function Card({ products }) {
       </div>
       <div className="flex justify-between items-center gap-3 ">
         <p className="text-white text-xl font-bold">₱ {products.price}</p>
-        <button className="inner-shadow-y text-xl text-white py-2 px-3 rounded-2xl">
+        <button className="glass-button text-xl text-white py-2 px-3 rounded-2xl">
           Buy {products.source}
         </button>
       </div>
