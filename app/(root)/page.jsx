@@ -20,12 +20,14 @@ function HomePage() {
   }
   return (
     <>
-      <div className="min-h-screen">
+      <div
+        className="min-h-screen scrollbar-custom 
+      "
+      >
         <div className="py-15 px-16">
           <h1 className="font-vagRounded font-semibold text-2xl text-white">
             Welcome {user?.username || user?.firstName}
           </h1>
-          
         </div>
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           <div className="relative" style={{ width: "50%" }}>
@@ -39,13 +41,13 @@ function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Form>
-          <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" />
+            <FaMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" />
           </div>
           <div
             className="flex justify-center items-center flex-row gap-3 font-vagRounded text-white font-medium text-1xl"
             style={{ width: "40%" }}
           >
-            <p >Powered by </p>
+            <p>Powered by </p>
             <Image src={lazada} alt="Lazada" width={24} height={24} />
             <Image src={shopee} alt="Shopee" width={16} height={16} />
           </div>

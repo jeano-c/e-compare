@@ -97,14 +97,13 @@ export async function GET(req) {
       shopeePage.goto(shopeeUrl, { waitUntil: "domcontentloaded" }),
     ]);
 
-    // Wait for both responses or timeout
+
     await Promise.race([
       Promise.all([lazadaPromise, shopeePromise]),
       delay(7000),
     ]);
 
-    // Fallback: if lazadaData wasn't captured via XHR, try to capture final
-    // page URL and some page content that can help parse results client-side.
+
     if (!lazadaData) {
       try {
         const finalUrl = lazadaPage.url();
