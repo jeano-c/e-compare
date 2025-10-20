@@ -7,7 +7,11 @@ import shopee from "@/public/shopee.svg";
 import Form from "next/form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
+=======
+import { useState } from "react";
+>>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 
 function HomePage() {
   const router = useRouter();
@@ -48,8 +52,17 @@ function HomePage() {
   return (
     <>
       <div className="min-h-screen">
+<<<<<<< HEAD
         <div className="py-15 px-16"></div>
 
+=======
+        <div className="py-15 px-16">
+          <h1 className="font-vagRounded font-semibold text-2xl text-white">
+            Welcome {user?.username || user?.firstName}
+          </h1>
+          
+        </div>
+>>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           {/* Search Section */}
 

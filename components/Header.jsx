@@ -9,15 +9,32 @@ import { dark } from "@clerk/themes";
 import ShaderBackground from "./BackGround";
 import Form from "next/form";
 import { usePathname, useSearchParams } from "next/navigation";
+<<<<<<< HEAD
+=======
+import { FaSearch } from "react-icons/fa";
+import { useEffect, useState } from "react";
+>>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 
 function Header() {
-  const { user } = useUser();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isSearchPage = pathname === "/search";
 
+<<<<<<< HEAD
   // Track focus state for search input
   const [isFocused, setIsFocused] = useState(false);
+=======
+  // Get the search query from the URL
+  const query = searchParams.get("q") || "";
+
+  // Local state for the input
+  const [search, setSearch] = useState(query);
+
+  // Update input if URL changes
+  useEffect(() => {
+    setSearch(query);
+  }, [query]);
+>>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
 
   return (
     <>
@@ -36,6 +53,12 @@ function Header() {
             <Form className="relative flex-[22] flex justify-center items-center">
               <input
                 name="q"
+<<<<<<< HEAD
+=======
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="inner-shadow-y py-5 px-5 rounded-tl-3xl rounded-bl-3xl rounded-tr-none rounded-br-none w-full"
+>>>>>>> bf61ef10dc9ebd1d6241622c51f44069d46dba52
                 type="text"
                 placeholder="Search"
                 onFocus={() => setIsFocused(true)}
