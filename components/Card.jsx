@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
+
 function Card({
   products,
   showCompare,
@@ -10,26 +11,21 @@ function Card({
   onLongPress,
 }) {
   const pressTimer = useRef(null);
-  const pressStartTime = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
-    if (showCompare) {
+    if (showCompare && pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
       setIsPressed(false);
-      if (pressTimer.current) {
-        clearTimeout(pressTimer.current);
-        pressTimer.current = null;
-      }
     }
   }, [showCompare]);
+
   const handlePressStart = (e) => {
     e.preventDefault();
     setIsPressed(true);
-    pressStartTime.current = Date.now();
     pressTimer.current = setTimeout(() => {
-      if (onLongPress) {
-        onLongPress(products.id);
-      }
+      if (onLongPress) onLongPress(products.id);
       setIsPressed(false);
     }, 500);
   };
@@ -40,17 +36,15 @@ function Card({
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
     }
-    pressStartTime.current = null;
   };
 
   return (
     <div
       className={cn(
-        "flex flex-col w-full min-h-[300px] inner-shadow-y rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150",
+        "flex flex-col w-full min-h-[300px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
-        isPressed && "scale-95", // Scale down when pressed
-        "select-none" // Prevent text selection during long press
+        isPressed && "scale-95"
       )}
       onMouseDown={!showCompare ? handlePressStart : undefined}
       onMouseUp={!showCompare ? handlePressEnd : undefined}
@@ -60,12 +54,13 @@ function Card({
       onTouchCancel={!showCompare ? handlePressEnd : undefined}
       onClick={showCompare && !isDisabled ? onToggle : undefined}
     >
+      {/* Header Section */}
       <div className="flex justify-between items-start gap-3">
         <div className="flex flex-col flex-1 min-w-0">
           <p className="text-xl font-bold text-white truncate">
             {products.name}
           </p>
-          <p className="text-white text-20 truncate">
+          <p className="text-white text-[14px] truncate">
             {products.merchant || "merchant"}
           </p>
         </div>
@@ -82,14 +77,16 @@ function Card({
         )}
       </div>
 
-      <div>
+      {/* Image Section */}
+      <div className="flex justify-center items-center">
         <img
-          className="w-full h-full object-cover pointer-events-none"
+          className="w-full h-full object-cover pointer-events-none rounded-xl"
           src={products.image}
           alt={products.name}
         />
       </div>
 
+      {/* Price and Button */}
       <div className="flex justify-between items-center gap-3">
         <p className="text-white text-xl font-bold">₱ {products.price}</p>
         <button className="inner-shadow-y text-xl text-white py-2 px-3 rounded-2xl hover:opacity-80 transition-opacity">
@@ -99,4 +96,5 @@ function Card({
     </div>
   );
 }
+
 export default Card;

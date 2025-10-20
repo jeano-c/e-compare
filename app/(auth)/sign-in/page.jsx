@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { ImFacebook2 } from "react-icons/im";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
@@ -35,7 +34,7 @@ function Signin() {
         await setActive({
           session: result.createdSessionId,
           beforeEmit: async (session) => {
-           
+
             return session;
           },
         });
@@ -116,27 +115,28 @@ function Signin() {
           <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
-          <p className="font-sans text-5xl font-bold sm:text-6xl lg:text-8xl">
+          <p className="font-baloo text-5xl  sm:text-6xl lg:text-8xl">
             E-Compare
           </p>
-          <div className="lg:pl-9">
-            <p className="font-sans text-lg font-light sm:text-xl lg:text-2xl mt-1">
-              Start your <span className="font-bold">smart</span> online
-              shopping here
+          <div className="">
+            <p className="font-vagRounded text-lg font-regular sm:text-xl lg:text-2xl mt-1">
+              Start your <span className="font-semibold">smart</span> online
+              shopping here.
             </p>
           </div>
         </div>
 
         <div className="hidden lg:block">
-          <p className="text-xl font-bold">by jeacodes</p>
+          <p className="text-xl font-bold">by Jeacodes</p>
         </div>
       </div>
 
       {/* right side */}
+
       <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
           <div className="mb-7 sm:mb-10">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-2 text-xl  font-light text-white sm:text-2xl font-vagRounded">
               Email or Username
             </p>
             <input
@@ -144,7 +144,7 @@ function Signin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px]"
               placeholder="Enter your username or email"
             />
           </div>
@@ -158,12 +158,12 @@ function Signin() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="glass-input"
+              className="glass-input h-[64px] "
               placeholder="Enter your password"
             />
           </div>
 
-          <div className="flex flex-row items-start justify-between gap-4 mb-10 sm:flex-row sm:items-center sm:mb-20">
+          <div className="flex flex-row items-start justify-between gap-10 mb-10 sm:flex-row sm:items-center sm:mb-18">
             <div className="flex items-center">
               <input
                 className="glass-checkbox"
@@ -174,7 +174,7 @@ function Signin() {
               />
               <label
                 htmlFor="option1"
-                className="text-lg leading-none cursor-pointer sm:text-2xl text-white"
+                className=" font-vagRounded font-normal cursor-pointer text-[16px] text-white"
               >
                 Remember me
               </label>
@@ -182,19 +182,19 @@ function Signin() {
             <div className="flex items-center">
               <h1
                 onClick={() => router.push("/forgot-password")}
-                className="text-white relative inline-block text-lg font-medium cursor-pointer sm:text-2xl font-vagRounded group"
+                className="text-white relative inline-block text-lg font-normal cursor-pointer text-[16px] font-vagRounded"
               >
                 Forgot password
                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
               </h1>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-between gap-8 sm:gap-15">
+          <div className="flex flex-col items-center justify-between sm:gap-10">
             <div className="flex items-center justify-center w-full">
               <button
                 type="submit"
                 disabled={loading || !isLoaded}
-                className="w-full px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white"
+                className="w-full px-2 text-lg glass-loginButton sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -208,40 +208,51 @@ function Signin() {
             </div>
 
             <div>
-              <p className="text-xl text-center sm:text-2xl text-white">or</p>
+              <p className=" text-center text-white font-vagRounded text-[24px]">or</p>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-full gap-4 sm:gap-5">
+            <div className="flex flex-col items-center justify-center w-full gap-4 sm:gap-5 text-[16px]">
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
                 disabled={!isLoaded}
                 className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
-                <FcGoogle className="text-3xl sm:text-4xl" />
-                <span className="hidden sm:inline">Login with Google</span>
+                <FcGoogle className="text-2xl sm:text-4xl" />
+                <span className="hidden  sm:inline">Login with Google</span>
                 <span className="sm:hidden">Google</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-                className="flex flex-row items-center justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+
               >
-                <div className="bg-[#1877F2] p-2 sm:p-3 rounded-md">
-                  <ImFacebook2 className="text-2xl text-white sm:text-3xl" />
+                <div className="p-2 sm:p-1 rounded-md">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-md"
+                  >
+                    <rect width="512" height="512" fill="#1877F2" rx="15" />
+                    <path
+                      fill="#fff"
+                      d="M355.6 330.7l11.3-73.8h-70.8v-47.9c0-20.2 9.9-39.9 41.6-39.9h32.2V105c0 0-29.2-5-57.2-5-58.3 0-96.4 35.4-96.4 99.5v57.3H140v73.8h76.3v178.3c15.3 2.4 30.9 3.7 46.8 3.7s31.5-1.3 46.8-3.7V330.7h45.7z"
+                    />
+                  </svg>
                 </div>
-                <span className="hidden sm:inline">Login with Facebook</span>
+                <span className="text-hidden sm:inline">Login with Facebook</span>
                 <span className="sm:hidden">Facebook</span>
               </button>
             </div>
 
             <div>
-              <p className="font-sans text-sm text-center text-white sm:text-base">
+              <p className=" text-[16px] text-center text-white ">
                 Don't have account?{" "}
                 <span
                   onClick={() => router.push("/sign-up")}
-                  className="font-bold text-white underline cursor-pointer underline-offset-2"
+                  className="font-vagRounded font-semibold text-[16px] text-white underline cursor-pointer underline-offset-2"
                 >
                   Sign up
                 </span>
@@ -252,7 +263,7 @@ function Signin() {
 
         {/* Mobile footer */}
         <div className="mt-8 text-center lg:hidden">
-          <p className="text-lg font-bold">by jeacodes</p>
+          <p className="text-lg font-bold">by Jeacodes</p>
         </div>
       </div>
     </div>
