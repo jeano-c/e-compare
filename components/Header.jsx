@@ -55,7 +55,7 @@ function Header() {
 
               {/* Search button - slides in/out when focused */}
               <div className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6"> 
-                <button type="submit"> <FaSearch className="text-white " /> </button> </div> 
+                <button type="submit"> <FaMagnifyingGlass className="text-white/70 text-lg" /> </button> </div> 
             </Form>
           )}
           

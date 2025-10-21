@@ -59,7 +59,7 @@ function SearchResults({ query }) {
           ))
         )}
       </div>
-      <button className="m-4 fixed bottom-5 right-5 text-2xl text-white px-5 py-3 rounded-full compare-button font-semibold w-50 ">
+      <button className="compare-button m-4 fixed bottom-5 right-5 text-2xl text-white px-5 py-3 rounded-full  font-semibold w-50 z-1">
         Compare
       </button>
     </>
