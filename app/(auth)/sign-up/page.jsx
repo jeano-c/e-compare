@@ -48,7 +48,8 @@ function Signup() {
       setVerifying(true);
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
-      const message = err.errors?.[0]?.message || "An error occurred during sign up";
+      const message =
+        err.errors?.[0]?.message || "An error occurred during sign up";
       setError(message);
       toast.error(message);
     } finally {
@@ -65,7 +66,9 @@ function Signup() {
     setError("");
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({ code });
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code,
+      });
 
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
@@ -100,7 +103,7 @@ function Signup() {
   // --- Verification View ---
   if (verifying) {
     return (
-      <div className="flex flex-col lg:flex-row items-stretch justify-center max-w-screen overflow-x-hidden min-h-screen lg:h-screen text-white">
+      <div className="flex flex-col  lg:flex-row items-center justify-center max-w-screen overflow-x-hidden min-h-screen lg:h-screen text-white">
         <div className="min-h-[40vh] lg:min-h-screen w-full lg:w-1/2 px-6 sm:px-10 py-5 flex items-center justify-between flex-col sticky top-0">
           <div className="w-full">
             <h1
@@ -126,10 +129,10 @@ function Signup() {
           </div>
         </div>
 
-        <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y">
-          <form onSubmit={handleVerify}>
-            <div className="mb-7 sm:mb-10">
-              <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+        <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y min-h-screen flex justify-center items-center ">
+          <form onSubmit={handleVerify} className="w-full min-h-screen flex justify-center items-center flex-col">
+            <div className="mb-7 sm:mb-10 w-full">
+              <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded w-full ">
                 Verification Code
               </p>
               <input
@@ -137,16 +140,16 @@ function Signup() {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
-                className="glass-input"
+                className="glass-input h-[64px] w-full"
                 placeholder="Enter 6-digit code"
               />
             </div>
 
-            <div className="flex flex-col items-center justify-between gap-8">
+            <div className="flex flex-col items-center justify-between gap-8 w-full ">
               <button
                 type="submit"
                 disabled={loadingButton !== "" || !isLoaded}
-                className="px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
+                className="cursor-pointer px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
               >
                 {loadingButton === "verify" ? (
                   <span className="flex items-center justify-center gap-2">
@@ -162,7 +165,7 @@ function Signup() {
                 type="button"
                 onClick={() => setVerifying(false)}
                 disabled={loadingButton !== ""}
-                className="text-white underline underline-offset-2 disabled:opacity-50"
+                className="cursor-pointer text-white underline underline-offset-2 disabled:opacity-50"
               >
                 Back to sign up
               </button>
@@ -271,7 +274,7 @@ function Signup() {
               <button
                 type="submit"
                 disabled={loadingButton !== "" || !isLoaded}
-                className="px-8 text-lg glass-loginButton  sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white "
+                className="cursor-pointer px-8 text-lg glass-loginButton  sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white "
               >
                 {loadingButton === "signup" ? (
                   <span className="flex items-center justify-center gap-2">
@@ -293,7 +296,7 @@ function Signup() {
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_google")}
                 disabled={loadingButton !== "" || !isLoaded}
-                className=" flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 {loadingButton === "oauth_google" ? (
                   <VscLoading className="text-3xl sm:text-4xl animate-spin" />
@@ -315,7 +318,7 @@ function Signup() {
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_facebook")}
                 disabled={loadingButton !== "" || !isLoaded}
-                className="flex flex-row items-center justify-center text-white px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center justify-center text-white px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 {loadingButton === "oauth_facebook" ? (
                   <VscLoading className="text-3xl sm:text-4xl animate-spin" />
@@ -362,9 +365,7 @@ function Signup() {
             <p className="font-sans text-sm text-center text-white sm:text-base">
               Already have an account?{" "}
               <span
-                onClick={() =>
-                  loadingButton === "" && router.push("/sign-in")
-                }
+                onClick={() => loadingButton === "" && router.push("/sign-in")}
                 className={`font-bold text-white underline underline-offset-2 ${
                   loadingButton === ""
                     ? "cursor-pointer"

@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 function TextureMesh() {
   const mesh = useRef();
-  
+
   const uniforms = useMemo(
     () => ({
       u_color: { value: new THREE.Vector3(0.3, 0, 1) },

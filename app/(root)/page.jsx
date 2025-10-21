@@ -52,19 +52,17 @@ function HomePage() {
           {/* Search Section */}
           <div className=" flex flex-row justify-center items-center w-full">
             <div className="flex w-[40%] min-w-[300px] relative">
-
               {/* Fading Placeholder */}
               {!search && (
                 <div
-                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${fadeState === "fade-in" ? "opacity-100" : "opacity-0"
-                    }`}
+                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${
+                    fadeState === "fade-in" ? "opacity-100" : "opacity-0"
+                  }`}
                   style={{ whiteSpace: "nowrap" }}
                   dangerouslySetInnerHTML={{ __html: fadeText }}
                 />
               )}
 
-              {/* Input box */}
-              {/* Input box */}
               <div className="relative flex-[22]">
                 <Form onSubmit={handleSubmit}>
                   <input
