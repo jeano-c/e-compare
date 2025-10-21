@@ -14,9 +14,7 @@ async function SearchResult({ searchParams }) {
         </div>
       </div>
       <div className="w-full mt-8">
-        
-        {/* <SearchResults query={q} /> */}
-        <SkeletonResult />
+        <SearchResults query={q} />
       </div>
     </div>
   );
