@@ -16,13 +16,12 @@ export default function ResetWithCodeAndPwd() {
   const [email, setEmail] = useState("");
   const [codeDigits, setCodeDigits] = useState(Array(CODE_LENGTH).fill(""));
   const [newPassword, setNewPassword] = useState("");
-  const [resetId, setResetId] = useState(null); // Store in state, not localStorage
+  const [resetId, setResetId] = useState(null); 
   const [error, setError] = useState("");
   const [isClient, setIsClient] = useState(false);
 
   const inputRefs = useRef([]);
 
-  // Ensure component only renders after client hydration
   useEffect(() => {
     setIsClient(true);
   }, []);

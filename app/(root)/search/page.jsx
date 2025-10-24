@@ -1,10 +1,8 @@
+export const dynamic = "force-dynamic";
 import SearchResults from "@/components/SearchResults";
-import SkeletonResult from "@/components/SkeletonResult";
-import { Skeleton } from "@/components/ui/skeleton";
 
-async function SearchResult({ searchParams }) {
-  const sp = await searchParams;
-  const q = sp?.q || "";
+export default async function SearchResult({ searchParams }) {
+  const q = await searchParams?.q || "";
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen px-10 py-5 h-fit">
@@ -19,5 +17,3 @@ async function SearchResult({ searchParams }) {
     </div>
   );
 }
-
-export default SearchResult;
