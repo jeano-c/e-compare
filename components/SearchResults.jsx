@@ -13,10 +13,49 @@ function SearchResults({ query }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showClose, setShowClose] = useState(true);
 
+  // async function GetProducts() {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.get(
+  //       `/api/search?keyword=${encodeURIComponent(query)}`
+  //     );
+  //     const lazadaItems =
+  //       res.data.lazada?.mods?.listItems?.map((item) => ({
+  //         source: "Lazada",
+  //         name: item.name,
+  //         image: item.image,
+  //         merchant: item.sellerName,
+  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")), // remove ₱, commas
+  //         link:
+  //           item.productUrl || `https://www.lazada.com.ph/products/${item.nid}`,
+  //       })) || [];
+  //     const shopeeItems =
+  //       res.data.shopee?.items?.map((item) => ({
+  //         source: "Shopee",
+  //         name: item.item_basic.name,
+  //         merchant: "shop",
+  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+  //         price: item.item_basic.price / 100000, // Shopee prices are *100000
+  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+  //       })) || [];
+  //     const merged = [...lazadaItems, ...shopeeItems].sort(
+  //       (a, b) => a.price - b.price
+  //     );
+  //     setProducts(merged);
+  //   } catch (error) {
+  //     setError(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+  // useEffect(() => {
+  //   if (query) GetProducts(query);
+  // }, [query]);
+
   async function GetProducts() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
 
       const lazadaItems = [
         {
@@ -92,8 +131,9 @@ function SearchResults({ query }) {
             : { y: 0, backdropFilter: "blur(0px)" }
         }
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
-        className={`relative z-30 min-h-screen ${showCompare ? "bg-white/10 inner-shadow-y" : "bg-transparent"
-          }`}
+        className={`relative z-30 min-h-screen ${
+          showCompare ? "bg-white/10 inner-shadow-y" : "bg-transparent"
+        }`}
         style={{
           top: "5px", // leave space for your header
           overflow: "visible",
@@ -118,11 +158,10 @@ function SearchResults({ query }) {
             </motion.button>
           )}
         </AnimatePresence>
-
         {/* Search results (stay the same content) */}
         <div className="pt-20 px-6 pb-20">
           {loading ? (
-            <div className="flex justify-center items-center">
+            <div className="px-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
               <SkeletonResult />
             </div>
           ) : (

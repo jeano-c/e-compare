@@ -64,7 +64,7 @@ function HomePage() {
               )}
 
               <div className="relative flex-[22]">
-                <Form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   <input
                     className="glass-search w-full h-[48px] rounded-l-2xl text-white placeholder-white/50 pl-12 text-[16px] font-normal"
                     type="text"
@@ -72,7 +72,7 @@ function HomePage() {
                     onChange={(e) => setSearch(e.target.value)}
                   />
                   <FaMagnifyingGlass className="absolute left-[20px] top-1/2 -translate-y-1/2 text-white/50 text-[16px]" />
-                </Form>
+                </form>
               </div>
               {/* Search Button */}
               <Form onClick={handleSubmit}>
