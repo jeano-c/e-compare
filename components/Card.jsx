@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 function Card({
   products,
@@ -12,6 +12,7 @@ function Card({
 }) {
   const pressTimer = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
+  const [liked, setLiked] = useState(false); 
 
   useEffect(() => {
     if (showCompare && pressTimer.current) {
@@ -36,6 +37,11 @@ function Card({
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
     }
+  };
+
+  const handleLike = (e) => {
+    e.stopPropagation(); // prevent triggering onClick of the card
+    setLiked((prev) => !prev);
   };
 
   return (
@@ -64,6 +70,7 @@ function Card({
             {products.merchant || "merchant"}
           </p>
         </div>
+
         {showCompare ? (
           <input
             type="checkbox"
@@ -73,7 +80,17 @@ function Card({
             disabled={isDisabled && !isSelected}
           />
         ) : (
-          <FaRegHeart className="text-2xl text-white flex-shrink-0 cursor-pointer hover:scale-110 transition-transform" />
+          <button
+            type="button"
+            onClick={handleLike}
+            className="transition-transform hover:scale-110"
+          >
+            {liked ? (
+              <FaHeart className="text-2xl text-red-500" />
+            ) : (
+              <FaRegHeart className="text-2xl text-white" />
+            )}
+          </button>
         )}
       </div>
 
@@ -89,8 +106,8 @@ function Card({
       {/* Price and Button */}
       <div className="flex justify-between items-center gap-3">
         <p className="text-white text-xl font-bold">₱ {products.price}</p>
-        <button className="inner-shadow-y text-xl text-white py-2 px-3 rounded-2xl hover:opacity-80 transition-opacity">
-          Buy {products.source}
+        <button className="w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
+          Buy Now
         </button>
       </div>
     </div>
