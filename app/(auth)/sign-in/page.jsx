@@ -34,7 +34,6 @@ function Signin() {
         await setActive({
           session: result.createdSessionId,
           beforeEmit: async (session) => {
-
             return session;
           },
         });
@@ -208,7 +207,9 @@ function Signin() {
             </div>
 
             <div>
-              <p className=" text-center text-white font-vagRounded text-[24px]">or</p>
+              <p className=" text-center text-white font-vagRounded text-[24px]">
+                or
+              </p>
             </div>
 
             <div className="flex flex-col items-center justify-center w-full gap-4 sm:gap-5 text-[16px]">
@@ -216,7 +217,7 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
                 disabled={!isLoaded}
-                className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <FcGoogle className="text-2xl sm:text-4xl" />
                 <span className="hidden  sm:inline">Login with Google</span>
@@ -226,8 +227,7 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-                className="flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
-
+                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <div className="p-2 sm:p-1 rounded-md">
                   <svg
@@ -242,7 +242,9 @@ function Signin() {
                     />
                   </svg>
                 </div>
-                <span className="text-hidden sm:inline">Login with Facebook</span>
+                <span className="text-hidden sm:inline">
+                  Login with Facebook
+                </span>
                 <span className="sm:hidden">Facebook</span>
               </button>
             </div>

@@ -169,7 +169,7 @@ export default function ResetWithCodeAndPwd() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <button className="glass-button mt-2 py-2 rounded-md">
+              <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Send code
               </button>
               <div className="flex justify-center">
@@ -200,7 +200,7 @@ export default function ResetWithCodeAndPwd() {
               className="flex flex-col gap-4"
             >
               <div>
-                <label className="text-white text-sm block mb-2">
+                <label className="text-white text-sm block mb-2 ">
                   Reset Code
                 </label>
                 <div className="grid grid-cols-6 gap-2" onPaste={handlePaste}>
@@ -236,7 +236,7 @@ export default function ResetWithCodeAndPwd() {
                 />
               </div>
 
-              <button className="glass-button mt-2 py-2 rounded-md">
+              <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Reset Password
               </button>
               {error && <p className="text-red-500">{error}</p>}
