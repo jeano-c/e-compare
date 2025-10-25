@@ -4,10 +4,10 @@ import { useUser } from "@clerk/nextjs";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import lazada from "@/public/lazada.svg";
 import shopee from "@/public/shopee.svg";
-import Form from "next/form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+
 function HomePage() {
   const router = useRouter();
   const { user } = useUser();
@@ -50,7 +50,7 @@ function HomePage() {
         <div className="py-15 px-16"></div>
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           {/* Search Section */}
-          <div className=" flex flex-row justify-center items-center w-full">
+          <div className="flex flex-row justify-center items-center w-full">
             <div className="flex w-[40%] min-w-[300px] relative">
               {/* Fading Placeholder */}
               {!search && (
@@ -74,16 +74,16 @@ function HomePage() {
                   <FaMagnifyingGlass className="absolute left-[20px] top-1/2 -translate-y-1/2 text-white/50 text-[16px]" />
                 </form>
               </div>
+
               {/* Search Button */}
-              <Form onClick={handleSubmit}>
+              <div onClick={handleSubmit}>
                 <button
                   type="button"
-                  onClick={() => handleSubmit("SearchResults")}
                   className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6"
                 >
                   <FaMagnifyingGlass className="text-white/70 text-lg" />
                 </button>
-              </Form>
+              </div>
             </div>
           </div>
 
