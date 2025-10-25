@@ -18,10 +18,49 @@ function SearchResults({ query }) {
   const minimizedSnapshot = useRef([]);
 
   // Fetch Products (simulated)
+  // async function GetProducts() {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.get(
+  //       `/api/search?keyword=${encodeURIComponent(query)}`
+  //     );
+  //     const lazadaItems =
+  //       res.data.lazada?.mods?.listItems?.map((item) => ({
+  //         source: "Lazada",
+  //         name: item.name,
+  //         image: item.image,
+  //         merchant: item.sellerName,
+  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")), // remove ₱, commas
+  //         link:
+  //           item.productUrl || `https://www.lazada.com.ph/products/${item.nid}`,
+  //       })) || [];
+  //     const shopeeItems =
+  //       res.data.shopee?.items?.map((item) => ({
+  //         source: "Shopee",
+  //         name: item.item_basic.name,
+  //         merchant: "shop",
+  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+  //         price: item.item_basic.price / 100000, // Shopee prices are *100000
+  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+  //       })) || [];
+  //     const merged = [...lazadaItems, ...shopeeItems].sort(
+  //       (a, b) => a.price - b.price
+  //     );
+  //     setProducts(merged);
+  //   } catch (error) {
+  //     setError(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+  // useEffect(() => {
+  //   if (query) GetProducts(query);
+  // }, [query]);
+
   async function GetProducts() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
 
       const lazadaItems = [
         {
@@ -269,7 +308,9 @@ function SearchResults({ query }) {
 
           {showCompare && !showComparisonTable && (
             <button
-              disabled={selectedProducts.length < 2 || selectedProducts.length > 3}
+              disabled={
+                selectedProducts.length < 2 || selectedProducts.length > 3
+              }
               onClick={() => setShowComparisonTable(true)}
               className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
                 selectedProducts.length >= 2 && selectedProducts.length <= 3
@@ -289,7 +330,7 @@ function SearchResults({ query }) {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
-          className="absolute top-50 left-20 bg-white/10 backdrop-blur-md rounded-full flex items-center gap-2 p-3 pl-5 shadow-lg border border-white/20 cursor-pointer z-50"
+          className="fixed bottom-5 left-5 bg-white/10 backdrop-blur-md rounded-full flex items-center gap-2 p-3 pl-5 shadow-lg border border-white/20 cursor-pointer z-50"
           onClick={() => {
             setShowCompare(true);
             setIsMinimized(false);

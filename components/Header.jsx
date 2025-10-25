@@ -1,26 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { FaHistory, FaSearch } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import { dark } from "@clerk/themes";
-import ShaderBackground from "./BackGround";
-import Form from "next/form";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const isSearchPage = pathname === "/search";
-
-  // Track focus state for search input
+  const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    const q = searchParams.get("q") || "";
+    setQuery(q);
+  }, [searchParams]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(query)}`);
+  };
 
   return (
     <>
-    
       <header className="flex justify-between items-center p-15 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
@@ -32,10 +40,12 @@ function Header() {
         {/* CENTER SEARCH BAR */}
         <div className="justify-center flex w-[40%] min-w-[300px] relative">
           {isSearchPage && (
-            <Form className="relative flex-[22] flex justify-center items-center">
+            <form onSubmit={handleSearch} className="relative flex-[22] flex justify-center items-center">
               <input
                 name="q"
                 type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search"
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -44,7 +54,6 @@ function Header() {
                 }`}
               />
 
-              {/* Magnifying Glass for search bar - slides in/out when focused */}
               <FaMagnifyingGlass
                 className={`absolute left-[16px] top-1/2 -translate-y-1/2 text-white/70 text-[16px] transition-all duration-300 ${
                   isFocused
@@ -53,14 +62,14 @@ function Header() {
                 }`}
               />
 
-              {/* Search button - slides in/out when focused */}
-              <div className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6"> 
-                <button type="submit"> <FaMagnifyingGlass className="text-white/70 text-lg" /> </button> </div> 
-            </Form>
+              <div className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6">
+                <button type="submit">
+                  <FaMagnifyingGlass className="text-white/70 text-lg" />
+                </button>
+              </div>
+            </form>
           )}
-          
         </div>
-         
 
         {/* RIGHT SIDE */}
         <div className="flex justify-center items-center gap-5">
