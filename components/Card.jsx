@@ -12,7 +12,7 @@ function Card({
 }) {
   const pressTimer = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
-  const [liked, setLiked] = useState(false); 
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     if (showCompare && pressTimer.current) {
@@ -40,14 +40,14 @@ function Card({
   };
 
   const handleLike = (e) => {
-    e.stopPropagation(); // prevent triggering onClick of the card
+    e.stopPropagation(); //
     setLiked((prev) => !prev);
   };
 
   return (
     <div
       className={cn(
-        "flex flex-col w-full min-h-[300px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
+        "flex flex-col w-full min-h-[450px] max-h-[550px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"
@@ -95,16 +95,16 @@ function Card({
       </div>
 
       {/* Image Section */}
-      <div className="flex justify-center items-center">
+      <div className="flex-1 flex items-center justify-center">
         <img
-          className="w-full h-full object-cover pointer-events-none rounded-xl"
+          className="w-full aspect-square object-cover pointer-events-none rounded-xl"
           src={products.image}
           alt={products.name}
         />
       </div>
 
       {/* Price and Button */}
-      <div className="flex justify-between items-center gap-3">
+      <div className="flex justify-between items-center gap-3 mb-4">
         <p className="text-white text-xl font-bold">₱ {products.price}</p>
         <button className="w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
           Buy Now

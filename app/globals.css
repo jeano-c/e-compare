@@ -45,74 +45,68 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-.glass-loginButton{
+.glass-loginButton {
   @apply w-full;
   box-sizing: border-box;
-  height: 64px; 
+  height: 64px;
   background: rgba(255, 255, 255, 0.15);
   border-width: 0.5px;
   border-style: solid;
   border-radius: 23px;
-  border-image-source: linear-gradient(-97deg,
-  rgba(255, 255, 255, 0.05) 0%,
-  rgba(255, 255, 255, 1) 50%,
-  rgba(255, 255, 255, 0.05) 100%
-);
-  border-image-slice: 1;           
+  border-image-source: linear-gradient(
+    -97deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1;
   border-image-width: 1;
-  box-shadow:
-    inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
+  box-shadow: inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
     0 2px 4px 0 rgba(0, 0, 0, 1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-   -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: intersect;
 }
 
-
 .glass-button {
-
   @apply w-full;
 
   box-sizing: border-box;
-  height: 64px; 
+  height: 64px;
   background: rgba(255, 255, 255, 0.02);
   border-width: 0.5px;
   border-style: solid;
   border-radius: 23px;
-  border-image-source: linear-gradient(-97deg,
-  rgba(255, 255, 255, 0.05) 0%,
-  rgba(255, 255, 255, 1) 50%,
-  rgba(255, 255, 255, 0.05) 100%
-);
-  border-image-slice: 1;           
+  border-image-source: linear-gradient(
+    -97deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1;
   border-image-width: 1;
-  box-shadow:
-    inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
+  box-shadow: inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
     0 2px 4px 0 rgba(0, 0, 0, 1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-   -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: intersect;
 }
 
-.glass-loginButton:hover{
+.glass-loginButton:hover {
   background: rgba(255, 255, 255, 0.25);
 }
-.glass-button:hover,.search-button:hover {
-  background: rgba(255, 255, 255, 0.10);
-
+.glass-button:hover,
+.search-button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
-.compare-button:hover{
-   background: rgba(255, 255, 255, 0.10);
+.compare-button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .search-button:active {
@@ -129,16 +123,17 @@
   @apply mr-3 w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
 }
 
-.glass-search, .search-button {
- @apply py-4  w-full text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
+.glass-search,
+.search-button {
+  @apply py-4  w-full text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
   box-sizing: border-box;
   height: 48px; /* or whatever size fits */
   background: rgba(255, 255, 255, 0.02);
-border-width: 0.5px;
-border-style: solid;
-border-radius: 0;
-border-bottom-left-radius: 23px; /* rounded-full */
-border-top-left-radius: 23px;
+  border-width: 0.5px;
+  border-style: solid;
+  border-radius: 0;
+  border-bottom-left-radius: 23px; /* rounded-full */
+  border-top-left-radius: 23px;
 
   /* Gradient border confined to the border area */
   border-image-source: linear-gradient(
@@ -170,56 +165,48 @@ border-top-left-radius: 23px;
   border-bottom-right-radius: 23px;
 }
 
-
-.glass-input{
- @apply w-full pl-6 text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
+.glass-input {
+  @apply w-full pl-6 text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
 
   box-sizing: border-box;
- 
+
   background: rgba(255, 255, 255, 0.02);
   border-width: 0.5px;
   border-style: solid;
   border-radius: 16px;
-  border-image-source: linear-gradient(-97deg,
-  rgba(255, 255, 255, 0.05) 0%,
-  rgba(255, 255, 255, 1) 50%,
-  rgba(255, 255, 255, 0.05) 100%
-);
-  border-image-slice: 1;          
+  border-image-source: linear-gradient(
+    -97deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1;
   border-image-width: 1;
-  box-shadow:
-    inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
+  box-shadow: inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
     inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-    -webkit-mask:
-  linear-gradient(#fff 0 0) content-box,
-  linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: intersect;
-
 }
-.glass-search:focus-within,.glas-input:focus-within {
-  box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.4),
-    inset 0 -2px 4px rgba(255, 255, 255, 0.2),
-    0 0 8px rgba(255, 255, 255, 0.3);
+.glass-search:focus-within,
+.glas-input:focus-within {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
-.SortOptionsGlass{
+.SortOptionsGlass {
   box-shadow: none;
- background-color: transparent;
- 
-  
+  background-color: transparent;
 
- border-radius: 16px;
+  border-radius: 16px;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0px 2px 4px rgba(0, 0, 0, 0.4), /* drop shadow */
-    inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4),
+    /* drop shadow */ inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
   border: none;
   overflow: hidden;
 }
@@ -232,16 +219,15 @@ border-top-left-radius: 23px;
   inset: 0;
   border-radius: inherit;
   padding: 0.5px; /* stroke width */
-  background: linear-gradient(-101deg,
+  background: linear-gradient(
+    -101deg,
     rgba(255, 255, 255, 0.05) 0%,
     rgba(255, 255, 255, 1) 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
-  
+
   /* improved mask so white edge stops exactly at radius */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   mask-border-outset: 0.5px;
@@ -249,50 +235,43 @@ border-top-left-radius: 23px;
   pointer-events: none;
 }
 
- .Dropdown-control{
-background-color: transparent !important;
+.Dropdown-control {
+  background-color: transparent !important;
   color: white !important;
   border: none !important;
   box-shadow: none !important;
- }
-
-
+}
 
 .inner-shadow-y {
- 
   border-width: 0.5px;
   border-style: solid;
 
-  border-image-source: linear-gradient(-180deg,
-  rgba(255, 255, 255, 0.05) 0%,
-  rgba(255, 255, 255, 1) 50%,
-  rgba(255, 255, 255, 0.05) 100%
-);
-  border-image-slice: 1;          
+  border-image-source: linear-gradient(
+    -180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1;
   border-image-width: 1;
-  box-shadow:
-    inset 0 0px 4px 0 rgba(255, 255, 255, 0.2),
+  box-shadow: inset 0 0px 4px 0 rgba(255, 255, 255, 0.2),
     0 2px 4px 0 rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-    -webkit-mask:
-  linear-gradient(#fff 0 0) content-box,
-  linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: intersect;
 }
+
 .compare-button {
-text-align: center;
-  margin: 0 50px 50px 0;
+  text-align: center;
   position: relative;
-  
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0px 2px 4px rgba(0, 0, 0, 0.4), /* drop shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4),
     inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
   border: none;
   overflow: hidden;
@@ -306,16 +285,15 @@ text-align: center;
   inset: 0;
   border-radius: inherit;
   padding: 0.5px; /* stroke width */
-  background: linear-gradient(-101deg,
+  background: linear-gradient(
+    -101deg,
     rgba(255, 255, 255, 0.05) 0%,
     rgba(255, 255, 255, 1) 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
-  
+
   /* improved mask so white edge stops exactly at radius */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   mask-border-outset: 0.5px;
@@ -324,17 +302,16 @@ text-align: center;
 }
 
 .product-button {
-text-align: center;
+  text-align: center;
   margin: 0 50px 50px 0;
   position: relative;
- 
+
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0px 2px 4px rgba(0, 0, 0, 0.4), /* drop shadow */
-    inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4),
+    /* drop shadow */ inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
   border: none;
   overflow: hidden;
 }
@@ -342,22 +319,21 @@ text-align: center;
 /* fix mask, keep same gradient */
 .product-button::before {
   text-align: inherit;
- 
+
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 0.5px; /* stroke width */
-  background: linear-gradient(-101deg,
+  background: linear-gradient(
+    -101deg,
     rgba(255, 255, 255, 0.05) 0%,
     rgba(255, 255, 255, 1) 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
-  
+
   /* improved mask so white edge stops exactly at radius */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   mask-border-outset: 0.5px;

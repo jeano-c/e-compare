@@ -53,8 +53,9 @@ export async function GET(req) {
     const shopeePage = await browser.newPage();
 
     const lazadaUrl = `https://www.lazada.com.ph/tag/${encodeURIComponent(
-      keyword
-    )}`;
+  keyword.replace(/\s+/g, "-")
+  )}?q=${encodeURIComponent(keyword)}&catalog_redirect_tag=true`;
+
     const shopeeUrl = `https://shopee.ph/search?keyword=${encodeURIComponent(
       keyword
     )}`;
