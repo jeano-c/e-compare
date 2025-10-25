@@ -8,7 +8,7 @@ import { FaHistory } from "react-icons/fa";
 import { dark } from "@clerk/themes";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
-function Header() {
+function Header({ visible = true }) { // 👈 allow visibility control
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -27,6 +27,9 @@ function Header() {
     router.push(`/search?q=${encodeURIComponent(query)}`);
   };
 
+  // 👇 Don't render if hidden
+  if (!visible) return null;
+
   return (
     <>
       <header className="flex justify-between items-center p-15 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
@@ -40,7 +43,10 @@ function Header() {
         {/* CENTER SEARCH BAR */}
         <div className="justify-center flex w-[40%] min-w-[300px] relative">
           {isSearchPage && (
-            <form onSubmit={handleSearch} className="relative flex-[22] flex justify-center items-center">
+            <form
+              onSubmit={handleSearch}
+              className="relative flex-[22] flex justify-center items-center"
+            >
               <input
                 name="q"
                 type="text"
