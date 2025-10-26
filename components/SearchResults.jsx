@@ -4,6 +4,7 @@ import Card from "@/components/Card";
 import SkeletonResult from "./SkeletonResult";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { toast } from "sonner";
 
 function SearchResults({ query }) {
   const [products, setProducts] = useState([]);
@@ -15,50 +16,9 @@ function SearchResults({ query }) {
   const [showComparisonTable, setShowComparisonTable] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
-  // 🧠 Save snapshot of minimized products
   const minimizedSnapshot = useRef([]);
 
-  // Fetch Products (simulated)
-  // async function GetProducts() {
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios.get(
-  //       `/api/search?keyword=${encodeURIComponent(query)}`
-  //     );
-  //     const lazadaItems =
-  //       res.data.lazada?.mods?.listItems?.map((item) => ({
-  //         source: "Lazada",
-  //         name: item.name,
-  //         image: item.image,
-  //         merchant: item.sellerName,
-  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")), // remove ₱, commas
-  //         link:
-  //           item.productUrl || `https://www.lazada.com.ph/products/${item.nid}`,
-  //       })) || [];
-  //     const shopeeItems =
-  //       res.data.shopee?.items?.map((item) => ({
-  //         source: "Shopee",
-  //         name: item.item_basic.name,
-  //         merchant: "shop",
-  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
-  //         price: item.item_basic.price / 100000, // Shopee prices are *100000
-  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
-  //       })) || [];
-  //     const merged = [...lazadaItems, ...shopeeItems].sort(
-  //       (a, b) => a.price - b.price
-  //     );
-  //     setProducts(merged);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-  // useEffect(() => {
-  //   if (query) GetProducts(query);
-  // }, [query]);
-
-  async function GetProducts() {
+  async function GetProducts(signal) {
     try {
       setLoading(true);
       const res = await axios.get(
@@ -74,8 +34,7 @@ function SearchResults({ query }) {
           image: item.image,
           merchant: item.sellerName,
           price: parseFloat(item.price.replace(/[^\d.]/g, "")),
-          link:
-            item.productUrl || `https://www.lazada.com.ph/products/${item.nid}`,
+          link: item.itemUrl,
         })) || [];
 
       const shopeeItems =
@@ -93,12 +52,14 @@ function SearchResults({ query }) {
         (a, b) => a.price - b.price
       );
       setProducts(merged);
+      ScrapeAllProducts(merged);
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("❌ Request canceled");
+        toast.error(`${error}`);
       } else {
         console.error("Error fetching products:", error);
-        setError(error.message);
+        toast.error(`${error}`);
       }
     } finally {
       setLoading(false);
@@ -114,6 +75,7 @@ function SearchResults({ query }) {
   //       {
   //         id: 1,
   //         source: "Lazada",
+  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
   //         name: "Wireless Mouse",
   //         image: "https://placehold.co/400",
   //         merchant: "Lazada Store",
@@ -123,6 +85,7 @@ function SearchResults({ query }) {
   //         id: 2,
   //         source: "Lazada",
   //         name: "Mechanical Keyboard",
+  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
   //         image: "https://placehold.co/400",
   //         merchant: "Lazada Tech",
   //         price: 899,
@@ -133,14 +96,17 @@ function SearchResults({ query }) {
   //       id: i + 3,
   //       source: "Shopee",
   //       name: "Mechanical Keyboard",
+  //       link: "https://shopee.ph/product/1023426474/29541632312",
   //       image: "https://placehold.co/400",
   //       merchant: "Shopee Tech",
   //       price: 850,
   //     }));
 
-  //     setProducts([...lazadaItems, ...shopeeItems]);
-  //   } catch {
-  //     setError("Failed to fetch data");
+  //     const newProducts = [...lazadaItems, ...shopeeItems];
+  //     setProducts(newProducts);
+  //     ScrapeAllProducts(newProducts);
+  //   } catch (error) {
+  //     toast.error(error.message);
   //   } finally {
   //     setLoading(false);
   //   }
@@ -160,13 +126,13 @@ function SearchResults({ query }) {
 
   function handleToggle(productId) {
     setSelectedProducts((prev) => {
-      if (prev.includes(productId)) return prev.filter((id) => id !== productId);
+      if (prev.includes(productId))
+        return prev.filter((id) => id !== productId);
       if (prev.length >= 3) return prev;
       return [...prev, productId];
     });
   }
 
-  // Hide/show ✕ based on scroll
   useEffect(() => {
     let lastScrollY = 0;
     const handleScroll = () => {
@@ -177,6 +143,68 @@ function SearchResults({ query }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  async function ScrapeAllProducts(products) {
+    if (!products?.length) return;
+
+    const lazadaProducts = products.filter((p) => p.source === "Lazada");
+    const shopeeProducts = products.filter((p) => p.source === "Shopee");
+
+    const batchArray = (arr, batchSize = 5) => {
+      const batches = [];
+      for (let i = 0; i < arr.length; i += batchSize) {
+        batches.push(arr.slice(i, i + batchSize));
+      }
+      return batches;
+    };
+
+    for (const batch of batchArray(lazadaProducts, 5)) {
+      await GetTruePrice(batch);
+    }
+    for (const batch of batchArray(shopeeProducts, 5)) {
+      await GetTruePrice2(batch);
+    }
+  }
+
+  async function GetTruePrice(products) {
+    if (!products?.length) return;
+
+    for (let i = 0; i < products.length; i += 5) {
+      const batch = products.slice(i, i + 5);
+
+      const urls = batch
+        .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link))
+        .filter(Boolean);
+      const encodedUrls = encodeURIComponent(JSON.stringify(urls));
+      try {
+        const res = await axios.post(`/api/test?urls=${encodedUrls}`);
+        console.log(`✅ Batch ${i / 5 + 1}`, res.data);
+      } catch (error) {
+        console.error(`❌ Batch ${i / 5 + 1} failed:`, error);
+        toast?.error(error.message || "Failed to fetch batch");
+      }
+    }
+  }
+
+  async function GetTruePrice2(products) {
+    if (!products?.length) return;
+
+    for (let i = 0; i < products.length; i += 5) {
+      const batch = products.slice(i, i + 5);
+
+      const payload = {
+        urls: batch.map((product) => product.link), // use batch, not products
+      };
+
+      try {
+        const res = await axios.post(`/api/test-next`, payload); // POST JSON
+        console.log(`✅ Shopee Batch ${i / 5 + 1}`, res.data);
+      } catch (error) {
+        console.error(`❌ Shopee Batch ${i / 5 + 1} failed:`, error);
+        toast?.error(error.message || "Failed to fetch batch");
+      }
+    }
+  }
 
   return (
     <>
@@ -265,10 +293,6 @@ function SearchResults({ query }) {
                 <SkeletonResult />
               </div>
             </div>
-          ) : error ? (
-            <p className="text-center text-red-400 font-vagRounded mt-10">
-              {error}
-            </p>
           ) : showComparisonTable ? (
             <motion.div
               key="comparison-view"
@@ -353,7 +377,7 @@ function SearchResults({ query }) {
           {!showCompare && !isMinimized && (
             <button
               onClick={() => setShowCompare(true)}
-              className="compare-button transition-all text-center text-[20px] text-white rounded-full font-bold w-[215px] h-[52px]"
+              className="compare-button !mr-12 transition-all  text-center text-[20px] text-white rounded-full font-bold w-[215px] h-[52px]"
             >
               Compare
             </button>
@@ -365,7 +389,7 @@ function SearchResults({ query }) {
                 selectedProducts.length < 2 || selectedProducts.length > 3
               }
               onClick={() => setShowComparisonTable(true)}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+              className={`text-center !mr-12 text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
                 selectedProducts.length >= 2 && selectedProducts.length <= 3
                   ? "text-white bg-blue-500 hover:bg-black-200"
                   : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
@@ -377,7 +401,6 @@ function SearchResults({ query }) {
         </div>
       </div>
 
-      {/* 🧩 Minimized Bar */}
       {isMinimized && minimizedSnapshot.current.length >= 2 && (
         <motion.div
           initial={{ opacity: 0, x: -50 }}

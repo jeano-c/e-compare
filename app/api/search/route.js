@@ -53,8 +53,8 @@ export async function GET(req) {
     const shopeePage = await browser.newPage();
 
     const lazadaUrl = `https://www.lazada.com.ph/tag/${encodeURIComponent(
-  keyword.replace(/\s+/g, "-")
-  )}?q=${encodeURIComponent(keyword)}&catalog_redirect_tag=true`;
+      keyword.replace(/\s+/g, "-")
+    )}?q=${encodeURIComponent(keyword)}&catalog_redirect_tag=true`;
 
     const shopeeUrl = `https://shopee.ph/search?keyword=${encodeURIComponent(
       keyword
@@ -94,16 +94,14 @@ export async function GET(req) {
 
     console.log("> Navigating to Lazada + Shopee...");
     await Promise.all([
-      lazadaPage.goto(lazadaUrl, { waitUntil: "domcontentloaded" }),
-      shopeePage.goto(shopeeUrl, { waitUntil: "domcontentloaded" }),
+      lazadaPage.goto(lazadaUrl, { waitUntil: "domcontentloaded", timeout: 0 }),
+      shopeePage.goto(shopeeUrl, { waitUntil: "domcontentloaded", timeout: 0 }),
     ]);
-
 
     await Promise.race([
       Promise.all([lazadaPromise, shopeePromise]),
       delay(7000),
     ]);
-
 
     if (!lazadaData) {
       try {
