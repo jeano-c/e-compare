@@ -12,12 +12,15 @@
   "dependencies": {
     "@clerk/nextjs": "^6.33.3",
     "@clerk/themes": "^2.4.25",
+    "@neondatabase/serverless": "^1.0.2",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "motion": "^12.23.24",
@@ -35,6 +38,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwind-scrollbar": "^4.0.2",
