@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 import puppeteer from "puppeteer";
-
+import { db } from "@/database/drizzle";
+import { searchTb } from "@/database/schema";
+import { getAuth } from "@clerk/nextjs/server";
 const KAMELEO_URL = "http://localhost:5050";
 const PROFILE_ID = "c4e6c249-8dea-4550-8a92-f70bb33b64b9";
 
@@ -15,8 +17,19 @@ async function getProfileStatus() {
 }
 
 export async function GET(req) {
+  const { userId } = getAuth(req);
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get("keyword") || "powerbank";
+  console.log(userId);
+  if (userId) {
+    const [newSearch] = await db
+      .insert(searchTb)
+      .values({
+        userId,
+        query: keyword,
+      })
+      .returning();
+  }
 
   let lazadaData = null;
   let shopeeData = null;

@@ -1,6 +1,6 @@
+import { bigint } from "drizzle-orm/gel-core";
 import {
   uuid,
-  integer,
   pgTable,
   serial,
   text,
@@ -8,10 +8,11 @@ import {
   pgEnum,
   date,
 } from "drizzle-orm/pg-core";
+import { numeric } from "drizzle-orm/sqlite-core";
 
 export const searchTb = pgTable("search_tb", {
-  id: uuid("id").notNull().primaryKey().unique(),
-  userId: integer("user_id").notNull(),
+  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
+  userId: text("user_id").notNull(),
   query: text("query").notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
@@ -19,9 +20,9 @@ export const searchTb = pgTable("search_tb", {
 });
 
 export const comparisonsTb = pgTable("comparison_table", {
-  id: uuid("id").notNull().primaryKey().unique(),
-  userId: integer("user_id").notNull(),
-  searchId: integer("search_id")
+  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
+  userId: text("user_id").notNull(),
+  searchId: uuid("search_id")
     .notNull()
     .references(() => searchTb.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", {
@@ -30,7 +31,7 @@ export const comparisonsTb = pgTable("comparison_table", {
 });
 
 export const comparisonItemsTb = pgTable("comparison_items_table", {
-  id: uuid("id").notNull().primaryKey().unique(),
+  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
   comparisonId: uuid("comparison_id")
     .notNull()
     .references(() => comparisonsTb.id, { onDelete: "cascade" }),
@@ -40,13 +41,13 @@ export const comparisonItemsTb = pgTable("comparison_items_table", {
   productImage: text("product_image"),
   merchant: text("merchant"),
   description: text("description"),
-  productPrice: numeric("product_price", { precision: 10, scale: 2 }),
+  productPrice: bigint("product_price"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export const recommendationTb = pgTable("recommendation_table", {
-  id: uuid("id").notNull().primaryKey().unique(),
-  comparisionId: integer("comparison_id").references(() => comparisonsTb.id, {
+  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
+  comparisionId: uuid("comparison_id").references(() => comparisonsTb.id, {
     onDelete: "cascade",
   }),
   aiRecomendation: text("ai_recommendation").notNull(),
