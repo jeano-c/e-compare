@@ -8,7 +8,7 @@ import { FaHistory } from "react-icons/fa";
 import { dark } from "@clerk/themes";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
-function Header({ visible = true }) { // 👈 allow visibility control
+function Header({ visible = true }) { //  allow visibility control
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -26,9 +26,7 @@ function Header({ visible = true }) { // 👈 allow visibility control
     if (!query.trim()) return;
     router.push(`/search?q=${encodeURIComponent(query)}`);
   };
-
-  // 👇 Don't render if hidden
-  if (!visible) return null;
+if (visible) return null; // 👈 Hide header entirely when not visible
 
   return (
     <>

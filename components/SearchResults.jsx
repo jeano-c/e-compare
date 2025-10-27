@@ -18,14 +18,22 @@ function SearchResults({ query, onToggleHeader }) {
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
   const [lockedProducts, setLockedProducts] = useState([]); // store locked IDs
 
+  // 🧠 Save snapshot of minimized products
   const minimizedSnapshot = useRef([]);
   useEffect(() => {
     if (typeof onToggleHeader === "function") {
       onToggleHeader(!showComparisonTable); // false → hide, true → show
     }
-  })
 
-  // async function GetProducts(signal) {
+    // restore header if this component unmounts
+    return () => {
+      if (typeof onToggleHeader === "function") {
+        onToggleHeader(true);
+      }
+    };
+  }, [showComparisonTable, onToggleHeader]);
+  // Fetch Products (simulated)
+  // async function GetProducts() {
   //   try {
   //     setLoading(true);
   //     const res = await axios.get(
@@ -119,6 +127,7 @@ function SearchResults({ query, onToggleHeader }) {
     }
   }
 
+
   useEffect(() => {
     if (!query) return;
 
@@ -136,13 +145,13 @@ function SearchResults({ query, onToggleHeader }) {
       const isLocked = lockedProducts.includes(productId);
       const alreadySelected = prev.includes(productId);
 
-      // 🔒 Prevent toggling locked products
+      //  Prevent toggling locked products
       if (isLocked) return prev;
 
-      // ✅ Allow unselecting only if not locked
+      //  Allow unselecting only if not locked
       if (alreadySelected) return prev.filter((id) => id !== productId);
 
-      // 🧠 If in "Add one more" mode
+      //  If in "Add one more" mode
       if (isAddingOneMore) {
         if (prev.length >= 3) return prev;
 
@@ -160,7 +169,7 @@ function SearchResults({ query, onToggleHeader }) {
         return newSelected;
       }
 
-      // 🧩 Normal behavior
+      //  Normal behavior
       if (prev.length >= 3) return prev;
       return [...prev, productId];
     });
@@ -239,8 +248,10 @@ function SearchResults({ query, onToggleHeader }) {
     }
   }
 
-  return (
-    <>
+return (
+  <>
+    {/*  Product Container (Hidden when in comparison view) */}
+    {!showComparisonTable && (
       <motion.div
         key="motion-container"
         initial={false}
@@ -250,13 +261,14 @@ function SearchResults({ query, onToggleHeader }) {
             : { y: 0, backdropFilter: "blur(0px)" }
         }
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
-        className={`relative z-30 min-h-screen ${showCompare ? "bg-white/10 inner-shadow-y" : "bg-transparent"
-          }`}
+        className={`relative z-30 min-h-screen ${
+          showCompare ? "bg-white/10 inner-shadow-y" : "bg-transparent"
+        }`}
         style={{ top: "5px", overflow: "visible" }}
       >
         {/* ✕ and ━ Buttons */}
         <AnimatePresence>
-          {(showCompare || showComparisonTable) && showClose && (
+          {showCompare && showClose && (
             <motion.div
               key="top-buttons"
               className="absolute top-4 right-10 flex gap-4 z-[101]"
@@ -265,28 +277,10 @@ function SearchResults({ query, onToggleHeader }) {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              {/* ━ Minimize Button */}
-              {showComparisonTable && (
-                <button
-                  onClick={() => {
-                    //Save snapshot before minimizing
-                    minimizedSnapshot.current = [...selectedProducts];
-                    setIsMinimized(true);
-                    setShowComparisonTable(false);
-                    setShowCompare(true);
-                  }}
-                  className="text-white text-[26px] font-vagRounded font-light cursor-pointer"
-                  title="Minimize"
-                >
-                  ━
-                </button>
-              )}
-
               {/* ✕ Close Button */}
               <button
                 onClick={() => {
                   setShowCompare(false);
-                  setShowComparisonTable(false);
                   setSelectedProducts([]);
                   setIsMinimized(false);
                   minimizedSnapshot.current = [];
@@ -300,31 +294,24 @@ function SearchResults({ query, onToggleHeader }) {
           )}
         </AnimatePresence>
 
-        {/* Product & Comparison Views */}
-        <div className={`px-6 pb-20 ${showComparisonTable ? "min-h-screen pt-0" : "pt-20"}`}>
-          {loading ? (
-            <div className="flex flex-col justify-center items-center gap-4 mt-20">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                className="w-12 h-12 border-4 border-t-white border-gray-400 rounded-full"
-              />
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 0.5,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                }}
-                className="text-white text-lg font-vagRounded tracking-wide"
-              >
-                Loading Products...
-              </motion.p>
-              <div className="mt-10 flex justify-center items-center w-full">
-                <SkeletonResult />
-              </div>
+        {/* Products Grid */}
+<div className="text-center px-10 pt-20 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+  {loading ? (
+    <div className="col-span-full flex flex-col justify-center items-center gap-4 min-h-[60vh]">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        className="w-12 h-12 border-4 border-t-white border-gray-400 rounded-full"
+      />
+      <p className="text-white text-lg font-vagRounded tracking-wide">
+        Loading Products...
+      </p>
+              <SkeletonResult />
             </div>
+          ) : error ? (
+            <p className="text-center text-red-400 font-vagRounded mt-10">
+              {error}
+            </p>
           ) : showComparisonTable ? (
             <motion.div
               key="comparison-view"
@@ -343,61 +330,52 @@ function SearchResults({ query, onToggleHeader }) {
                 Product Comparison
               </h2>
 
-              <div className="overflow-x-auto relative z-10">
-                <table className="min-w-full border-collapse rounded-lg text-sm">
-                  <thead>
-                    <tr>
-                      <th className="p-3 text-left font-semibold">Feature</th>
-                      {selectedProducts.map((id) => {
-                        const p = products.find((x) => x.id === id);
-                        return (
-                          <th
-                            key={p.id}
-                            className="p-3 text-center align-top"
-                          >
-                            {/* Product Card Header (Image) */}
-                            <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4">
-                              <div className="relative flex justify-center">
-                                <img
-                                  src={p.image}
-                                  alt={p.name}
-                                  className="w-32 h-32 object-contain rounded-lg"
-                                />
+        <div className="overflow-x-auto relative z-10">
+          <table className="min-w-full border-collapse rounded-lg text-sm">
+            <thead>
+              <tr>
+                <th className="p-3 text-left font-semibold"></th>
+                {selectedProducts.map((id) => {
+                  const p = products.find((x) => x.id === id);
+                  return (
+                    <th key={p.id} className="p-3 text-center align-top">
+                      <div className="flex justify-center items-center flex-col relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4">
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className=" w-32 h-32 object-contain rounded-lg"
+                        />
+                        <p className="font-semibold text-center mt-3">
+                          {p.name}
+                        </p>
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
 
-                              </div>
-
-                              <p className="font-semibold text-center mt-3">{p.name}</p>
-                            </div>
-                          </th>
-                        );
-                      })}
-
-
-
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {["Price", "Merchant", "Source", "Specs"].map((feature) => (
-                      <tr key={feature}>
-                        <td className="p-3 border-t border-gray-700 font-semibold">
-                          {feature}
-                        </td>
-                        {selectedProducts.map((id) => {
-                          const p = products.find((x) => x.id === id);
-                          return (
-                            <td
-                              key={p.id + feature}
-                              className="p-3 border-t border-gray-700 text-center align-middle"
-                            >
-                              {feature === "Price"
-                                ? `₱${p.price}`
-                                : p[feature.toLowerCase()] || "-"}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
+            <tbody>
+              {["Price", "Merchant", "Source", "Specs"].map((feature) => (
+                <tr key={feature}>
+                  <td className="p-3 border-t border-gray-700 font-semibold">
+                    {feature}
+                  </td>
+                  {selectedProducts.map((id) => {
+                    const p = products.find((x) => x.id === id);
+                    return (
+                      <td
+                        key={p.id + feature}
+                        className="p-3 border-t border-gray-700 text-center align-middle"
+                      >
+                        {feature === "Price"
+                          ? `₱${p.price}`
+                          : p[feature.toLowerCase()] || "-"}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
 
                     {/* Buy Now Buttons Row */}
                     <tr>
@@ -455,7 +433,7 @@ function SearchResults({ query, onToggleHeader }) {
             </motion.div>
 
           ) : (
-            <div className="px-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 auto-rows-max">
+            <div className="px-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
                 <Card
                   key={product.id}
@@ -473,6 +451,7 @@ function SearchResults({ query, onToggleHeader }) {
           )}
         </div>
       </motion.div>
+    )}
 
       {/*Compare Buttons */}
       <div className="fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
@@ -480,29 +459,28 @@ function SearchResults({ query, onToggleHeader }) {
           {!showCompare && !isMinimized && (
             <button
               onClick={() => setShowCompare(true)}
-              className="compare-button !mr-12 transition-all  text-center text-[20px] text-white rounded-full font-bold w-[215px] h-[52px]"
+              className="compare-button transition-all text-center text-[20px] text-white rounded-full font-bold w-[215px] h-[52px]"
             >
               Compare
             </button>
           )}
 
-          {showCompare && !showComparisonTable && !isAddingOneMore && (
-            <button
-              disabled={
-                selectedProducts.length < 2 || selectedProducts.length > 3
-              }
-              onClick={() => setShowComparisonTable(true)}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
-                ? "text-white bg-blue-500 hover:bg-black-200"
-                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-                }`}
-            >
-              Compare Now
-            </button>
-          )}
-        </div>
-      </div>
+      {showCompare && !showComparisonTable && !isAddingOneMore && (
+        <button
+          disabled={selectedProducts.length < 2 || selectedProducts.length > 3}
+          onClick={() => setShowComparisonTable(true)}
+          className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+            selectedProducts.length >= 2 && selectedProducts.length <= 3
+              ? "text-white bg-blue-500 hover:bg-black-200"
+              : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+          }`}
+        >
+          Compare Now
+        </button>
+      )}
+    </div>
 
+      {/* 🧩 Minimized Bar */}
       {isMinimized && minimizedSnapshot.current.length >= 2 && (
         <motion.div
           initial={{ opacity: 0, x: -50 }}
