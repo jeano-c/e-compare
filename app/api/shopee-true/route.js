@@ -3,7 +3,7 @@ import axios from "axios";
 import puppeteer from "puppeteer";
 
 const KAMELEO_URL = "http://localhost:5050";
-const PROFILE_ID = "c4e6c249-8dea-4550-8a92-f70bb33b64b9";
+const PROFILE_ID = "a746c17a-c810-4319-93eb-f47a555f97c2";
 
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -16,9 +16,11 @@ async function getProfileStatus() {
 
 async function scrapeShopeeProduct(page, productUrl) {
   let apiData = null;
+
   const capturePromise = new Promise((resolve) => {
     page.on("response", async (response) => {
-      if (response.url().includes("https://shopee.ph/api/v4/pdp/get_pc?")) {
+      const url = response.url();
+      if (url.includes("https://shopee.ph/api/v4/pdp/get_pc?")) {
         try {
           apiData = await response.json();
           resolve();
@@ -32,23 +34,23 @@ async function scrapeShopeeProduct(page, productUrl) {
   await page.goto(productUrl, { waitUntil: "domcontentloaded" });
   await Promise.race([capturePromise, delay(8000)]);
 
-  if (!apiData?.data?.item?.models) {
+  if (!apiData?.data?.item) {
     return {
       url: productUrl,
-      error: "No models found in Shopee response",
+      error: "No product data found in Shopee API response",
       raw: apiData,
     };
   }
 
-  const models = apiData.data.item.models;
+  const item = apiData.data.item;
+  const models = item.models || [];
 
   const variations = models.map((m) => {
     const price = m.price / 100000;
     const priceBeforeDiscount = m.price_before_discount / 100000;
-
     return {
       name: m.name,
-      currency: apiData.data.item.currency,
+      currency: item.currency,
       price: price.toFixed(2),
       priceBeforeDiscount: priceBeforeDiscount.toFixed(2),
       stock: m.stock,
@@ -60,12 +62,19 @@ async function scrapeShopeeProduct(page, productUrl) {
     .map((v) => parseFloat(v.price))
     .filter((n) => !isNaN(n));
 
-  const lowestPrice = Math.min(...numericPrices);
-  const highestPrice = Math.max(...numericPrices);
+  const lowestPrice =
+    numericPrices.length > 0 ? Math.min(...numericPrices) : null;
+  const highestPrice =
+    numericPrices.length > 0 ? Math.max(...numericPrices) : null;
 
   return {
     url: productUrl,
-    product: apiData.data.item.name,
+    title: item.title || item.name,
+    brand: item.brand || "Unknown",
+    description: item.description || "No description available",
+    location: item.shop_location || "Unknown",
+    rating: item.item_rating?.rating_star || null,
+    currency: item.currency || "PHP",
     lowestPrice,
     highestPrice,
     variations,
@@ -86,7 +95,7 @@ export async function POST(req) {
       );
     }
 
-    // Start profile if needed
+    // Start Kameleo profile if not active
     let status = await getProfileStatus();
     if (status === "terminated") {
       await axios.post(
@@ -102,15 +111,17 @@ export async function POST(req) {
         attempts++;
       }
     }
+
     // Connect Puppeteer via Kameleo
     const browserWSEndpoint = `ws://localhost:5050/puppeteer/${PROFILE_ID}`;
     browser = await puppeteer.connect({
       browserWSEndpoint,
       defaultViewport: null,
     });
-    const page = await browser.newPage();
 
+    const page = await browser.newPage();
     const results = [];
+
     for (const url of urls) {
       const data = await scrapeShopeeProduct(page, url);
       results.push(data);

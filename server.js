@@ -8,7 +8,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const KAMELEO_URL = "http://localhost:5050";
-const PROFILE_ID = "c4e6c249-8dea-4550-8a92-f70bb33b64b9"; 
+const PROFILE_ID = "a746c17a-c810-4319-93eb-f47a555f97c2"; 
 
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
