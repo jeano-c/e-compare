@@ -26,7 +26,7 @@ function Header({ visible = true }) { //  allow visibility control
     if (!query.trim()) return;
     router.push(`/search?q=${encodeURIComponent(query)}`);
   };
-if (!visible) return null; // 👈 Hide header entirely when not visible
+if (visible) return null; // 👈 Hide header entirely when not visible
 
   return (
     <>

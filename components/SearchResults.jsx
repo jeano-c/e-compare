@@ -313,11 +313,11 @@ return (
                   const p = products.find((x) => x.id === id);
                   return (
                     <th key={p.id} className="p-3 text-center align-top">
-                      <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4">
+                      <div className="flex justify-center items-center flex-col relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4">
                         <img
                           src={p.image}
                           alt={p.name}
-                          className="w-32 h-32 object-contain rounded-lg"
+                          className=" w-32 h-32 object-contain rounded-lg"
                         />
                         <p className="font-semibold text-center mt-3">
                           {p.name}
