@@ -63,7 +63,7 @@ async function scrapeShopeeProduct(page, productUrl) {
     .filter((n) => !isNaN(n));
 
   const lowestPrice =
-    numericPrices.length > 0 ? Math.min(...numericPrices) : null;
+    numeriwcPrices.length > 0 ? Math.min(...numericPrices) : null;
   const highestPrice =
     numericPrices.length > 0 ? Math.max(...numericPrices) : null;
 

@@ -47,7 +47,7 @@ function Card({
   return (
     <div
       className={cn(
-        "flex flex-col w-full min-h-[450px] max-h-[550px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
+        "flex flex-col w-full  !h-auto min-h-[450px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"
@@ -95,7 +95,7 @@ function Card({
       </div>
 
       {/* Image Section */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <img
           className="w-full aspect-square object-cover pointer-events-none rounded-xl"
           src={products.image}

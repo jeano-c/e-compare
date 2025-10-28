@@ -73,7 +73,6 @@
 
 .glass-button {
   @apply w-full;
-
   box-sizing: border-box;
   height: 64px;
   background: rgba(255, 255, 255, 0.02);
