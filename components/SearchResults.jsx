@@ -17,6 +17,7 @@ function SearchResults({ query, onToggleHeader }) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
   const [lockedProducts, setLockedProducts] = useState([]); // store locked IDs
+  const [variationModal, setVariationModal] = useState(false);
 
   const minimizedSnapshot = useRef([]);
   useEffect(() => {
@@ -401,7 +402,7 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Price */}
-                    <div className={`${p.source === "Lazada" ? "bg-pink-600/10" : "bg-orange-600/10"} glass-button1 h-16 rounded-0 flex items-center justify-center text-center`}>
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Price</span>
                         <span>₱{p.price}</span>
@@ -409,7 +410,7 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Merchant */}
-                    <div className={`${p.source === "Lazada" ? "bg-pink-600/10" : "bg-orange-600/10"} glass-button1 h-16 rounded-0 flex items-center justify-center text-center`}>
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Merchant</span>
                         <span>{p.merchant || "-"}</span>
@@ -417,7 +418,7 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Source */}
-                    <div className={`${p.source === "Lazada" ? "bg-pink-600/10" : "bg-orange-600/10"} glass-button1 h-16 rounded-0 flex items-center justify-center text-center`}>
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Source</span>
                         <span>{p.source || "-"}</span>
@@ -425,10 +426,29 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Specs */}
-                    <div className={`${p.source === "Lazada" ? "bg-pink-600/10" : "bg-orange-600/10"} glass-button1 h-16 rounded-0 flex items-center justify-center text-center`}>
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Specs</span>
                         <span>{p.specs || "-"}</span>
+                      </div>
+                    </div>
+
+                    {/* Variation */}
+                    <div className="glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Variation</span>
+                        <button
+                          onClick={() => setVariationModal(variationModal === p.id ? null : p.id)}
+                        >
+                          ☺ click me
+                        </button>
+                        {variationModal === p.id && (
+                          <div>
+                            <div>test</div>
+                            <div>test</div>
+                            <div>test</div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -444,8 +464,8 @@ function SearchResults({ query, onToggleHeader }) {
                           )
                         }
                         className={`${p.source === "Lazada"
-                            ? "bg-pink-600 hover:bg-pink-700"
-                            : "bg-orange-600 hover:bg-orange-700"
+                          ? "bg-pink-600 hover:bg-pink-700"
+                          : "bg-orange-600 hover:bg-orange-700"
                           } text-white text-sm px-5 py-2 rounded-full shadow-md`}
                       >
                         Buy Now
