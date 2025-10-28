@@ -47,7 +47,7 @@ function Card({
   return (
     <div
       className={cn(
-        "flex flex-col w-full min-h-[450px] max-h-[550px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
+        "flex flex-col w-full min-h-[460px] max-h-[550px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"
@@ -61,7 +61,7 @@ function Card({
       onClick={showCompare && !isDisabled ? onToggle : undefined}
     >
       {/* Header Section */}
-      <div className="flex justify-between items-start gap-3">
+      <div className="flex justify-between items-start">
         <div className="flex flex-col flex-1 min-w-0">
           <p className="text-xl font-bold text-white truncate">
             {products.name}
