@@ -97,11 +97,37 @@
   -webkit-mask-composite: xor;
   mask-composite: intersect;
 }
+.glass-button1{
+  box-sizing: border-box;
+  align-content:center;
+  
+  background: rgba(255, 255, 255, 0.02);
+  border-width: 0.5px;
+  border-style: solid;
+  border-image-source: linear-gradient(
+    -97deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-image-slice: 1;
+  border-image-width: 1;
+  box-shadow: inset 0 -2px 4px 0 rgba(255, 255, 255, 0.2),
+    0 2px 4px 0 rgba(0, 0, 0, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: intersect;
+  
+  /* border-top-width:0; */
+}
 
 .glass-loginButton:hover {
   background: rgba(255, 255, 255, 0.25);
 }
-.glass-button:hover,
+.glass-button:hover, .glass-button1:hover,
 .search-button:hover {
   background: rgba(255, 255, 255, 0.1);
 }

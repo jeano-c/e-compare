@@ -17,6 +17,7 @@ function SearchResults({ query, onToggleHeader }) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
   const [lockedProducts, setLockedProducts] = useState([]); // store locked IDs
+  const [variationModal, setVariationModal] = useState(false);
 
   const minimizedSnapshot = useRef([]);
   useEffect(() => {
@@ -239,7 +240,7 @@ function SearchResults({ query, onToggleHeader }) {
     }
   }
 
-return (
+  return (
     <>
       {/*  Product Container (Hidden when in comparison view) */}
       {!showComparisonTable && (
@@ -381,81 +382,99 @@ return (
           </h2>
 
           <div className="overflow-x-auto relative z-10">
-            <table className="min-w-full border-collapse rounded-lg text-sm">
-              <thead>
-                <tr>
-                  <th className="p-3 text-left font-semibold"></th>
-                  {selectedProducts.map((id) => {
-                    const p = products.find((x) => x.id === id);
-                    return (
-                      <th key={p.id} className="p-3 text-center align-top">
-                        <div className="flex justify-center items-center flex-col relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className=" w-32 h-32 object-contain rounded-lg"
-                          />
-                          <p className="font-semibold text-center mt-3">
-                            {p.name}
-                          </p>
-                        </div>
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
+            <div className="w-3/4 mx-auto flex gap-4">
+              {selectedProducts.map((id) => {
+                const p = products.find((x) => x.id === id);
+                return (
+                  <div key={p.id} className="flex flex-col flex-1 min-w-[220px]">
+                    {/* Product Header */}
+                    <div className="glass-button1 rounded-t-[23px]">
+                      <div className="flex justify-center items-center flex-col p-4">
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className="w-32 h-32 object-contain rounded-lg"
+                        />
+                        <p className="font-semibold text-center mt-3">
+                          {p.name}
+                        </p>
+                      </div>
+                    </div>
 
-              <tbody>
-                {["Price", "Merchant", "Source", "Specs"].map((feature) => (
-                  <tr key={feature}>
-                    <td className="p-3 border-t border-gray-700 font-semibold">
-                      {feature}
-                    </td>
-                    {selectedProducts.map((id) => {
-                      const p = products.find((x) => x.id === id);
-                      return (
-                        <td
-                          key={p.id + feature}
-                          className="p-3 border-t border-gray-700 text-center align-middle"
-                        >
-                          {feature === "Price"
-                            ? `₱${p.price}`
-                            : p[feature.toLowerCase()] || "-"}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
+                    {/* Price */}
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Price</span>
+                        <span>₱{p.price}</span>
+                      </div>
+                    </div>
 
-                {/* Buy Now Buttons */}
-                <tr>
-                  <td></td>
-                  {selectedProducts.map((id) => {
-                    const p = products.find((x) => x.id === id);
-                    return (
-                      <td key={p.id + "buy"} className="text-center pt-6">
+                    {/* Merchant */}
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Merchant</span>
+                        <span>{p.merchant || "-"}</span>
+                      </div>
+                    </div>
+
+                    {/* Source */}
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Source</span>
+                        <span>{p.source || "-"}</span>
+                      </div>
+                    </div>
+
+                    {/* Specs */}
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Specs</span>
+                        <span>{p.specs || "-"}</span>
+                      </div>
+                    </div>
+
+                    {/* Variation */}
+                    <div className="glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">Variation</span>
                         <button
-                          onClick={() =>
-                            window.open(
-                              p.source === "Lazada"
-                                ? "https://www.lazada.com.ph/"
-                                : "https://shopee.ph/",
-                              "_blank"
-                            )
-                          }
-                          className={`${p.source === "Lazada"
-                              ? "bg-pink-600 hover:bg-pink-700"
-                              : "bg-orange-600 hover:bg-orange-700"
-                            } text-white text-sm px-5 py-2 rounded-full shadow-md`}
+                          onClick={() => setVariationModal(variationModal === p.id ? null : p.id)}
                         >
-                          Buy Now
+                          ☺ click me
                         </button>
-                      </td>
-                    );
-                  })}
-                </tr>
-              </tbody>
-            </table>
+                        {variationModal === p.id && (
+                          <div>
+                            <div>test</div>
+                            <div>test</div>
+                            <div>test</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Buy Now Button */}
+                    <div className="text-center pt-6">
+                      <button
+                        onClick={() =>
+                          window.open(
+                            p.source === "Lazada"
+                              ? "https://www.lazada.com.ph/"
+                              : "https://shopee.ph/",
+                            "_blank"
+                          )
+                        }
+                        className={`${p.source === "Lazada"
+                          ? "bg-pink-600 hover:bg-pink-700"
+                          : "bg-orange-600 hover:bg-orange-700"
+                          } text-white text-sm px-5 py-2 rounded-full shadow-md`}
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* ➕ Add one more item */}
@@ -492,8 +511,8 @@ return (
             disabled={selectedProducts.length < 2 || selectedProducts.length > 3}
             onClick={() => setShowComparisonTable(true)}
             className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
-                ? "text-white bg-blue-500 hover:bg-black-200"
-                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+              ? "text-white bg-blue-500 hover:bg-black-200"
+              : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
               }`}
           >
             Compare Now
