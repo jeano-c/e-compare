@@ -146,7 +146,7 @@
 
 /* Glass Checkbox */
 .glass-checkbox {
-  @apply mr-3 w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
+  @apply w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
 }
 
 .glass-search,

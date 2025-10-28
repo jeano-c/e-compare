@@ -61,7 +61,7 @@ function Card({
       onClick={showCompare && !isDisabled ? onToggle : undefined}
     >
       {/* Header Section */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-center items-start">
         <div className="flex flex-col flex-1 min-w-0">
           <p className="text-xl font-bold text-white truncate">
             {products.name}
