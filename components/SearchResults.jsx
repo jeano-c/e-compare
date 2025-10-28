@@ -434,13 +434,14 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Variation */}
-                    <div className="glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
+                    <div className="relative glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Variation</span>
+                        <span>click</span>
                         <button
                           onClick={() => setVariationModal(variationModal === p.id ? null : p.id)}
+                          className="absolute z-10 top-0 right-0 bg-transparent w-full h-full"
                         >
-                          ☺ click me
                         </button>
                         {variationModal === p.id && (
                           <div>
