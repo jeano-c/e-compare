@@ -249,11 +249,11 @@ function SearchResults({ query, onToggleHeader }) {
           initial={false}
           animate={
             showCompare
-              ? { y: 0, backdropFilter: "blur(6px)" }
+              ? { y: 0, backdropFilter: "blur(35px)" }
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${showCompare ? "bg-white/10 inner-shadow-y" : "bg-transparent"
+          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
             }`}
           style={{ top: "5px", overflow: "visible" }}
         >
@@ -329,10 +329,10 @@ function SearchResults({ query, onToggleHeader }) {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="bg-white/5 backdrop-blur-lg border border-white/20 relative w-full min-h-screen p-0 text-white flex flex-col overflow-hidden z-40 "
+          className=" backdrop-blur-lg border border-white/20 relative w-full min-h-screen p-0 text-white flex flex-col overflow-hidden z-40 "
         >
           { /* Background Gradient + Glow Blobs */}
-          <div className="mt-60 min-h-screen absolute inset-0 bg-white/5 backdrop-blur-lg  rounded-[42px]"></div>
+          {/* <div className="mt-60 min-h-screen absolute inset-0 backdrop-blur-lg  rounded-[42px]"></div> */}
           {/* { /*relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4*/}
           {/*<div className="absolute -bottom-40 -left-20 w-[600px] h-[500px] bg-pink-600/30 blur-[160px] rounded-full"></div> */}
           {/*<div className="absolute -top-20 right-0 w-[400px] h-[400px] bg-indigo-500/20 blur-[140px] rounded-full"></div> */}
@@ -434,13 +434,14 @@ function SearchResults({ query, onToggleHeader }) {
                     </div>
 
                     {/* Variation */}
-                    <div className="glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
+                    <div className="relative glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
                       <div className="flex flex-col">
                         <span className="font-semibold text-xs opacity-60">Variation</span>
+                        <span>click</span>
                         <button
                           onClick={() => setVariationModal(variationModal === p.id ? null : p.id)}
+                          className="absolute z-10 top-0 right-0 bg-transparent w-full h-full"
                         >
-                          ☺ click me
                         </button>
                         {variationModal === p.id && (
                           <div>
@@ -464,9 +465,9 @@ function SearchResults({ query, onToggleHeader }) {
                           )
                         }
                         className={`${p.source === "Lazada"
-                          ? "bg-pink-600 hover:bg-pink-700"
-                          : "bg-orange-600 hover:bg-orange-700"
-                          } text-white text-sm px-5 py-2 rounded-full shadow-md`}
+                          ? "bg-pink-700/20 hover:bg-pink-800/20"
+                          : "bg-orange-700/20 hover:bg-orange-800/20"
+                          } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1 `}
                       >
                         Buy Now
                       </button>

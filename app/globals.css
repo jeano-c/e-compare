@@ -128,7 +128,7 @@
 }
 .glass-button:hover, .glass-button1:hover,
 .search-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.07);
 }
 .compare-button:hover{
    background: rgba(0, 0, 0, 0.50);
@@ -145,7 +145,7 @@
 
 /* Glass Checkbox */
 .glass-checkbox {
-  @apply mr-3 w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
+  @apply w-6 h-6 appearance-none rounded border border-white/20 bg-white/10 backdrop-blur-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.1)] checked:bg-white/30 checked:border-white/40 checked:shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.15)] cursor-pointer transition-all duration-300 relative checked:after:content-['✓'] checked:after:absolute checked:after:text-white checked:after:text-lg checked:after:font-bold checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 text-white;
 }
 
 .glass-search,
@@ -350,7 +350,7 @@ color: rgba(255, 255, 255, 0.4) !important; /* highlight color */
   text-align: center;
   position: relative;
   border-radius: 16px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4),
@@ -382,6 +382,44 @@ color: rgba(255, 255, 255, 0.4) !important; /* highlight color */
   mask-border-slice: 1;
   pointer-events: none;
 }
+
+.compare-button1 {
+  text-align: center;
+  position: relative;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
+  border: none;
+  overflow: hidden;
+}
+
+/* fix mask, keep same gradient */
+.compare-button1::before {
+  text-align: inherit;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px; /* stroke width */
+  background: linear-gradient(
+    -101deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  
+
+  /* improved mask so white edge stops exactly at radius */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mask-border-outset: 0.5px;
+  mask-border-slice: 1;
+  pointer-events: none;
+}
+
 
 .product-button {
   text-align: center;
@@ -423,9 +461,8 @@ color: rgba(255, 255, 255, 0.4) !important; /* highlight color */
   pointer-events: none;
 }
 * {
-  scrollbar-width: auto; /* "auto" or "thin" */
-  scrollbar-color: #4b5563 transparent; /* thumb and track color */
-  scrollbar-color: #4b5563 transparent; /* thumb and track color */
+  scrollbar-width:thin;
+  scrollbar-color: gray black; /* "auto" or "thin" */
 }
 
 :root {
@@ -506,19 +543,7 @@ color: rgba(255, 255, 255, 0.4) !important; /* highlight color */
   }
 }
 @layer utilities {
-  .scrollbar-custom {
-    scrollbar-width: auto;
-    scrollbar-color: #4b5563 transparent;
-  }
-
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    background-color: #4b5563;
-    border-radius: 6px;
-  }
+  
 
   .font-baloo {
     font-family: var(--font-baloo), sans-serif;
@@ -527,7 +552,5 @@ color: rgba(255, 255, 255, 0.4) !important; /* highlight color */
   .font-vag {
     font-family: var(--font-vag), sans-serif;
   }
-  ::-webkit-scrollbar-track {
-    background: black;
-  }
+  
 }
