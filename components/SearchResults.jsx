@@ -268,11 +268,12 @@ function SearchResults({ query, onToggleHeader }) {
       }
 
       toast.loading("Fetching comparison data...");
+      await axios.post(`/api/history`, {
+        snapshot: selected,
+      });
 
-      
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      
       const mockResults = urls.map((url, i) => ({
         url,
         title: `Mock Product ${i + 1}`,
@@ -399,11 +400,10 @@ function SearchResults({ query, onToggleHeader }) {
                   }
                   isLiked={likedProducts.some((item) => item.id === product.id)}
                   onLikeToggle={(isLiked) => {
-                    setLikedProducts(
-                      (prev) =>
-                        isLiked
-                          ? [...prev, product] 
-                          : prev.filter((p) => p.id !== product.id) 
+                    setLikedProducts((prev) =>
+                      isLiked
+                        ? [...prev, product]
+                        : prev.filter((p) => p.id !== product.id)
                     );
                   }}
                 />

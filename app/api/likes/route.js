@@ -50,7 +50,6 @@ export async function DELETE(req) {
       return NextResponse.json({ error: "Like not found" }, { status: 404 });
     }
 
-    // ✅ delete by its primary key (id)
     await db.delete(UserLikes).where(eq(UserLikes.id, target.id));
 
     return NextResponse.json({ message: "Like removed!" });
@@ -60,7 +59,7 @@ export async function DELETE(req) {
   }
 }
 
-export async function GET(req) {
+export async function GET() {
   try {
     const { userId } = await auth();
 

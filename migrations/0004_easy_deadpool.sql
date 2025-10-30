@@ -1,0 +1,1 @@
+ALTER TABLE "comparison_table" ADD COLUMN "snapshot" json NOT NULL;
