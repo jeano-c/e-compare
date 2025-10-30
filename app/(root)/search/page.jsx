@@ -5,12 +5,17 @@ import SearchResults from "@/components/SearchResults";
 import SkeletonResult from "@/components/SkeletonResult";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
-
+import dynamic from "next/dynamic";
 function SearchResult() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
-  const options = ["Best Match", "Top Sales", "Price: Low to High", "Price: High to Low"];
+  const options = [
+    "Best Match",
+    "Top Sales",
+    "Price: Low to High",
+    "Price: High to Low",
+  ];
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   const handleSelect = (option) => setSelectedOption(option.value || option);
@@ -69,4 +74,6 @@ function SearchResult() {
   );
 }
 
-export default SearchResult;
+export default dynamic(() => Promise.resolve(SearchResult), {
+  ssr: false,
+});

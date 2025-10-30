@@ -5,6 +5,8 @@ import SkeletonResult from "./SkeletonResult";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
+import Dropdown from "react-dropdown";
+import "react-dropdown/style.css";
 
 function SearchResults({ query, onToggleHeader }) {
   const [products, setProducts] = useState([]);
@@ -17,14 +19,16 @@ function SearchResults({ query, onToggleHeader }) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
   const [lockedProducts, setLockedProducts] = useState([]); // store locked IDs
-  const [variationModal, setVariationModal] = useState(false);
+  const [comparisonResults, setComparisonResults] = useState([]);
+  const [selectedVariations, setSelectedVariations] = useState({});
+  const [likedProducts, setLikedProducts] = useState([]);
 
   const minimizedSnapshot = useRef([]);
   useEffect(() => {
     if (typeof onToggleHeader === "function") {
       onToggleHeader(!showComparisonTable); // false → hide, true → show
     }
-  })
+  });
 
   // async function GetProducts(signal) {
   //   try {
@@ -77,7 +81,7 @@ function SearchResults({ query, onToggleHeader }) {
   async function GetProducts() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
 
       const lazadaItems = [
         {
@@ -109,7 +113,6 @@ function SearchResults({ query, onToggleHeader }) {
         merchant: "Shopee Tech",
         price: 850,
       }));
-
       const newProducts = [...lazadaItems, ...shopeeItems];
       setProducts(newProducts);
       ScrapeAllProducts(newProducts);
@@ -136,20 +139,12 @@ function SearchResults({ query, onToggleHeader }) {
     setSelectedProducts((prev) => {
       const isLocked = lockedProducts.includes(productId);
       const alreadySelected = prev.includes(productId);
-
-      // 🔒 Prevent toggling locked products
       if (isLocked) return prev;
-
-      // ✅ Allow unselecting only if not locked
       if (alreadySelected) return prev.filter((id) => id !== productId);
-
-      // 🧠 If in "Add one more" mode
       if (isAddingOneMore) {
         if (prev.length >= 3) return prev;
 
         const newSelected = [...prev, productId];
-
-        // Automatically return to compare view once third is selected
         if (newSelected.length === 3) {
           setTimeout(() => {
             setIsAddingOneMore(false);
@@ -161,12 +156,10 @@ function SearchResults({ query, onToggleHeader }) {
         return newSelected;
       }
 
-      // 🧩 Normal behavior
       if (prev.length >= 3) return prev;
       return [...prev, productId];
     });
   }
-  // Hide/show ✕ based on scroll
   useEffect(() => {
     let lastScrollY = 0;
     const handleScroll = () => {
@@ -227,11 +220,11 @@ function SearchResults({ query, onToggleHeader }) {
       const batch = products.slice(i, i + 5);
 
       const payload = {
-        urls: batch.map((product) => product.link), // use batch, not products
+        urls: batch.map((product) => product.link),
       };
 
       try {
-        const res = await axios.post(`/api/test-next`, payload); // POST JSON
+        const res = await axios.post(`/api/test-next`, payload);
         console.log(`✅ Shopee Batch ${i / 5 + 1}`, res.data);
       } catch (error) {
         console.error(`❌ Shopee Batch ${i / 5 + 1} failed:`, error);
@@ -240,9 +233,99 @@ function SearchResults({ query, onToggleHeader }) {
     }
   }
 
+  // async function CompareAction() {
+  //   try {
+  //     const selected = products.filter((p) => selectedProducts.includes(p.id));
+  //     const urls = selected
+  //       .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link))
+  //       .filter(Boolean);
+
+  //     if (!urls.length) {
+  //       toast.error("No valid URLs found for selected products");
+  //       return;
+  //     }
+  //     const res = await axios.post("/api/test-next", { urls });
+  //     console.log("✅ Compare Results:", res.data);
+  //     toast.success("Comparison data fetched!");
+  //   } catch (error) {
+  //     console.error("❌ CompareAction failed:", error);
+  //     toast.error(
+  //       error.response?.data?.error || "Failed to fetch comparison data"
+  //     );
+  //   }
+  // }
+
+  async function CompareAction() {
+    try {
+      const selected = products.filter((p) => selectedProducts.includes(p.id));
+      const urls = selected.map((p) =>
+        p.link.startsWith("//") ? "https:" + p.link : p.link
+      );
+
+      if (!urls.length) {
+        toast.error("No valid URLs selected");
+        return;
+      }
+
+      toast.loading("Fetching comparison data...");
+
+      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      
+      const mockResults = urls.map((url, i) => ({
+        url,
+        title: `Mock Product ${i + 1}`,
+        brand: i % 2 === 0 ? "Logitech" : "Rakk",
+        description: "This is a mocked product description.",
+        rating: (Math.random() * 5).toFixed(1),
+        currency: "PHP",
+        lowestPrice: 799 + i * 100,
+        highestPrice: 999 + i * 100,
+        variations: [
+          {
+            name: "Black / Red",
+            price: (799 + i * 100).toFixed(2),
+            priceBeforeDiscount: (899 + i * 100).toFixed(2),
+            stock: 12,
+            sold: 45 + i * 5,
+          },
+          {
+            name: "White / Blue",
+            price: (849 + i * 100).toFixed(2),
+            priceBeforeDiscount: (949 + i * 100).toFixed(2),
+            stock: 8,
+            sold: 20 + i * 2,
+          },
+        ],
+      }));
+
+      console.log("🧪 Mock comparison results:", mockResults);
+      toast.dismiss();
+      toast.success("Mock comparison data loaded!");
+
+      // 👇 show in your component if you track results in state
+      setComparisonResults(mockResults);
+    } catch (error) {
+      console.error("❌ Mock CompareAction failed:", error);
+      toast.error("Something went wrong");
+    }
+  }
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const res = await axios.get("/api/likes");
+        setLikedProducts(res.data.likedProducts || []);
+      } catch (err) {
+        console.error("Error fetching likes", err);
+      }
+    };
+
+    fetchLikes();
+  }, [query]);
+
   return (
     <>
-      {/*  Product Container (Hidden when in comparison view) */}
       {!showComparisonTable && (
         <motion.div
           key="motion-container"
@@ -253,8 +336,9 @@ function SearchResults({ query, onToggleHeader }) {
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
-            }`}
+          className={`relative z-30 min-h-screen ${
+            showCompare ? "inner-shadow-y" : "bg-transparent"
+          }`}
           style={{ top: "5px", overflow: "visible" }}
         >
           {/* ✕ and ━ Buttons */}
@@ -268,7 +352,6 @@ function SearchResults({ query, onToggleHeader }) {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* ✕ Close Button */}
                 <button
                   onClick={() => {
                     setShowCompare(false);
@@ -285,7 +368,6 @@ function SearchResults({ query, onToggleHeader }) {
             )}
           </AnimatePresence>
 
-          {/* Products Grid */}
           <div className="text-center px-10 pt-20 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
             {loading ? (
               <div className="col-span-full flex flex-col justify-center items-center gap-4 min-h-[60vh]">
@@ -315,6 +397,15 @@ function SearchResults({ query, onToggleHeader }) {
                     selectedProducts.length >= 3 &&
                     !selectedProducts.includes(product.id)
                   }
+                  isLiked={likedProducts.some((item) => item.id === product.id)}
+                  onLikeToggle={(isLiked) => {
+                    setLikedProducts(
+                      (prev) =>
+                        isLiked
+                          ? [...prev, product] 
+                          : prev.filter((p) => p.id !== product.id) 
+                    );
+                  }}
                 />
               ))
             )}
@@ -322,22 +413,14 @@ function SearchResults({ query, onToggleHeader }) {
         </motion.div>
       )}
 
-      {/* Comparison Table View */}
       {showComparisonTable && (
         <motion.div
           key="comparison-view"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className=" backdrop-blur-lg border border-white/20 relative w-full min-h-screen p-0 text-white flex flex-col overflow-hidden z-40 "
+          className="backdrop-blur-lg border border-white/20 relative w-full min-h-screen p-0 text-white flex flex-col overflow-hidden z-40"
         >
-          { /* Background Gradient + Glow Blobs */}
-          {/* <div className="mt-60 min-h-screen absolute inset-0 backdrop-blur-lg  rounded-[42px]"></div> */}
-          {/* { /*relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 w-[220px] mx-auto shadow-lg mb-4*/}
-          {/*<div className="absolute -bottom-40 -left-20 w-[600px] h-[500px] bg-pink-600/30 blur-[160px] rounded-full"></div> */}
-          {/*<div className="absolute -top-20 right-0 w-[400px] h-[400px] bg-indigo-500/20 blur-[140px] rounded-full"></div> */}
-
-          {/* ✕ + ━ Buttons for Comparison View */}
           <motion.div
             key="top-buttons"
             className="absolute top-4 right-10 flex gap-4 z-[101]"
@@ -367,6 +450,8 @@ function SearchResults({ query, onToggleHeader }) {
                 setShowComparisonTable(false);
                 setSelectedProducts([]);
                 setIsMinimized(false);
+                setComparisonResults([]);
+                setSelectedVariations({});
                 minimizedSnapshot.current = [];
               }}
               className="text-white text-[36px] font-vagRounded font-light cursor-pointer"
@@ -376,98 +461,129 @@ function SearchResults({ query, onToggleHeader }) {
             </button>
           </motion.div>
 
-          {/* Comparison Content */}
           <h2 className="text-2xl font-bold mb-8 text-center z-10 mt-16">
             Product Comparison
           </h2>
 
-          <div className="overflow-x-auto relative z-10">
+          <div className="overflow-x-hidden overflow-hidden relative z-10">
             <div className="w-3/4 mx-auto flex gap-4">
-              {selectedProducts.map((id) => {
-                const p = products.find((x) => x.id === id);
+              {comparisonResults.map((result, index) => {
+                const p = products.find(
+                  (x) => x.id === selectedProducts[index]
+                );
+                const selectedVar = selectedVariations[p?.id];
+                const displayPrice = selectedVar
+                  ? selectedVar.price
+                  : `${result.lowestPrice} - ${result.highestPrice}`;
+
                 return (
-                  <div key={p.id} className="flex flex-col flex-1 min-w-[220px]">
-                    {/* Product Header */}
+                  <div
+                    key={p?.id || index}
+                    className="flex flex-col flex-1 min-w-[220px]"
+                  >
                     <div className="glass-button1 rounded-t-[23px]">
                       <div className="flex justify-center items-center flex-col p-4">
                         <img
-                          src={p.image}
-                          alt={p.name}
+                          src={p?.image}
+                          alt={result.title}
                           className="w-32 h-32 object-contain rounded-lg"
                         />
                         <p className="font-semibold text-center mt-3">
-                          {p.name}
+                          {result.title}
                         </p>
-                      </div>
-                    </div>
-
-                    {/* Price */}
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">Price</span>
-                        <span>₱{p.price}</span>
-                      </div>
-                    </div>
-
-                    {/* Merchant */}
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">Merchant</span>
-                        <span>{p.merchant || "-"}</span>
-                      </div>
-                    </div>
-
-                    {/* Source */}
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">Source</span>
-                        <span>{p.source || "-"}</span>
-                      </div>
-                    </div>
-
-                    {/* Specs */}
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">Specs</span>
-                        <span>{p.specs || "-"}</span>
-                      </div>
-                    </div>
-
-                    {/* Variation */}
-                    <div className="relative glass-button1 py-2 min-h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">Variation</span>
-                        <span>click</span>
-                        <button
-                          onClick={() => setVariationModal(variationModal === p.id ? null : p.id)}
-                          className="absolute z-10 top-0 right-0 bg-transparent w-full h-full"
-                        >
-                        </button>
-                        {variationModal === p.id && (
-                          <div>
-                            <div>test</div>
-                            <div>test</div>
-                            <div>test</div>
-                          </div>
+                        {result.brand && (
+                          <p className="text-xs text-white/60 mt-1">
+                            {result.brand}
+                          </p>
                         )}
                       </div>
                     </div>
 
-                    {/* Buy Now Button */}
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Price
+                        </span>
+                        <span>₱{displayPrice}</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Rating
+                        </span>
+                        <span>{result.rating || "-"} ⭐</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Source
+                        </span>
+                        <span>{p?.source || "-"}</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 min-h-24 rounded-0 flex items-center justify-center text-center p-3">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Description
+                        </span>
+                        <span className="text-xs mt-1 line-clamp-3">
+                          {result.description || "-"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 py-3 min-h-16 h-auto rounded-0 flex flex-col items-center justify-center text-center relative">
+                      <span className="font-semibold text-xs opacity-60 mb-2">
+                        Variations
+                      </span>
+                      <Dropdown
+                        options={result.variations.map(
+                          (variation) =>
+                            `${variation.name} — ₱${variation.price}`
+                        )}
+                        onChange={(option) => {
+                          const [name] = option.value.split(" — ₱");
+                          const selected = result.variations.find(
+                            (v) => v.name === name
+                          );
+                          setSelectedVariations((prev) => ({
+                            ...prev,
+                            [p.id]: selected,
+                          }));
+                        }}
+                        value={
+                          selectedVar
+                            ? `${selectedVar.name} — ₱${selectedVar.price}`
+                            : "Select variation "
+                        }
+                        placeholder="Select a variation"
+                        className="w-full text-sm font-vagRounded"
+                        controlClassName=""
+                        menuClassName="!absolute !static "
+                        arrowClassName="text-white"
+                      />
+                    </div>
+
                     <div className="text-center pt-6">
                       <button
                         onClick={() =>
                           window.open(
-                            p.source === "Lazada"
+                            p?.source === "Lazada"
                               ? "https://www.lazada.com.ph/"
                               : "https://shopee.ph/",
                             "_blank"
                           )
                         }
-                        className={`${p.source === "Lazada"
-                          ? "bg-pink-700/20 hover:bg-pink-800/20"
-                          : "bg-orange-700/20 hover:bg-orange-800/20"
-                          } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1 `}
+                        className={`${
+                          p?.source === "Lazada"
+                            ? "bg-pink-700/20 hover:bg-pink-800/20"
+                            : "bg-orange-700/20 hover:bg-orange-800/20"
+                        } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
                       >
                         Buy Now
                       </button>
@@ -478,7 +594,6 @@ function SearchResults({ query, onToggleHeader }) {
             </div>
           </div>
 
-          {/* ➕ Add one more item */}
           {selectedProducts.length === 2 && (
             <span
               onClick={() => {
@@ -496,7 +611,6 @@ function SearchResults({ query, onToggleHeader }) {
         </motion.div>
       )}
 
-      {/* Compare Buttons */}
       <div className="fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
         {!showCompare && !isMinimized && (
           <button
@@ -509,12 +623,18 @@ function SearchResults({ query, onToggleHeader }) {
 
         {showCompare && !showComparisonTable && !isAddingOneMore && (
           <button
-            disabled={selectedProducts.length < 2 || selectedProducts.length > 3}
-            onClick={() => setShowComparisonTable(true)}
-            className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
-              ? "text-white bg-blue-500 hover:bg-black-200"
-              : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-              }`}
+            disabled={
+              selectedProducts.length < 2 || selectedProducts.length > 3
+            }
+            onClick={async () => {
+              await CompareAction();
+              setShowComparisonTable(true);
+            }}
+            className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+              selectedProducts.length >= 2 && selectedProducts.length <= 3
+                ? "text-white bg-blue-500 hover:bg-black-200"
+                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+            }`}
           >
             Compare Now
           </button>
@@ -552,4 +672,4 @@ function SearchResults({ query, onToggleHeader }) {
     </>
   );
 }
-export default SearchResults
+export default SearchResults;

@@ -1,4 +1,5 @@
-import { bigint } from "drizzle-orm/gel-core";
+import Card from "@/components/Card";
+import { bigint, json } from "drizzle-orm/gel-core";
 import {
   uuid,
   pgTable,
@@ -52,4 +53,10 @@ export const recommendationTb = pgTable("recommendation_table", {
   }),
   aiRecomendation: text("ai_recommendation").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const UserLikes = pgTable("user_likes", {
+  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
+  userId: text("user_id"),
+  snapshot: json("snapshot"),
 });

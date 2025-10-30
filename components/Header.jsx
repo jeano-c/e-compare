@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
@@ -7,7 +6,9 @@ import Link from "next/link";
 import { FaHistory } from "react-icons/fa";
 import { dark } from "@clerk/themes";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-
+import { FaRegHeart, FaHeart } from "react-icons/fa";
+import dynamic from "next/dynamic";
+import UserLikes from "./UserLikes";
 function Header({ visible = false }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -91,9 +92,12 @@ function Header({ visible = false }) {
           </SignedOut>
 
           <SignedIn>
-            <UserButton appearance={{ baseTheme: dark }}>
+            <UserButton
+              appearance={{
+                baseTheme: dark,
+              }}
+            >
               <UserButton.UserProfilePage
-                appearance={{ baseTheme: dark }}
                 label="History"
                 url="custom-history"
                 labelIcon={<FaHistory size={16} />}
@@ -102,6 +106,14 @@ function Header({ visible = false }) {
                   <h2 className="text-xl font-bold mb-4">Activity History</h2>
                 </div>
               </UserButton.UserProfilePage>
+
+              <UserButton.UserProfilePage
+                label="User likes"
+                url="custom-likes"
+                labelIcon={<FaHeart size={16} />}
+              >
+                <UserLikes />
+              </UserButton.UserProfilePage>
             </UserButton>
           </SignedIn>
         </div>
@@ -109,5 +121,6 @@ function Header({ visible = false }) {
     </>
   );
 }
-
-export default Header;
+export default dynamic(() => Promise.resolve(Header), {
+  ssr: false,
+});

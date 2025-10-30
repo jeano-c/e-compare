@@ -1,6 +1,10 @@
+"use client";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 function Card({
   products,
@@ -9,10 +13,14 @@ function Card({
   onToggle,
   isDisabled,
   onLongPress,
+  isLiked,
+  onLikeToggle,
 }) {
+  const { isSignedIn } = useUser();
+  const router = useRouter();
   const pressTimer = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
 
   useEffect(() => {
     if (showCompare && pressTimer.current) {
@@ -39,15 +47,48 @@ function Card({
     }
   };
 
-  const handleLike = (e) => {
-    e.stopPropagation(); //
-    setLiked((prev) => !prev);
+  const handleLike = async (e) => {
+    e.stopPropagation();
+    const newLiked = !liked;
+    setLiked(newLiked);
+    onLikeToggle(newLiked);
+
+    if (!isSignedIn) {
+      router.push("/sign-in");
+      return;
+    }
+  
+    try {
+      if (newLiked) {
+        await axios.post("/api/likes", {
+          snapshot: {
+            id: products.id,
+            source: products.source,
+            name: products.name,
+            merchant: products.merchant,
+            image: products.image,
+            price: products.price,
+            link: products.link,
+          },
+        });
+        console.log("❤️ Like saved!");
+      } else {
+        await axios.delete(`/api/likes`, {
+          data: { product_id: products.id },
+        });
+        console.log("💔 Like removed!");
+      }
+    } catch (error) {
+      console.error("Error saving like:", error);
+      setLiked(!newLiked); // revert UI if failed
+      onLikeToggle(!newLiked);
+    }
   };
 
   return (
     <div
       className={cn(
-        "flex flex-col w-full min-h-[450px] max-h-[550px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
+        "flex flex-col w-full  !h-auto min-h-[450px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"

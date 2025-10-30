@@ -51,7 +51,7 @@ async function startKameleoProfile(retries = 5) {
 
       console.log("> ✅ Kameleo profile ready to use!");
       await browser.disconnect();
-      return; // success → exit loop
+      return;
     } catch (err) {
       if (attempt < retries) {
         console.warn(`> Kameleo not ready yet, retrying in 3s...`);
