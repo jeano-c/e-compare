@@ -1,95 +1,39 @@
 {
-  "id": "db43d75e-1a3c-4d53-8426-e9db3ec167e2",
+  "id": "5b3512ca-dbd8-4523-893a-125f847c5bea",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.comparison_items_table": {
-      "name": "comparison_items_table",
+    "public.user_likes": {
+      "name": "user_likes",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
-        "comparison_id": {
-          "name": "comparison_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "source": {
-          "name": "source",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "product_title": {
-          "name": "product_title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "product_url": {
-          "name": "product_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "product_image": {
-          "name": "product_image",
-          "type": "text",
+        "snapshot": {
+          "name": "snapshot",
+          "type": "json",
           "primaryKey": false,
           "notNull": false
-        },
-        "merchant": {
-          "name": "merchant",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "product_price": {
-          "name": "product_price",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "comparison_items_table_comparison_id_comparison_table_id_fk": {
-          "name": "comparison_items_table_comparison_id_comparison_table_id_fk",
-          "tableFrom": "comparison_items_table",
-          "tableTo": "comparison_table",
-          "columnsFrom": [
-            "comparison_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "comparison_items_table_id_unique": {
-          "name": "comparison_items_table_id_unique",
+        "user_likes_id_unique": {
+          "name": "user_likes_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "id"
@@ -108,11 +52,12 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -121,6 +66,18 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "snapshot": {
+          "name": "snapshot",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "screen_shot": {
+          "name": "screen_shot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -168,7 +125,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "comparison_id": {
           "name": "comparison_id",
@@ -228,11 +186,12 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

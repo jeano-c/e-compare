@@ -2,14 +2,15 @@ import { db } from "@/database/drizzle";
 import { comparisonsTb } from "@/database/schema";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
+import path from "path"; 
+import fs from "fs";
+import { eq, desc } from "drizzle-orm";
 export async function POST(req) {
   try {
     const body = await req.json();
-    console.log("🧩 Received body:", body);
 
-    const { snapshot } = body || {};
-    const { userId } = await auth(); // no await!
+    const { snapshot, screenshot } = body || {};
+    const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,10 +20,26 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing snapshot" }, { status: 400 });
     }
 
+    let screenshotUrl = null;
+    if (screenshot) {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      const fileName = `preview-${Date.now()}.png`;
+      const filePath = path.join(uploadsDir, fileName);
+
+      const base64Data = screenshot.replace(/^data:image\/png;base64,/, "");
+      fs.writeFileSync(filePath, base64Data, "base64");
+
+      screenshotUrl = `/uploads/${fileName}`;
+    }
+
     await db.insert(comparisonsTb).values({
       userId,
-      searchId: "b448c5b9-2772-47f2-b0ac-72a698366145",
-      snapshot: JSON.stringify(snapshot), // ensure valid JSON
+      searchId: "b9348865-8f0c-4bb0-942f-0a31e11121c2",
+      snapshot: JSON.stringify(snapshot),
     });
 
     return NextResponse.json({ message: "Saved successfully!" });
@@ -30,6 +47,35 @@ export async function POST(req) {
     console.error("❌ /api/history failed:", error);
     return NextResponse.json(
       { error: "Server crashed", details: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Fetch all comparisons for this user, ordered by newest first
+    const comparisons = await db
+      .select()
+      .from(comparisonsTb)
+      .where(eq(comparisonsTb.userId, userId))
+      .orderBy(desc(comparisonsTb.createdAt));
+
+    return NextResponse.json({
+      success: true,
+      data: comparisons,
+      count: comparisons.length,
+    });
+  } catch (error) {
+    console.error("❌ GET /api/history failed:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch history", details: error.message },
       { status: 500 }
     );
   }

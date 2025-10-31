@@ -43,6 +43,8 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen p-8">
+      <h1 className="text-3xl font-bold text-white mb-8">Comparison History</h1>
+
       {history.length === 0 ? (
         <p className="text-white/60 text-center">No comparisons saved yet</p>
       ) : (
@@ -58,6 +60,7 @@ export default function HistoryPage() {
             >
               ✕
             </button>
+
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 Comparison - {item.snapshot.length} Products
@@ -66,6 +69,7 @@ export default function HistoryPage() {
                 {new Date(item.createdAt).toLocaleString()}
               </span>
             </div>
+
             <ComparisonTable snapshot={item.snapshot} showActions={true} />
           </div>
         ))

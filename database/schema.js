@@ -1,5 +1,5 @@
 import Card from "@/components/Card";
-import { bigint, json } from "drizzle-orm/gel-core";
+import { bigint, json } from "drizzle-orm/pg-core";
 import {
   uuid,
   pgTable,
@@ -27,24 +27,10 @@ export const comparisonsTb = pgTable("comparison_table", {
     .notNull()
     .references(() => searchTb.id, { onDelete: "cascade" }),
   snapshot: json("snapshot").notNull(),
+  screenShot: text("screen_shot"),
   createdAt: timestamp("created_at", {
     withTimezone: true,
   }).defaultNow(),
-});
-
-export const comparisonItemsTb = pgTable("comparison_items_table", {
-  id: uuid("id").notNull().primaryKey().unique().defaultRandom(),
-  comparisonId: uuid("comparison_id")
-    .notNull()
-    .references(() => comparisonsTb.id, { onDelete: "cascade" }),
-  source: text("source"),
-  productTitle: text("product_title").notNull(),
-  productUrl: text("product_url").notNull(),
-  productImage: text("product_image"),
-  merchant: text("merchant"),
-  description: text("description"),
-  productPrice: bigint("product_price"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export const recommendationTb = pgTable("recommendation_table", {

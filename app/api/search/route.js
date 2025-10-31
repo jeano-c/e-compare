@@ -21,6 +21,7 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get("keyword") || "powerbank";
   console.log(userId);
+  
   if (userId) {
     const [newSearch] = await db
       .insert(searchTb)

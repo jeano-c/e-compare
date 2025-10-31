@@ -541,3 +541,7 @@
     font-family: var(--font-vag), sans-serif;
   }
 }
+.cl-cardBox {
+  width: 80rem !important;
+  height: 48rem !important;
+}

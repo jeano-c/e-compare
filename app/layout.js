@@ -2,9 +2,10 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { dark } from "@clerk/themes";
+import { dark, light } from "@clerk/themes";
 import ShaderBackground from "@/components/BackGround";
 import { Toaster } from "sonner";
+import "../app/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,17 +40,16 @@ const vagRounded = localFont({
     },
 
     {
-    path: "./fonts/VAG Rounded Next Medium.ttf",
+      path: "./fonts/VAG Rounded Next Medium.ttf",
       weight: "400",
       style: "medium",
-    
     },
-      {
+    {
       path: "./fonts/VAG Rounded Next SemiBold.ttf",
       weight: "600",
       style: "semibold",
     },
-    
+
     {
       path: "./fonts/VAG Rounded Next Bold.ttf",
       weight: "700",
@@ -59,13 +59,16 @@ const vagRounded = localFont({
       path: "./fonts/VAG Rounded Next Black.ttf",
       weight: "900",
       style: "black",
-    }
+    },
   ],
   variable: "--font-vag-rounded",
   display: "swap",
 });
 
 export default function RootLayout({ children }) {
+  const customAppearance = {
+    baseTheme: dark,
+  };
   return (
     <>
       <ShaderBackground />
@@ -73,16 +76,13 @@ export default function RootLayout({ children }) {
         signInUrl="/sign-in"
         signUpUrl="/sign-up"
         afterSignOutUrl="/sign-in"
-        appearance={{
-          baseTheme: dark,
-        }}
+        appearance={customAppearance}
       >
-       <html lang="en" className={`${balooC.variable} ${vagRounded.variable}`}>
-      <body className="font-sans">{children}</body>
-    </html>
+        <html lang="en" className={`${balooC.variable} ${vagRounded.variable}`}>
+          <body className="font-sans">{children}</body>
+        </html>
         <Toaster />
       </ClerkProvider>
     </>
   );
-  
 }

@@ -6,9 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
 import Dropdown from "react-dropdown";
+import { domToPng, domToBlob } from "modern-screenshot";
 import "react-dropdown/style.css";
 
 function SearchResults({ query, onToggleHeader }) {
+  const targetRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,6 +35,7 @@ function SearchResults({ query, onToggleHeader }) {
   // async function GetProducts(signal) {
   //   try {
   //     setLoading(true);
+  //     await new Promise((resolve) => setTimeout(resolve, 10000));
   //     const res = await axios.get(
   //       `/api/search?keyword=${encodeURIComponent(query)}`,
   //       { signal } // 👈 attach abort signal here
@@ -205,7 +208,7 @@ function SearchResults({ query, onToggleHeader }) {
       const encodedUrls = encodeURIComponent(JSON.stringify(urls));
       try {
         const res = await axios.post(`/api/test?urls=${encodedUrls}`);
-        console.log(`✅ Batch ${i / 5 + 1}`, res.data);
+        console.log(`Batch ${i / 5 + 1}`, res.data);
       } catch (error) {
         console.error(`❌ Batch ${i / 5 + 1} failed:`, error);
         toast?.error(error.message || "Failed to fetch batch");
@@ -267,11 +270,6 @@ function SearchResults({ query, onToggleHeader }) {
         return;
       }
 
-      toast.loading("Fetching comparison data...");
-      await axios.post(`/api/history`, {
-        snapshot: selected,
-      });
-
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const mockResults = urls.map((url, i) => ({
@@ -301,12 +299,16 @@ function SearchResults({ query, onToggleHeader }) {
         ],
       }));
 
+      await axios.post("/api/history", {
+        snapshot: comparisonResults,
+      });
+
       console.log("🧪 Mock comparison results:", mockResults);
       toast.dismiss();
       toast.success("Mock comparison data loaded!");
 
-      // 👇 show in your component if you track results in state
       setComparisonResults(mockResults);
+      setShowComparisonTable(true);
     } catch (error) {
       console.error("❌ Mock CompareAction failed:", error);
       toast.error("Something went wrong");
@@ -316,6 +318,7 @@ function SearchResults({ query, onToggleHeader }) {
     const fetchLikes = async () => {
       try {
         const res = await axios.get("/api/likes");
+
         setLikedProducts(res.data.likedProducts || []);
       } catch (err) {
         console.error("Error fetching likes", err);
@@ -415,6 +418,7 @@ function SearchResults({ query, onToggleHeader }) {
 
       {showComparisonTable && (
         <motion.div
+          ref={targetRef}
           key="comparison-view"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -484,6 +488,7 @@ function SearchResults({ query, onToggleHeader }) {
                     <div className="glass-button1 rounded-t-[23px]">
                       <div className="flex justify-center items-center flex-col p-4">
                         <img
+                          crossOrigin="anonymous"
                           src={p?.image}
                           alt={result.title}
                           className="w-32 h-32 object-contain rounded-lg"
@@ -659,6 +664,7 @@ function SearchResults({ query, onToggleHeader }) {
             const p = products.find((x) => x.id === id);
             return (
               <img
+                crossOrigin="anonymous"
                 key={p.id}
                 src={p.image}
                 alt={p.name}

@@ -6,10 +6,15 @@ import Link from "next/link";
 import { FaHistory } from "react-icons/fa";
 import { dark } from "@clerk/themes";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import dynamic from "next/dynamic";
+import History from "./History";
 import UserLikes from "./UserLikes";
+import { useClerk } from "@clerk/nextjs";
+
 function Header({ visible = false }) {
+
+  const { openUserProfile } = useClerk();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -94,7 +99,7 @@ function Header({ visible = false }) {
           <SignedIn>
             <UserButton
               appearance={{
-                baseTheme: dark,
+
               }}
             >
               <UserButton.UserProfilePage
@@ -103,8 +108,11 @@ function Header({ visible = false }) {
                 labelIcon={<FaHistory size={16} />}
               >
                 <div className="p-6">
-                  <h2 className="text-xl font-bold mb-4">Activity History</h2>
+                  <h2 className="text-xl text-center font-bold mb-4">
+                    Activity History
+                  </h2>
                 </div>
+                <History />
               </UserButton.UserProfilePage>
 
               <UserButton.UserProfilePage
