@@ -299,15 +299,15 @@ function SearchResults({ query, onToggleHeader }) {
         ],
       }));
 
+      setComparisonResults(mockResults);
+
       await axios.post("/api/history", {
         snapshot: comparisonResults,
       });
 
-
-      setComparisonResults(mockResults);
       setShowComparisonTable(true);
     } catch (error) {
-      console.error("❌ Mock CompareAction failed:", error);
+      console.error("Mock CompareAction failed:", error);
       toast.error("Something went wrong");
     }
   }

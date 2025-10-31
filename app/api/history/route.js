@@ -2,7 +2,7 @@ import { db } from "@/database/drizzle";
 import { comparisonsTb } from "@/database/schema";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import path from "path"; 
+import path from "path";
 import fs from "fs";
 import { eq, desc } from "drizzle-orm";
 export async function POST(req) {
@@ -59,8 +59,6 @@ export async function GET(req) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // Fetch all comparisons for this user, ordered by newest first
     const comparisons = await db
       .select()
       .from(comparisonsTb)
@@ -78,5 +76,41 @@ export async function GET(req) {
       { error: "Failed to fetch history", details: error.message },
       { status: 500 }
     );
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let body;
+    try {
+      body = await req.json();
+    } catch (err) {
+      return NextResponse.json(
+        { error: `Invalid or missing JSON body ,${err}` },
+        { status: 400 }
+      );
+    }
+
+    const { id } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Missing 'id' in request body" },
+        { status: 400 }
+      );
+    }
+
+    await db.delete(comparisonsTb).where(eq(comparisonsTb.id, id));
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("❌ DELETE /api/history failed:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

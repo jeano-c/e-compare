@@ -25,7 +25,9 @@ export default function HistoryPage() {
 
   async function deleteComparison(id) {
     try {
-      await axios.delete(`/api/history?id=${id}`);
+      await axios.delete(`/api/history`, {
+        data: { id },
+      });
       setHistory((prev) => prev.filter((item) => item.id !== id));
       toast.success("Deleted successfully");
     } catch (err) {
