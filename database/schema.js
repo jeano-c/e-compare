@@ -27,7 +27,6 @@ export const comparisonsTb = pgTable("comparison_table", {
     .notNull()
     .references(() => searchTb.id, { onDelete: "cascade" }),
   snapshot: json("snapshot").notNull(),
-  screenShot: text("screen_shot"),
   createdAt: timestamp("created_at", {
     withTimezone: true,
   }).defaultNow(),

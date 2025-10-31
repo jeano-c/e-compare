@@ -8,6 +8,13 @@
       "when": 1761876746325,
       "tag": "0000_big_overlord",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761902393246,
+      "tag": "0001_cold_otto_octavius",
+      "breakpoints": true
     }
   ]
 }

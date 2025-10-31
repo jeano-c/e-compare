@@ -303,9 +303,6 @@ function SearchResults({ query, onToggleHeader }) {
         snapshot: comparisonResults,
       });
 
-      console.log("🧪 Mock comparison results:", mockResults);
-      toast.dismiss();
-      toast.success("Mock comparison data loaded!");
 
       setComparisonResults(mockResults);
       setShowComparisonTable(true);

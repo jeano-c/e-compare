@@ -1,0 +1,1 @@
+ALTER TABLE "comparison_table" DROP COLUMN "screen_shot";
