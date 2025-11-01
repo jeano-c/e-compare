@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
 import Dropdown from "react-dropdown";
-import { domToPng, domToBlob } from "modern-screenshot";
+// import { domToPng, domToBlob } from "modern-screenshot";
 import "react-dropdown/style.css";
 
 function SearchResults({ query, onToggleHeader }) {
@@ -95,6 +95,7 @@ function SearchResults({ query, onToggleHeader }) {
           image: "https://placehold.co/400",
           merchant: "Lazada Store",
           price: 299,
+          rating:4.4,
         },
         {
           id: 2,
@@ -104,6 +105,7 @@ function SearchResults({ query, onToggleHeader }) {
           image: "https://placehold.co/400",
           merchant: "Lazada Tech",
           price: 899,
+          rating:1.5,
         },
       ];
 
@@ -115,6 +117,7 @@ function SearchResults({ query, onToggleHeader }) {
         image: "https://placehold.co/400",
         merchant: "Shopee Tech",
         price: 850,
+        rating:4.9,
       }));
       const newProducts = [...lazadaItems, ...shopeeItems];
       setProducts(newProducts);
@@ -467,7 +470,7 @@ function SearchResults({ query, onToggleHeader }) {
           </h2>
 
           <div className="overflow-x-hidden overflow-hidden relative z-10">
-            <div className="w-3/4 mx-auto flex gap-4">
+            <div className="pb-5 w-3/4 mx-auto flex gap-4">
               {comparisonResults.map((result, index) => {
                 const p = products.find(
                   (x) => x.id === selectedProducts[index]
@@ -566,8 +569,9 @@ function SearchResults({ query, onToggleHeader }) {
                         placeholder="Select a variation"
                         className="w-full text-sm font-vagRounded"
                         controlClassName=""
-                        menuClassName="!absolute !static "
+                        menuClassName="!absolute !static !rounded-none !bg-[rgba(255,255,255,0.01)] !backdrop-blur-none"
                         arrowClassName="text-white"
+
                       />
                     </div>
 

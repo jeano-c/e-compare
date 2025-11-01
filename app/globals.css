@@ -74,7 +74,7 @@
 .glass-button {
   @apply w-full;
   box-sizing: border-box;
-  height: 64px;
+
   background: rgba(255, 255, 255, 0.02);
   border-width: 0.5px;
   border-style: solid;
@@ -132,7 +132,8 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-.search-button:active {
+
+.search-button:active, .compare-button:active {
   transform: scale(0.99);
 }
 
@@ -349,6 +350,7 @@
     inset 0px -2px 4px rgba(255, 255, 255, 0.2); /* inner shadow */
   border: none;
   overflow: hidden;
+  cursor:pointer;
 }
 
 /* fix mask, keep same gradient */
