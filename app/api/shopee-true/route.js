@@ -3,7 +3,7 @@ import axios from "axios";
 import puppeteer from "puppeteer";
 
 const KAMELEO_URL = "http://localhost:5050";
-const PROFILE_ID = "a746c17a-c810-4319-93eb-f47a555f97c2";
+const PROFILE_ID = process.env.KAMELEO;
 
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -31,7 +31,8 @@ async function scrapeShopeeProduct(page, productUrl) {
     });
   });
 
-  await page.goto(productUrl, { waitUntil: "domcontentloaded" });
+  await page.goto(productUrl, {  timeout: 0 });
+
   await Promise.race([capturePromise, delay(8000)]);
 
   if (!apiData?.data?.item) {
@@ -63,7 +64,7 @@ async function scrapeShopeeProduct(page, productUrl) {
     .filter((n) => !isNaN(n));
 
   const lowestPrice =
-    numeriwcPrices.length > 0 ? Math.min(...numericPrices) : null;
+    numericPrices.length > 0 ? Math.min(...numericPrices) : null;
   const highestPrice =
     numericPrices.length > 0 ? Math.max(...numericPrices) : null;
 
@@ -119,15 +120,21 @@ export async function POST(req) {
       defaultViewport: null,
     });
 
-    const page = await browser.newPage();
-    const results = [];
+    // ⚡ Run all scrapes in parallel
+    const results = await Promise.all(
+      urls.map(async (url) => {
+        const page = await browser.newPage();
+        try {
+          const data = await scrapeShopeeProduct(page, url);
+          await page.close();
+          return data;
+        } catch (err) {
+          await page.close();
+          return { url, error: err.message };
+        }
+      })
+    );
 
-    for (const url of urls) {
-      const data = await scrapeShopeeProduct(page, url);
-      results.push(data);
-    }
-
-    await page.close();
     await browser.disconnect();
 
     return NextResponse.json({ results });

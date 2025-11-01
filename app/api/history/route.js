@@ -21,6 +21,7 @@ export async function POST(req) {
     }
 
     let screenshotUrl = null;
+
     if (screenshot) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadsDir)) {
@@ -36,13 +37,19 @@ export async function POST(req) {
       screenshotUrl = `/uploads/${fileName}`;
     }
 
-    await db.insert(comparisonsTb).values({
-      userId,
-      searchId: "b9348865-8f0c-4bb0-942f-0a31e11121c2",
-      snapshot: JSON.stringify(snapshot),
-    });
+    const [inserted] = await db
+      .insert(comparisonsTb)
+      .values({
+        userId,
+        searchId: "b9348865-8f0c-4bb0-942f-0a31e11121c2",
+        snapshot: JSON.stringify(snapshot),
+      })
+      .returning({ id: comparisonsTb.id });
 
-    return NextResponse.json({ message: "Saved successfully!" });
+    return NextResponse.json({
+      message: "Saved successfully!",
+      comparisonId: inserted.id,
+    });
   } catch (error) {
     console.error("❌ /api/history failed:", error);
     return NextResponse.json(

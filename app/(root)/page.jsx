@@ -43,6 +43,7 @@ function HomePage() {
     if (!search.trim()) return;
     router.push(`/search?q=${encodeURIComponent(search)}`);
   };
+  const res = process.env.KAMELEO;
 
   return (
     <>
