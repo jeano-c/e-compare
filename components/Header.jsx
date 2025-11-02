@@ -36,7 +36,7 @@ function Header({ visible = false }) {
 
   return (
     <>
-      <header className="flex justify-between items-center p-15 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
+      <header className="flex justify-between items-center pl-13 pr-10 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
           <Link href={"/"}>
@@ -82,15 +82,15 @@ function Header({ visible = false }) {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex justify-center items-center gap-5">
+        <div className="flex justify-center items-center gap-1">
           <SignedOut>
             <Link href="/sign-in">
-              <button className="font-normal text-[24px] text-white font-vagRounded">
+              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:bg-white/10 ease duration-500">
                 Login
               </button>
             </Link>
             <Link href="/sign-up">
-              <button className="font-normal text-[24px] text-white font-vagRounded">
+              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:bg-white/10 ease duration-500">
                 Sign Up
               </button>
             </Link>

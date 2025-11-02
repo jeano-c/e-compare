@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaStar } from "react-icons/fa";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -57,7 +57,7 @@ function Card({
       router.push("/sign-in");
       return;
     }
-  
+
     try {
       if (newLiked) {
         await axios.post("/api/likes", {
@@ -83,8 +83,6 @@ function Card({
       setLiked(!newLiked); // revert UI if failed
       onLikeToggle(!newLiked);
     }
-    
- 
   };
 
   return (
@@ -150,7 +148,10 @@ function Card({
       <div className="flex justify-between items-center ml-2">
         <div className="flex flex-col items-start">
           <p className="text-white text-xl font-medium">₱ {products.price}</p>
-          <p className="text-white/90 text-md">{products.rating}☺</p>
+          <div className="flex items-center">
+            <p className="text-white/90 text-md">{products.rating}<span className="text-transparent">_</span></p>
+            <FaStar className="text-lg text-gray-200" />
+          </div>
         </div>
         <button className="w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
           Buy Now

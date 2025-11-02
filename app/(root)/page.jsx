@@ -46,7 +46,7 @@ function HomePage() {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-[calc(screen-120px)]">
         <div className="py-15 px-16"></div>
         <div className="min-h-80 flex justify-center items-center w-full flex-col gap-10">
           {/* Search Section */}
