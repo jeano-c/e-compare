@@ -451,7 +451,9 @@ function SearchResults({ query, onToggleHeader }) {
           <h2 className="text-2xl font-bold mb-8 text-center z-10 mt-16">
             Product Comparison
           </h2>
-
+ {loadingCompare ? (
+            <div className="px- grid grid-cols-3 w-3/4 mx-auto  gap-4">
+              <CompareSkeleton />
           <div className="overflow-x-hidden overflow-hidden relative z-10">
             <div className="pb-5 w-3/4 mx-auto flex gap-4">
               {comparisonResults.map((result, index) => {
@@ -580,6 +582,8 @@ function SearchResults({ query, onToggleHeader }) {
                   </div>
                 );
               })}
+            </div>
+            </div>
             </div>
           ) : (
             <>
