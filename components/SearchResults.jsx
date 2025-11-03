@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
 import Dropdown from "react-dropdown";
-// import { domToPng, domToBlob } from "modern-screenshot";
 import "react-dropdown/style.css";
+
+import PopoverDemo from "./ui/PopoverDemo";
 
 function SearchResults({ query, onToggleHeader }) {
   const targetRef = useRef(null);
@@ -20,114 +21,118 @@ function SearchResults({ query, onToggleHeader }) {
   const [showComparisonTable, setShowComparisonTable] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
-  const [lockedProducts, setLockedProducts] = useState([]); // store locked IDs
+  const [lockedProducts, setLockedProducts] = useState([]);
   const [comparisonResults, setComparisonResults] = useState([]);
   const [selectedVariations, setSelectedVariations] = useState({});
   const [likedProducts, setLikedProducts] = useState([]);
-
+  const [compareid, setCompareID] = useState();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const minimizedSnapshot = useRef([]);
   useEffect(() => {
     if (typeof onToggleHeader === "function") {
-      onToggleHeader(!showComparisonTable); // false → hide, true → show
+      onToggleHeader(!showComparisonTable);
     }
   });
 
-  // async function GetProducts(signal) {
-  //   try {
-  //     setLoading(true);
-  //     await new Promise((resolve) => setTimeout(resolve, 10000));
-  //     const res = await axios.get(
-  //       `/api/search?keyword=${encodeURIComponent(query)}`,
-  //       { signal } // 👈 attach abort signal here
-  //     );
-
-  //     const lazadaItems =
-  //       res.data.lazada?.mods?.listItems?.map((item, index) => ({
-  //         id: `lazada-${item.itemId || index}`,
-  //         source: "Lazada",
-  //         name: item.name,
-  //         image: item.image,
-  //         merchant: item.sellerName,
-  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")),
-  //         link: item.itemUrl,
-  //       })) || [];
-
-  //     const shopeeItems =
-  //       res.data.shopee?.items?.map((item, index) => ({
-  //         id: `shopee-${item.item_basic.itemid || index}`,
-  //         source: "Shopee",
-  //         name: item.item_basic.name,
-  //         merchant: "shop",
-  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
-  //         price: item.item_basic.price / 100000,
-  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
-  //       })) || [];
-
-  //     const merged = [...lazadaItems, ...shopeeItems].sort(
-  //       (a, b) => a.price - b.price
-  //     );
-  //     setProducts(merged);
-  //     ScrapeAllProducts(merged);
-  //   } catch (error) {
-  //     if (axios.isCancel(error)) {
-  //       console.log("❌ Request canceled");
-  //       toast.error(`${error}`);
-  //     } else {
-  //       console.error("Error fetching products:", error);
-  //       toast.error(`${error}`);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-
-  async function GetProducts() {
+  async function GetProducts(signal) {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      const res = await axios.get(
+        `/api/search?keyword=${encodeURIComponent(query)}`,
+        { signal } // 👈 attach abort signal here
+      );
 
-      const lazadaItems = [
-        {
-          id: 1,
+      const lazadaItems =
+        res.data.lazada?.mods?.listItems?.map((item, index) => ({
+          id: `lazada-${item.itemId || index}`,
           source: "Lazada",
-          link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-          name: "Wireless Mouse",
-          image: "https://placehold.co/400",
-          merchant: "Lazada Store",
-          price: 299,
-          rating:4.4,
-        },
-        {
-          id: 2,
-          source: "Lazada",
-          name: "Mechanical Keyboard",
-          link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-          image: "https://placehold.co/400",
-          merchant: "Lazada Tech",
-          price: 899,
-          rating:1.5,
-        },
-      ];
+          name: item.name,
+          image: item.image,
+          merchant: item.sellerName,
+          price: parseFloat(item.price.replace(/[^\d.]/g, "")),
+          link: item.itemUrl,
+        })) || [];
 
-      const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
-        id: i + 3,
-        source: "Shopee",
-        name: "Mechanical Keyboard",
-        link: "https://shopee.ph/product/1023426474/29541632312",
-        image: "https://placehold.co/400",
-        merchant: "Shopee Tech",
-        price: 850,
-        rating:4.9,
-      }));
-      const newProducts = [...lazadaItems, ...shopeeItems];
-      setProducts(newProducts);
-      ScrapeAllProducts(newProducts);
+      const shopeeItems =
+        res.data.shopee?.items?.map((item, index) => ({
+          id: `shopee-${item.item_basic.itemid || index}`,
+          source: "Shopee",
+          name: item.item_basic.name,
+          merchant: "shop",
+          image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+          price: item.item_basic.price / 100000,
+          link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+        })) || [];
+
+      const merged = [...lazadaItems, ...shopeeItems];
+      const uniqueProducts = Object.values(
+        merged.reduce((acc, product) => {
+          // This only adds the product if its ID hasn't been seen yet
+          if (!acc[product.id]) {
+            acc[product.id] = product;
+          }
+          return acc;
+        }, {})
+      );
+      const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
+      setProducts(sortedProducts);
     } catch (error) {
-      toast.error(error.message);
+      if (axios.isCancel(error)) {
+        console.log("❌ Request canceled");
+        toast.error(`${error}`);
+      } else {
+        console.error("Error fetching products:", error);
+        toast.error(`${error}`);
+      }
     } finally {
       setLoading(false);
     }
   }
+
+  // async function GetProducts() {
+  //   try {
+  //     setLoading(true);
+  //     await new Promise((resolve) => setTimeout(resolve, 10000));
+
+  //     const lazadaItems = [
+  //       {
+  //         id: 1,
+  //         source: "Lazada",
+  //         link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
+  //         name: "Wireless Mouse",
+  //         image: "https://placehold.co/400",
+  //         merchant: "Lazada Store",
+  //         price: 299,
+  //       },
+  //       {
+  //         id: 2,
+  //         source: "Lazada",
+  //         name: "Mechanical Keyboard",
+  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
+  //         image: "https://placehold.co/400",
+  //         merchant: "Lazada Tech",
+  //         price: 899,
+  //       },
+  //     ];
+
+  //     const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
+  //       id: i + 3,
+  //       source: "Shopee",
+  //       name: "Mechanical Keyboard",
+  //       link: "https://shopee.ph/product/1023426474/29541632312",
+  //       image: "https://placehold.co/400",
+  //       merchant: "Shopee Tech",
+  //       price: 850,
+  //     }));
+  //     const newProducts = [...lazadaItems, ...shopeeItems];
+  //     setProducts(newProducts);
+  //     ScrapeAllProducts(newProducts);
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
     if (!query) return;
@@ -177,143 +182,116 @@ function SearchResults({ query, onToggleHeader }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  async function ScrapeAllProducts(products) {
-    if (!products?.length) return;
-
-    const lazadaProducts = products.filter((p) => p.source === "Lazada");
-    const shopeeProducts = products.filter((p) => p.source === "Shopee");
-
-    const batchArray = (arr, batchSize = 5) => {
-      const batches = [];
-      for (let i = 0; i < arr.length; i += batchSize) {
-        batches.push(arr.slice(i, i + batchSize));
-      }
-      return batches;
-    };
-
-    for (const batch of batchArray(lazadaProducts, 5)) {
-      await GetTruePrice(batch);
-    }
-    for (const batch of batchArray(shopeeProducts, 5)) {
-      await GetTruePrice2(batch);
-    }
-  }
-
-  async function GetTruePrice(products) {
-    if (!products?.length) return;
-
-    for (let i = 0; i < products.length; i += 5) {
-      const batch = products.slice(i, i + 5);
-
-      const urls = batch
-        .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link))
-        .filter(Boolean);
-      const encodedUrls = encodeURIComponent(JSON.stringify(urls));
-      try {
-        const res = await axios.post(`/api/test?urls=${encodedUrls}`);
-        console.log(`Batch ${i / 5 + 1}`, res.data);
-      } catch (error) {
-        console.error(`❌ Batch ${i / 5 + 1} failed:`, error);
-        toast?.error(error.message || "Failed to fetch batch");
-      }
-    }
-  }
-
-  async function GetTruePrice2(products) {
-    if (!products?.length) return;
-
-    for (let i = 0; i < products.length; i += 5) {
-      const batch = products.slice(i, i + 5);
-
-      const payload = {
-        urls: batch.map((product) => product.link),
-      };
-
-      try {
-        const res = await axios.post(`/api/test-next`, payload);
-        console.log(`✅ Shopee Batch ${i / 5 + 1}`, res.data);
-      } catch (error) {
-        console.error(`❌ Shopee Batch ${i / 5 + 1} failed:`, error);
-        toast?.error(error.message || "Failed to fetch batch");
-      }
-    }
-  }
-
   // async function CompareAction() {
   //   try {
   //     const selected = products.filter((p) => selectedProducts.includes(p.id));
-  //     const urls = selected
-  //       .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link))
-  //       .filter(Boolean);
+  //     const urls = selected.map((p) =>
+  //       p.link.startsWith("//") ? "https:" + p.link : p.link
+  //     );
 
   //     if (!urls.length) {
-  //       toast.error("No valid URLs found for selected products");
+  //       toast.error("No valid URLs selected");
   //       return;
   //     }
-  //     const res = await axios.post("/api/test-next", { urls });
-  //     console.log("✅ Compare Results:", res.data);
-  //     toast.success("Comparison data fetched!");
+
+  //     const mockResults = urls.map((url, i) => ({
+  //       url,
+  //       title: `Mock Product ${i + 1}`,
+  //       brand: i % 2 === 0 ? "Logitech" : "Rakk",
+  //       description: "This is a mocked product description.",
+  //       rating: (Math.random() * 5).toFixed(1),
+  //       currency: "PHP",
+  //       lowestPrice: 799 + i * 100,
+  //       highestPrice: 999 + i * 100,
+  //       variations: [
+  //         {
+  //           name: "Black / Red",
+  //           price: (799 + i * 100).toFixed(2),
+  //           priceBeforeDiscount: (899 + i * 100).toFixed(2),
+  //           stock: 12,
+  //           sold: 45 + i * 5,
+  //         },
+  //         {
+  //           name: "White / Blue",
+  //           price: (849 + i * 100).toFixed(2),
+  //           priceBeforeDiscount: (949 + i * 100).toFixed(2),
+  //           stock: 8,
+  //           sold: 20 + i * 2,
+  //         },
+  //       ],
+  //     }));
+
+  //     setComparisonResults(mockResults);
+  //     const res = await axios.post("/api/history", { snapshot: mockResults });
+  //     setCompareID(res.data.comparisonId);
+  //     setShowComparisonTable(true);
   //   } catch (error) {
-  //     console.error("❌ CompareAction failed:", error);
-  //     toast.error(
-  //       error.response?.data?.error || "Failed to fetch comparison data"
-  //     );
+  //     console.error("Mock CompareAction failed:", error);
+  //     toast.error("Something went wrong");
   //   }
   // }
 
   async function CompareAction() {
-    try {
-      const selected = products.filter((p) => selectedProducts.includes(p.id));
-      const urls = selected.map((p) =>
-        p.link.startsWith("//") ? "https:" + p.link : p.link
-      );
-
-      if (!urls.length) {
-        toast.error("No valid URLs selected");
-        return;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const mockResults = urls.map((url, i) => ({
-        url,
-        title: `Mock Product ${i + 1}`,
-        brand: i % 2 === 0 ? "Logitech" : "Rakk",
-        description: "This is a mocked product description.",
-        rating: (Math.random() * 5).toFixed(1),
-        currency: "PHP",
-        lowestPrice: 799 + i * 100,
-        highestPrice: 999 + i * 100,
-        variations: [
-          {
-            name: "Black / Red",
-            price: (799 + i * 100).toFixed(2),
-            priceBeforeDiscount: (899 + i * 100).toFixed(2),
-            stock: 12,
-            sold: 45 + i * 5,
-          },
-          {
-            name: "White / Blue",
-            price: (849 + i * 100).toFixed(2),
-            priceBeforeDiscount: (949 + i * 100).toFixed(2),
-            stock: 8,
-            sold: 20 + i * 2,
-          },
-        ],
-      }));
-
-      setComparisonResults(mockResults);
-
-      await axios.post("/api/history", {
-        snapshot: comparisonResults,
-      });
-
-      setShowComparisonTable(true);
-    } catch (error) {
-      console.error("Mock CompareAction failed:", error);
-      toast.error("Something went wrong");
+  try {
+    const selected = products.filter((p) => selectedProducts.includes(p.id));
+    if (selected.length === 0) {
+      toast.error("No products selected");
+      return;
     }
+
+    const lazadaUrls = selected
+      .filter((p) => p.source === "Lazada")
+      .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link));
+
+    const shopeeUrls = selected
+      .filter((p) => p.source === "Shopee")
+      .map((p) => p.link);
+
+    const requests = [];
+
+    if (lazadaUrls.length > 0) {
+      const encodedUrls = encodeURIComponent(JSON.stringify(lazadaUrls));
+      requests.push(
+        axios
+          .get(`/api/lazada-true?urls=${encodedUrls}`)
+          .then((res) => res.data.results)
+          .catch((err) => {
+            console.error("⚠️ Lazada scrape failed:", err);
+            return [];
+          })
+      );
+    }
+
+    if (shopeeUrls.length > 0) {
+      requests.push(
+        axios
+          .post(`/api/shopee-true`, { urls: shopeeUrls })
+          .then((res) => res.data.results)
+          .catch((err) => {
+            console.error("⚠️ Shopee scrape failed:", err);
+            return [];
+          })
+      );
+    }
+
+    const resultsArrays = await Promise.all(requests);
+
+
+    const results = resultsArrays.flat();
+
+
+    setComparisonResults(results);
+
+    const res = await axios.post("/api/history", { snapshot: results });
+    setCompareID(res.data.comparisonId);
+    setShowComparisonTable(true);
+  } catch (error) {
+    console.error("❌ CompareAction failed:", error);
+    toast.error("Something went wrong while comparing");
   }
+}
+
+
   useEffect(() => {
     const fetchLikes = async () => {
       try {
@@ -626,7 +604,6 @@ function SearchResults({ query, onToggleHeader }) {
             Compare
           </button>
         )}
-
         {showCompare && !showComparisonTable && !isAddingOneMore && (
           <button
             disabled={
@@ -645,8 +622,10 @@ function SearchResults({ query, onToggleHeader }) {
             Compare Now
           </button>
         )}
+        {showComparisonTable && (
+          <PopoverDemo compareId={compareid} results={comparisonResults} />
+        )}
       </div>
-
       {isMinimized && minimizedSnapshot.current.length >= 2 && (
         <motion.div
           initial={{ opacity: 0, x: -50 }}

@@ -3,7 +3,7 @@ import axios from "axios";
 import puppeteer from "puppeteer";
 
 const KAMELEO_URL = "http://localhost:5050";
-const PROFILE_ID = "a746c17a-c810-4319-93eb-f47a555f97c2"; // replace with your profile ID
+const PROFILE_ID = process.env.KAMELEO; // replace with your profile ID
 
 // delay helper
 async function delay(ms) {
@@ -83,7 +83,7 @@ export async function GET(request) {
               req.resourceType() === "fetch" ||
               req.resourceType() === "xhr"
             ) {
-              if (res.url().includes("https://acs-m.lazada.com.ph/h5")) {
+              if (res.url().includes("mtop.global.detail.web.getdetailinfo")) {
                 try {
                   const json = await res.json();
                   let moduleData = null;
@@ -110,7 +110,7 @@ export async function GET(request) {
       });
 
       await page.goto(productUrl, { waitUntil: "domcontentloaded" });
-      await Promise.race([waitForApi, delay(10000)]);
+      await Promise.race([waitForApi, delay(20000)]);
       await page.close();
 
       if (!apiResponse?.productOption?.skuBase) {
@@ -129,11 +129,17 @@ export async function GET(request) {
       });
 
       const productName = apiResponse.tracking?.pdt_name || "Unknown product";
-      const description = apiResponse.product?.desc || "No description found";
+      const rawDescription =
+        apiResponse.product?.desc || "No description found";
+      const description = rawDescription
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 
+      const currency = apiResponse.tracking?.core?.currencyCode || "PHP";
       const variations = apiResponse.productOption.skuBase.skus.map((sku) => {
         const skuInfo = apiResponse.skuInfos?.[sku.skuId];
-        let salePrice, originalPrice, discount;
+        let salePrice, originalPrice;
 
         if (skuInfo?.price) {
           if (skuInfo.price.salePrice?.text) {
@@ -141,13 +147,8 @@ export async function GET(request) {
           } else if (skuInfo.price.multiPrices?.length > 0) {
             salePrice = skuInfo.price.multiPrices[0].text;
           }
-
           if (skuInfo.price.originalPrice?.text) {
             originalPrice = skuInfo.price.originalPrice.text;
-          }
-
-          if (skuInfo.price.discount) {
-            discount = skuInfo.price.discount;
           }
         }
 
@@ -163,11 +164,12 @@ export async function GET(request) {
         }
 
         return {
-          skuId: sku.skuId,
-          variation: decodedProps,
-          salePrice,
-          originalPrice,
-          discount,
+          name: decodedProps,
+          currency: currency,
+          price: (salePrice || "0").replace(/[₱,]/g, ""),
+          priceBeforeDiscount: (originalPrice || "0").replace(/[₱,]/g, ""),
+          stock: skuInfo?.quantity?.limit?.max || null, // Get max orderable as "stock"
+          sold: null, // Lazada API doesn't provide this here
         };
       });
 
@@ -184,11 +186,15 @@ export async function GET(request) {
 
       return {
         url: productUrl,
-        product: productName,
+        title: productName, // Use "title" to match Shopee
+        brand: apiResponse.product?.brand?.name || "Unknown", // Add brand
         description: description,
+        location: "Unknown", // Add location to match
+        rating: apiResponse.review?.averageRating || null, // Add rating
+        currency: currency,
         lowestPrice,
         highestPrice,
-        variations,
+        variations, 
       };
     };
 

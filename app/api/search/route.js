@@ -5,7 +5,7 @@ import { db } from "@/database/drizzle";
 import { searchTb } from "@/database/schema";
 import { getAuth } from "@clerk/nextjs/server";
 const KAMELEO_URL = "http://localhost:5050";
-const PROFILE_ID = "c4e6c249-8dea-4550-8a92-f70bb33b64b9";
+const PROFILE_ID = process.env.KAMELEO;
 
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
