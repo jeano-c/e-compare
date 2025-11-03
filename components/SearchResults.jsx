@@ -452,9 +452,134 @@ function SearchResults({ query, onToggleHeader }) {
             Product Comparison
           </h2>
 
-          {loadingCompare ? (
-            <div className="px- grid grid-cols-3 w-3/4 mx-auto  gap-4">
-              <CompareSkeleton />
+          <div className="overflow-x-hidden overflow-hidden relative z-10">
+            <div className="pb-5 w-3/4 mx-auto flex gap-4">
+              {comparisonResults.map((result, index) => {
+                const p = products.find(
+                  (x) => x.id === selectedProducts[index]
+                );
+                const selectedVar = selectedVariations[p?.id];
+                const displayPrice = selectedVar
+                  ? selectedVar.price
+                  : `${result.lowestPrice} - ${result.highestPrice}`;
+
+                return (
+                  <div
+                    key={p?.id || index}
+                    className="flex flex-col flex-1 min-w-[220px]"
+                  >
+                    <div className="glass-button1 rounded-t-[23px]">
+                      <div className="flex justify-center items-center flex-col p-4">
+                        <img
+                          crossOrigin="anonymous"
+                          src={p?.image}
+                          alt={result.title}
+                          className="w-32 h-32 object-contain rounded-lg"
+                        />
+                        <p className="font-semibold text-center mt-3">
+                          {result.title}
+                        </p>
+                        {result.brand && (
+                          <p className="text-xs text-white/60 mt-1">
+                            {result.brand}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Price
+                        </span>
+                        <span>₱{displayPrice}</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Rating
+                        </span>
+                        <span>{result.rating || "-"} ⭐</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Source
+                        </span>
+                        <span>{p?.source || "-"}</span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 min-h-24 rounded-0 flex items-center justify-center text-center p-3">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-xs opacity-60">
+                          Description
+                        </span>
+                        <span className="text-xs mt-1 line-clamp-3">
+                          {result.description || "-"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="glass-button1 py-3 min-h-16 h-auto rounded-0 flex flex-col items-center justify-center text-center relative">
+                      <span className="font-semibold text-xs opacity-60 mb-2">
+                        Variations
+                      </span>
+                      <Dropdown
+                        options={result.variations.map(
+                          (variation) =>
+                            `${variation.name} — ₱${variation.price}`
+                        )}
+                        onChange={(option) => {
+                          const [name] = option.value.split(" — ₱");
+                          const selected = result.variations.find(
+                            (v) => v.name === name
+                          );
+                          setSelectedVariations((prev) => ({
+                            ...prev,
+                            [p.id]: selected,
+                          }));
+                        }}
+                        value={
+                          selectedVar
+                            ? `${selectedVar.name} — ₱${selectedVar.price}`
+                            : "Select variation "
+                        }
+                        placeholder="Select a variation"
+                        className="w-full text-sm font-vagRounded"
+                        controlClassName=""
+                        menuClassName="!absolute !static !rounded-none !bg-[rgba(255,255,255,0.01)] !backdrop-blur-none"
+                        arrowClassName="text-white"
+
+                      />
+                    </div>
+
+                    <div className="text-center pt-6">
+                      <button
+                        onClick={() =>
+                          window.open(
+                            p?.source === "Lazada"
+                              ? "https://www.lazada.com.ph/"
+                              : "https://shopee.ph/",
+                            "_blank"
+                          )
+                        }
+                        className={`${
+                          p?.source === "Lazada"
+                            ? "bg-pink-700/20 hover:bg-pink-800/20"
+                            : "bg-orange-700/20 hover:bg-orange-800/20"
+                        } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <>

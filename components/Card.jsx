@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaStar } from "react-icons/fa";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -57,7 +57,7 @@ function Card({
       router.push("/sign-in");
       return;
     }
-  
+
     try {
       if (newLiked) {
         await axios.post("/api/likes", {
@@ -88,7 +88,7 @@ function Card({
   return (
     <div
       className={cn(
-        "flex flex-col w-full  !h-auto min-h-[450px] glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
+        "flex flex-col w-full  glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
         showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"
@@ -145,8 +145,14 @@ function Card({
       </div>
 
       {/* Price and Button */}
-      <div className="flex justify-between items-center gap-3 mb-4">
-        <p className="text-white text-xl font-bold">₱ {products.price}</p>
+      <div className="flex justify-between items-center ml-2">
+        <div className="flex flex-col items-start">
+          <p className="text-white text-xl font-medium">₱ {products.price}</p>
+          <div className="flex items-center">
+            <p className="text-white/90 text-md">{products.rating}<span className="text-transparent">_</span></p>
+            <FaStar className="text-lg text-gray-200" />
+          </div>
+        </div>
         <button className="w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
           Buy Now
         </button>

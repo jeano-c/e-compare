@@ -36,7 +36,7 @@ function UserLikes() {
     return <p className="text-white text-center">Loading likes...</p>;
 
   return (
-    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="p-2 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {likedProducts.length === 0 ? (
         <p className="text-white text-center w-full">
           💔 You haven’t liked any products yet.
@@ -49,6 +49,7 @@ function UserLikes() {
             showCompare={false}
             isLiked={true}
             onLikeToggle={() => {}}
+            
           />
         ))
       )}
