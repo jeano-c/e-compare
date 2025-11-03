@@ -13,7 +13,6 @@ import UserLikes from "./UserLikes";
 import { useClerk } from "@clerk/nextjs";
 
 function Header({ visible = false }) {
-
   const { openUserProfile } = useClerk();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -40,7 +39,7 @@ function Header({ visible = false }) {
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
           <Link href={"/"}>
-            <p className="font-baloo text-3xl cursor-pointer">E-COMPARE</p>
+            <img src="/LOGO 1.1_WHITE.png" width={80} alt="" />
           </Link>
         </div>
 
@@ -97,11 +96,7 @@ function Header({ visible = false }) {
           </SignedOut>
 
           <SignedIn>
-            <UserButton
-              appearance={{
-
-              }}
-            >
+            <UserButton appearance={{}}>
               <UserButton.UserProfilePage
                 label="History"
                 url="custom-history"

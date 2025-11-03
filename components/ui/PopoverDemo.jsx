@@ -4,25 +4,31 @@ import axios from "axios";
 import { React, useState } from "react";
 import { toast } from "sonner";
 import { VscLoading } from "react-icons/vsc";
-function PopoverDemo({ compareId, results }) {
-  const [reply, setReply] = useState();
-  const [loading, setLoading] = useState(false);
-
+import ReactMarkdown from "react-markdown";
+function PopoverDemo({
+  compareId,
+  results,
+  aiReply,
+  setAiReply,
+  aiLoading,
+  setAiLoading,
+}) {
   async function AI() {
     try {
-      if (loading || reply) return;
-      setLoading(true);
+      if (aiLoading || aiReply) return;
+      setAiLoading(true);
       const res = await axios.post("/api/recommendation", {
         comparisonId: compareId,
         reply: results,
       });
-      setReply(res.data.message);
+      setAiReply(res.data.message);
     } catch (error) {
       toast.error(`${error}`);
     } finally {
-      setLoading(false);
+      setAiLoading(false);
     }
   }
+
   return (
     <>
       <Popover.Root>
@@ -42,16 +48,16 @@ function PopoverDemo({ compareId, results }) {
             side="top"
           >
             <div className="min-h-96 flex flex-col justify-center items-center gap-2.5 px-3 py-2">
-              {loading ? (
+              {aiLoading ? (
                 <VscLoading className="animate-spin text-white text-4xl" />
               ) : (
                 <>
                   <p className="mb-2.5 text-[15px] font-medium leading-[19px]">
                     AI Recommendations
                   </p>
-                  <p className="text-center text-sm whitespace-pre-wrap">
-                    {reply}
-                  </p>
+                  <div className="text-center text-sm whitespace-pre-wrap">
+                    <ReactMarkdown>{aiReply}</ReactMarkdown>
+                  </div>
                 </>
               )}
             </div>

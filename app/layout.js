@@ -2,7 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { dark, light } from "@clerk/themes";
+import { dark } from "@clerk/themes";
 import ShaderBackground from "@/components/BackGround";
 import { Toaster } from "sonner";
 import "../app/globals.css";
