@@ -11,7 +11,7 @@ import PopoverDemo from "./ui/PopoverDemo";
 import { TrendingUpDown } from "lucide-react";
 import CompareSkeleton from "./CompareSkeleton";
 
-function SearchResults({ query, onToggleHeader }) {
+function SearchResults({ query, onToggleHeader, sortBy }) {
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const targetRef = useRef(null);
@@ -22,6 +22,7 @@ function SearchResults({ query, onToggleHeader }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showClose, setShowClose] = useState(true);
   const [showComparisonTable, setShowComparisonTable] = useState(false);
+  const [rawProducts, setRawProducts] = useState([]);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isAddingOneMore, setIsAddingOneMore] = useState(false);
   const [lockedProducts, setLockedProducts] = useState([]);
@@ -37,106 +38,159 @@ function SearchResults({ query, onToggleHeader }) {
     }
   });
 
-  // async function GetProducts(signal) {
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios.get(
-  //       `/api/search?keyword=${encodeURIComponent(query)}`,
-  //       { signal } // 👈 attach abort signal here
-  //     );
+  function alternateProducts(productList) {
+    const shopee = productList.filter((p) => p.source === "Shopee");
+    const lazada = productList.filter((p) => p.source === "Lazada");
+    const result = [];
+    const maxLength = Math.max(shopee.length, lazada.length);
 
-  //     const lazadaItems =
-  //       res.data.lazada?.mods?.listItems?.map((item, index) => ({
-  //         id: `lazada-${item.itemId || index}`,
-  //         source: "Lazada",
-  //         name: item.name,
-  //         image: item.image,
-  //         merchant: item.sellerName,
-  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")),
-  //         link: item.itemUrl,
-  //       })) || [];
+    for (let i = 0; i < maxLength; i++) {
+      if (i < shopee.length) result.push(shopee[i]);
+      if (i < lazada.length) result.push(lazada[i]);
+    }
 
-  //     const shopeeItems =
-  //       res.data.shopee?.items?.map((item, index) => ({
-  //         id: `shopee-${item.item_basic.itemid || index}`,
-  //         source: "Shopee",
-  //         name: item.item_basic.name,
-  //         merchant: "shop",
-  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
-  //         price: item.item_basic.price / 100000,
-  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
-  //       })) || [];
+    return result;
+  }
 
-  //     const merged = [...lazadaItems, ...shopeeItems];
-  //     const uniqueProducts = Object.values(
-  //       merged.reduce((acc, product) => {
-  //         // This only adds the product if its ID hasn't been seen yet
-  //         if (!acc[product.id]) {
-  //           acc[product.id] = product;
-  //         }
-  //         return acc;
-  //       }, {})
-  //     );
-  //     const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
-  //     setProducts(sortedProducts);
-  //   } catch (error) {
-  //     if (axios.isCancel(error)) {
-  //       console.log("❌ Request canceled");
-  //       toast.error(`${error}`);
-  //     } else {
-  //       console.error("Error fetching products:", error);
-  //       toast.error(`${error}`);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-
-  async function GetProducts() {
+  async function GetProducts(signal) {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      const res = await axios.get(
+        `/api/search?keyword=${encodeURIComponent(query)}`,
+        { signal } // 👈 attach abort signal here
+      );
 
-      const lazadaItems = [
-        {
-          id: 1,
+      const lazadaItems =
+        res.data.lazada?.mods?.listItems?.map((item, index) => ({
+          id: `lazada-${item.itemId || index}`,
           source: "Lazada",
-          link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
-          name: "Wireless Mouse",
-          image: "https://placehold.co/400",
-          merchant: "Lazada Store",
-          price: 299,
-        },
-        {
-          id: 2,
-          source: "Lazada",
-          name: "Mechanical Keyboard",
-          link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-          image: "https://placehold.co/400",
-          merchant: "Lazada Tech",
-          price: 899,
-        },
-      ];
+          name: item.name,
+          image: item.image,
+          merchant: item.sellerName,
+          price: parseFloat(item.price.replace(/[^\d.]/g, "")),
+          link: item.itemUrl,
+          sales: item.itemSoldCntShow || 0,
+        })) || [];
 
-      const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
-        id: i + 3,
-        source: "Shopee",
-        name: "Mechanical Keyboard",
-        link: "https://shopee.ph/product/1023426474/29541632312",
-        image: "https://placehold.co/400",
-        merchant: "Shopee Tech",
-        price: 850,
-      }));
-      const newProducts = [...lazadaItems, ...shopeeItems];
-      setProducts(newProducts);
-      ScrapeAllProducts(newProducts);
+      const shopeeItems =
+        res.data.shopee?.items?.map((item, index) => ({
+          id: `shopee-${item.item_basic.itemid || index}`,
+          source: "Shopee",
+          name: item.item_basic.name,
+          merchant: "shop",
+          image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+          price: item.item_basic.price / 100000,
+          link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+          sales: item.item_basic.historical_sold || 0,
+        })) || [];
+
+      const merged = [...lazadaItems, ...shopeeItems];
+      const uniqueProducts = Object.values(
+        merged.reduce((acc, product) => {
+          // This only adds the product if its ID hasn't been seen yet
+          if (!acc[product.id]) {
+            acc[product.id] = product;
+          }
+          return acc;
+        }, {})
+      );
+      const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
+      setProducts(sortedProducts);
     } catch (error) {
-      toast.error(error.message);
+      if (axios.isCancel(error)) {
+        console.log("❌ Request canceled");
+        toast.error(`${error}`);
+      } else {
+        console.error("Error fetching products:", error);
+        toast.error(`${error}`);
+      }
     } finally {
       setLoading(false);
     }
   }
 
+  // async function GetProducts() {
+  //   try {
+  //     setLoading(true);
+  //     await new Promise((resolve) => setTimeout(resolve, 10000));
+
+  //     const lazadaItems = [
+  //       {
+  //         id: 1,
+  //         source: "Lazada",
+  //         link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
+  //         name: "Wireless Mouse",
+  //         image: "https://placehold.co/400",
+  //         merchant: "Lazada Store",
+  //         price: 299,
+  //         sales: 150,
+  //       },
+  //       {
+  //         id: 2,
+  //         source: "Lazada",
+  //         name: "Mechanical Keyboard",
+  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
+  //         image: "https://placehold.co/400",
+  //         merchant: "Lazada Tech",
+  //         price: 899,
+  //         sales: 89,
+  //       },
+  //     ];
+
+  //     const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
+  //       id: i + 3,
+  //       source: "Shopee",
+  //       name: "Mechanical Keyboard",
+  //       link: "https://shopee.ph/product/1023426474/29541632312",
+  //       image: "https://placehold.co/400",
+  //       merchant: "Shopee Tech",
+  //       price: 850,
+  //       sales: 120 - i * 10,
+  //     }));
+
+  //     const newProducts = [...lazadaItems, ...shopeeItems];
+  //     setRawProducts(newProducts); // Store original order
+  //     setProducts(newProducts); // Initial display
+  //     ScrapeAllProducts(newProducts);
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
+  useEffect(() => {
+    if (!rawProducts.length) return;
+
+    let sorted = [...rawProducts];
+
+    switch (sortBy) {
+      case "Best Match":
+        sorted = alternateProducts(rawProducts);
+        break;
+
+      case "Top Sales":
+        sorted.sort((a, b) => {
+          const salesA = a.sales || 0;
+          const salesB = b.sales || 0;
+          return salesB - salesA;
+        });
+        break;
+
+      case "Price: Low to High":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+
+      case "Price: High to Low":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+
+      default:
+        sorted = [...rawProducts];
+    }
+
+    setProducts(sorted);
+  }, [sortBy, rawProducts]);
   useEffect(() => {
     if (!query) return;
 
@@ -451,139 +505,138 @@ function SearchResults({ query, onToggleHeader }) {
           <h2 className="text-2xl font-bold mb-8 text-center z-10 mt-16">
             Product Comparison
           </h2>
- {loadingCompare ? (
+          {loadingCompare ? (
             <div className="px- grid grid-cols-3 w-3/4 mx-auto  gap-4">
               <CompareSkeleton />
-          <div className="overflow-x-hidden overflow-hidden relative z-10">
-            <div className="pb-5 w-3/4 mx-auto flex gap-4">
-              {comparisonResults.map((result, index) => {
-                const p = products.find(
-                  (x) => x.id === selectedProducts[index]
-                );
-                const selectedVar = selectedVariations[p?.id];
-                const displayPrice = selectedVar
-                  ? selectedVar.price
-                  : `${result.lowestPrice} - ${result.highestPrice}`;
+              <div className="overflow-x-hidden overflow-hidden relative z-10">
+                <div className="pb-5 w-3/4 mx-auto flex gap-4">
+                  {comparisonResults.map((result, index) => {
+                    const p = products.find(
+                      (x) => x.id === selectedProducts[index]
+                    );
+                    const selectedVar = selectedVariations[p?.id];
+                    const displayPrice = selectedVar
+                      ? selectedVar.price
+                      : `${result.lowestPrice} - ${result.highestPrice}`;
 
-                return (
-                  <div
-                    key={p?.id || index}
-                    className="flex flex-col flex-1 min-w-[220px]"
-                  >
-                    <div className="glass-button1 rounded-t-[23px]">
-                      <div className="flex justify-center items-center flex-col p-4">
-                        <img
-                          crossOrigin="anonymous"
-                          src={p?.image}
-                          alt={result.title}
-                          className="w-32 h-32 object-contain rounded-lg"
-                        />
-                        <p className="font-semibold text-center mt-3">
-                          {result.title}
-                        </p>
-                        {result.brand && (
-                          <p className="text-xs text-white/60 mt-1">
-                            {result.brand}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">
-                          Price
-                        </span>
-                        <span>₱{displayPrice}</span>
-                      </div>
-                    </div>
-
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">
-                          Rating
-                        </span>
-                        <span>{result.rating || "-"} ⭐</span>
-                      </div>
-                    </div>
-
-                    <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">
-                          Source
-                        </span>
-                        <span>{p?.source || "-"}</span>
-                      </div>
-                    </div>
-
-                    <div className="glass-button1 min-h-24 rounded-0 flex items-center justify-center text-center p-3">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs opacity-60">
-                          Description
-                        </span>
-                        <span className="text-xs mt-1 line-clamp-3">
-                          {result.description || "-"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="glass-button1 py-3 min-h-16 h-auto rounded-0 flex flex-col items-center justify-center text-center relative">
-                      <span className="font-semibold text-xs opacity-60 mb-2">
-                        Variations
-                      </span>
-                      <Dropdown
-                        options={result.variations.map(
-                          (variation) =>
-                            `${variation.name} — ₱${variation.price}`
-                        )}
-                        onChange={(option) => {
-                          const [name] = option.value.split(" — ₱");
-                          const selected = result.variations.find(
-                            (v) => v.name === name
-                          );
-                          setSelectedVariations((prev) => ({
-                            ...prev,
-                            [p.id]: selected,
-                          }));
-                        }}
-                        value={
-                          selectedVar
-                            ? `${selectedVar.name} — ₱${selectedVar.price}`
-                            : "Select variation "
-                        }
-                        placeholder="Select a variation"
-                        className="w-full text-sm font-vagRounded"
-                        controlClassName=""
-                        menuClassName="!absolute !static !rounded-none !bg-[rgba(255,255,255,0.01)] !backdrop-blur-none"
-                        arrowClassName="text-white"
-
-                      />
-                    </div>
-
-                    <div className="text-center pt-6">
-                      <button
-                        onClick={() =>
-                          window.open(
-                            p?.source === "Lazada"
-                              ? "https://www.lazada.com.ph/"
-                              : "https://shopee.ph/",
-                            "_blank"
-                          )
-                        }
-                        className={`${
-                          p?.source === "Lazada"
-                            ? "bg-pink-700/20 hover:bg-pink-800/20"
-                            : "bg-orange-700/20 hover:bg-orange-800/20"
-                        } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                    return (
+                      <div
+                        key={p?.id || index}
+                        className="flex flex-col flex-1 min-w-[220px]"
                       >
-                        Buy Now
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            </div>
+                        <div className="glass-button1 rounded-t-[23px]">
+                          <div className="flex justify-center items-center flex-col p-4">
+                            <img
+                              crossOrigin="anonymous"
+                              src={p?.image}
+                              alt={result.title}
+                              className="w-32 h-32 object-contain rounded-lg"
+                            />
+                            <p className="font-semibold text-center mt-3">
+                              {result.title}
+                            </p>
+                            {result.brand && (
+                              <p className="text-xs text-white/60 mt-1">
+                                {result.brand}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-xs opacity-60">
+                              Price
+                            </span>
+                            <span>₱{displayPrice}</span>
+                          </div>
+                        </div>
+
+                        <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-xs opacity-60">
+                              Rating
+                            </span>
+                            <span>{result.rating || "-"} ⭐</span>
+                          </div>
+                        </div>
+
+                        <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-xs opacity-60">
+                              Source
+                            </span>
+                            <span>{p?.source || "-"}</span>
+                          </div>
+                        </div>
+
+                        <div className="glass-button1 min-h-24 rounded-0 flex items-center justify-center text-center p-3">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-xs opacity-60">
+                              Description
+                            </span>
+                            <span className="text-xs mt-1 line-clamp-3">
+                              {result.description || "-"}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="glass-button1 py-3 min-h-16 h-auto rounded-0 flex flex-col items-center justify-center text-center relative">
+                          <span className="font-semibold text-xs opacity-60 mb-2">
+                            Variations
+                          </span>
+                          <Dropdown
+                            options={result.variations.map(
+                              (variation) =>
+                                `${variation.name} — ₱${variation.price}`
+                            )}
+                            onChange={(option) => {
+                              const [name] = option.value.split(" — ₱");
+                              const selected = result.variations.find(
+                                (v) => v.name === name
+                              );
+                              setSelectedVariations((prev) => ({
+                                ...prev,
+                                [p.id]: selected,
+                              }));
+                            }}
+                            value={
+                              selectedVar
+                                ? `${selectedVar.name} — ₱${selectedVar.price}`
+                                : "Select variation "
+                            }
+                            placeholder="Select a variation"
+                            className="w-full text-sm font-vagRounded"
+                            controlClassName=""
+                            menuClassName="!absolute !static !rounded-none !bg-[rgba(255,255,255,0.01)] !backdrop-blur-none"
+                            arrowClassName="text-white"
+                          />
+                        </div>
+
+                        <div className="text-center pt-6">
+                          <button
+                            onClick={() =>
+                              window.open(
+                                p?.source === "Lazada"
+                                  ? "https://www.lazada.com.ph/"
+                                  : "https://shopee.ph/",
+                                "_blank"
+                              )
+                            }
+                            className={`${
+                              p?.source === "Lazada"
+                                ? "bg-pink-700/20 hover:bg-pink-800/20"
+                                : "bg-orange-700/20 hover:bg-orange-800/20"
+                            } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                          >
+                            Buy Now
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           ) : (
             <>

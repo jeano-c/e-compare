@@ -24,7 +24,7 @@ function HomePage() {
     ];
 
     let index = 0;
-    setFadeText(textOptions[index]);
+    setFadeText(textOptions[index]); 
 
     const interval = setInterval(() => {
       setFadeState("fade-out");

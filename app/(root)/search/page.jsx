@@ -6,6 +6,7 @@ import SkeletonResult from "@/components/SkeletonResult";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import dynamic from "next/dynamic";
+
 function SearchResult() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
@@ -19,35 +20,6 @@ function SearchResult() {
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   const handleSelect = (option) => setSelectedOption(option.value || option);
-
-  // Old layout attempt (kept for reference)
-  /*
-  return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen">
-      <div className="flex items-center justify-center w-full">
-        <div className="p-10 flex justify-end w-full text-white">
-  );
-  */
-
-  // Separate component to use useSearchParams inside Suspense
-  /*
-  function SearchContent() {
-    const searchParams = useSearchParams();
-    const q = searchParams.get("q") || "";
-
-    const options = [
-      "Best Match",
-      "Top Sales",
-      "Price: Low to High",
-      "Price: High to Low",
-    ];
-    const [selectedOption, setSelectedOption] = useState(options[0]);
-
-    const handleSelect = (option) => {
-      setSelectedOption(option.value);
-    };
-  }
-  */
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen h-fit">
