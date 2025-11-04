@@ -52,112 +52,120 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
     return result;
   }
 
-  async function GetProducts(signal) {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        `/api/search?keyword=${encodeURIComponent(query)}`,
-        { signal } // 👈 attach abort signal here
-      );
-
-      const lazadaItems =
-        res.data.lazada?.mods?.listItems?.map((item, index) => ({
-          id: `lazada-${item.itemId || index}`,
-          source: "Lazada",
-          name: item.name,
-          image: item.image,
-          merchant: item.sellerName,
-          price: parseFloat(item.price.replace(/[^\d.]/g, "")),
-          link: item.itemUrl,
-          sales: item.itemSoldCntShow || 0,
-        })) || [];
-
-      const shopeeItems =
-        res.data.shopee?.items?.map((item, index) => ({
-          id: `shopee-${item.item_basic.itemid || index}`,
-          source: "Shopee",
-          name: item.item_basic.name,
-          merchant: "shop",
-          image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
-          price: item.item_basic.price / 100000,
-          link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
-          sales: item.item_basic.historical_sold || 0,
-        })) || [];
-
-      const merged = [...lazadaItems, ...shopeeItems];
-      const uniqueProducts = Object.values(
-        merged.reduce((acc, product) => {
-          // This only adds the product if its ID hasn't been seen yet
-          if (!acc[product.id]) {
-            acc[product.id] = product;
-          }
-          return acc;
-        }, {})
-      );
-      const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
-      setProducts(sortedProducts);
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log("❌ Request canceled");
-        toast.error(`${error}`);
-      } else {
-        console.error("Error fetching products:", error);
-        toast.error(`${error}`);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // async function GetProducts() {
+  // async function GetProducts(signal) {
   //   try {
   //     setLoading(true);
-  //     await new Promise((resolve) => setTimeout(resolve, 10000));
+  //     const res = await axios.get(
+  //       `/api/search?keyword=${encodeURIComponent(query)}`,
+  //       { signal } // 👈 attach abort signal here
+  //     );
 
-  //     const lazadaItems = [
-  //       {
-  //         id: 1,
+  //     const lazadaItems =
+  //       res.data.lazada?.mods?.listItems?.map((item, index) => ({
+  //         id: `lazada-${item.itemId || index}`,
   //         source: "Lazada",
-  //         link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
-  //         name: "Wireless Mouse",
-  //         image: "https://placehold.co/400",
-  //         merchant: "Lazada Store",
-  //         price: 299,
-  //         sales: 150,
-  //       },
-  //       {
-  //         id: 2,
-  //         source: "Lazada",
-  //         name: "Mechanical Keyboard",
-  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-  //         image: "https://placehold.co/400",
-  //         merchant: "Lazada Tech",
-  //         price: 899,
-  //         sales: 89,
-  //       },
-  //     ];
+  //         name: item.name,
+  //         image: item.image,
+  //         merchant: item.sellerName,
+  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")),
+  //         link: item.itemUrl,
+  //        sales: parseInt((item.itemSoldCntShow || "0").replace(/[^0-9]/g, ""), 10)
+  //          rating:item.ratingScore
+  //       })) || [];
 
-  //     const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
-  //       id: i + 3,
-  //       source: "Shopee",
-  //       name: "Mechanical Keyboard",
-  //       link: "https://shopee.ph/product/1023426474/29541632312",
-  //       image: "https://placehold.co/400",
-  //       merchant: "Shopee Tech",
-  //       price: 850,
-  //       sales: 120 - i * 10,
-  //     }));
+  //     const shopeeItems =
+  //       res.data.shopee?.items?.map((item, index) => ({
+  //         id: `shopee-${item.item_basic.itemid || index}`,
+  //         source: "Shopee",
+  //         name: item.item_basic.name,
+  //         merchant: item.shop_name,
+  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
+  //         price: item.item_basic.price / 100000,
+  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
+  //         sales: item.item_basic.historical_sold || 0,
+  //         rating: item_basic.item_rating.rating_star
+  //       })) || [];
 
-  //     const newProducts = [...lazadaItems, ...shopeeItems];
-  //     setRawProducts(newProducts); // Store original order
-  //     setProducts(newProducts); // Initial display
-  //     ScrapeAllProducts(newProducts);
+  //     const merged = [...lazadaItems, ...shopeeItems];
+  //     const uniqueProducts = Object.values(
+  //       merged.reduce((acc, product) => {
+  //         // This only adds the product if its ID hasn't been seen yet
+  //         if (!acc[product.id]) {
+  //           acc[product.id] = product;
+  //         }
+  //         return acc;
+  //       }, {})
+  //     );
+  //     const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
+  //     setProducts(sortedProducts);
   //   } catch (error) {
-  //     toast.error(error.message);
+  //     if (axios.isCancel(error)) {
+  //       console.log("❌ Request canceled");
+  //       toast.error(`${error}`);
+  //     } else {
+  //       console.error("Error fetching products:", error);
+  //       toast.error(`${error}`);
+  //     }
   //   } finally {
   //     setLoading(false);
   //   }
   // }
+
+  async function GetProducts() {
+    try {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+
+      const lazadaItems = [
+        {
+          id: 1,
+          source: "Lazada",
+          link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
+          name: "Wireless Mouse",
+          image: "https://placehold.co/400",
+          merchant: "Lazada Store",
+          price: 299,
+          sales: 150,
+          rating: 4.6,
+          ratingCount: 230,
+        },
+        {
+          id: 2,
+          source: "Lazada",
+          name: "Mechanical Keyboard",
+          link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
+          image: "https://placehold.co/400",
+          merchant: "Lazada Tech",
+          price: 899,
+          sales: 89,
+          rating: 4.8,
+          ratingCount: 124,
+        },
+      ];
+
+      const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
+        id: i + 3,
+        source: "Shopee",
+        name: "Mechanical Keyboard",
+        link: "https://shopee.ph/product/1023426474/29541632312",
+        image: "https://placehold.co/400",
+        merchant: "Shopee Tech",
+        price: 850,
+        sales: 120 - i * 10,
+        rating: (Math.random() * 1.5 + 3.5).toFixed(2), // random between 3.5–5.0
+        ratingCount: Math.floor(Math.random() * 500 + 50), // 50–550
+      }));
+
+      const newProducts = [...lazadaItems, ...shopeeItems];
+      setRawProducts(newProducts);
+      setProducts(newProducts);
+      ScrapeAllProducts(newProducts);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!rawProducts.length) return;

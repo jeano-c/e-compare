@@ -5,7 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaRegHeart, FaHeart, FaStar } from "react-icons/fa";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
+import Image from "next/image";
 function Card({
   products,
   showCompare,
@@ -76,7 +77,7 @@ function Card({
         await axios.delete(`/api/likes`, {
           data: { product_id: products.id },
         });
-        console.log("💔 Like removed!");
+        console.log("Like removed!");
       }
     } catch (error) {
       console.error("Error saving like:", error);
@@ -149,13 +150,23 @@ function Card({
         <div className="flex flex-col items-start">
           <p className="text-white text-xl font-medium">₱ {products.price}</p>
           <div className="flex items-center">
-            <p className="text-white/90 text-md">{products.rating}<span className="text-transparent">_</span></p>
-            <FaStar className="text-lg text-gray-200" />
+            <p className="text-white/90 text-md">
+              {products.rating}
+              <span className="text-transparent">_</span>
+            </p>
+            <FaStar className="text-lg text-gray-200" />{" "}
           </div>
         </div>
-        <button className="w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
-          Buy Now
-        </button>
+        <Link href={products.link} target="_blank">
+          <button className="flex justify-center items-center gap-2 w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
+            <Image
+              width={"20"}
+              height={"20"}
+              src={products.source == "Shopee" ? "/shopee.svg" : "/lazada.svg"}
+            />
+            Buy Now
+          </button>
+        </Link>
       </div>
     </div>
   );
