@@ -11,7 +11,7 @@ import PopoverDemo from "./ui/PopoverDemo";
 import { TrendingUpDown } from "lucide-react";
 import CompareSkeleton from "./CompareSkeleton";
 
-function SearchResults({ query, onToggleHeader, sortBy }) {
+function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const targetRef = useRef(null);
@@ -69,35 +69,48 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
   //         merchant: item.sellerName,
   //         price: parseFloat(item.price.replace(/[^\d.]/g, "")),
   //         link: item.itemUrl,
-  //        sales: parseInt((item.itemSoldCntShow || "0").replace(/[^0-9]/g, ""), 10)
-  //          rating:item.ratingScore
+  //         sales: parseInt(
+  //           (item.itemSoldCntShow || "0").replace(/[^0-9]/g, ""),
+  //           10
+  //         ),
+  //         rating: Math.round((item.ratingScore || 0) * 10) / 10,
   //       })) || [];
 
   //     const shopeeItems =
-  //       res.data.shopee?.items?.map((item, index) => ({
-  //         id: `shopee-${item.item_basic.itemid || index}`,
-  //         source: "Shopee",
-  //         name: item.item_basic.name,
-  //         merchant: item.shop_name,
-  //         image: `https://down-ph.img.susercontent.com/file/${item.item_basic.image}`,
-  //         price: item.item_basic.price / 100000,
-  //         link: `https://shopee.ph/product/${item.item_basic.shopid}/${item.item_basic.itemid}`,
-  //         sales: item.item_basic.historical_sold || 0,
-  //         rating: item_basic.item_rating.rating_star
-  //       })) || [];
+  //       res.data.shopee?.items
+  //         ?.filter((item) => item.item_basic) // ensure item_basic exists
+  //         ?.map((item, index) => {
+  //           const b = item.item_basic; // shorthand
+
+  //           return {
+  //             id: `shopee-${b.itemid || index}`,
+  //             source: "Shopee",
+  //             name: b.name,
+  //             merchant: b.shop_name || "Unknown Seller",
+  //             image: b.image
+  //               ? `https://down-ph.img.susercontent.com/file/${b.image}`
+  //               : null,
+  //             price: b.price ? b.price / 100000 : 0,
+  //             link: `https://shopee.ph/product/${b.shopid}/${b.itemid}`,
+  //             sales: b.historical_sold || 0,
+  //             rating: Math.round((b.item_rating?.rating_star || 0) * 10) / 10,
+  //           };
+  //         }) || [];
 
   //     const merged = [...lazadaItems, ...shopeeItems];
   //     const uniqueProducts = Object.values(
   //       merged.reduce((acc, product) => {
-  //         // This only adds the product if its ID hasn't been seen yet
-  //         if (!acc[product.id]) {
-  //           acc[product.id] = product;
-  //         }
+  //         if (!acc[product.id]) acc[product.id] = product;
   //         return acc;
   //       }, {})
   //     );
-  //     const sortedProducts = uniqueProducts.sort((a, b) => a.price - b.price);
-  //     setProducts(sortedProducts);
+
+  //     // Store raw unsorted list
+  //     setRawProducts(uniqueProducts);
+
+  //     // ✅ Default to "Best Match" alternating
+  //     const bestMatch = alternateProducts(uniqueProducts);
+  //     setProducts(bestMatch);
   //   } catch (error) {
   //     if (axios.isCancel(error)) {
   //       console.log("❌ Request canceled");
@@ -111,7 +124,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
   //   }
   // }
 
-  //---------------------------------------------MOCK DATA ---------------------------------------------
+  // ---------------------------------------------MOCK DATA ---------------------------------------------
   async function GetProducts() {
     try {
       setLoading(true);
@@ -218,15 +231,20 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
       const alreadySelected = prev.includes(productId);
       if (isLocked) return prev;
       if (alreadySelected) return prev.filter((id) => id !== productId);
+
       if (isAddingOneMore) {
         if (prev.length >= 3) return prev;
 
         const newSelected = [...prev, productId];
         if (newSelected.length === 3) {
+          // Wait for state to update, then fetch comparison data
           setTimeout(() => {
             setIsAddingOneMore(false);
             setLockedProducts([]);
-            setShowComparisonTable(true);
+            setShowCompare(false); // Hide the compare mode first
+            CompareAction().then(() => {
+              setShowComparisonTable(true);
+            });
           }, 300);
         }
 
@@ -248,7 +266,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //------------------------------ mockdata ---------------------------------------------
+  // ------------------------------ mockdata ---------------------------------------------
   async function CompareAction() {
     try {
       setLoadingCompare(true);
@@ -303,8 +321,11 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
   }
 
   //------------------------------------------------------------legit---------------------------------------------------------------------------
-  //   async function CompareAction() {
+
+  // async function CompareAction() {
   //   try {
+  //     setLoadingCompare(true);
+  //     setShowComparisonTable(true);
   //     const selected = products.filter((p) => selectedProducts.includes(p.id));
   //     if (selected.length === 0) {
   //       toast.error("No products selected");
@@ -356,8 +377,10 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
   //     setCompareID(res.data.comparisonId);
   //     setShowComparisonTable(true);
   //   } catch (error) {
-  //     console.error("❌ CompareAction failed:", error);
+  //     console.error(" CompareAction failed:", error);
   //     toast.error("Something went wrong while comparing");
+  //   } finally {
+  //     setLoadingCompare(false);
   //   }
   // }
 
@@ -431,7 +454,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
               //     Loading Products...
               //   </p>
               // </div>
-                <SkeletonResult />
+              <SkeletonResult />
             ) : error ? (
               <p className="text-center text-red-400 font-vagRounded mt-10">
                 {error}
@@ -515,9 +538,9 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
             Product Comparison
           </h2>
           {loadingCompare ? (
-            <div className="px- grid grid-cols-3 w-3/4 mx-auto  gap-4">
+            <div className="  grid grid-cols-3 w-3/4 mx-auto gap-4">
               <CompareSkeleton />
-              <div className="overflow-x-hidden overflow-hidden relative z-10">
+              {/* <div className="overflow-x-hidden overflow-hidden relative z-10">
                 <div className="pb-5 w-3/4 mx-auto flex gap-4">
                   {comparisonResults.map((result, index) => {
                     const p = products.find(
@@ -645,7 +668,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             <>
@@ -788,7 +811,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
                     setShowCompare(true);
                   }}
                   className="absolute top-[180px] right-[40px] text-white/80 text-[15px] 
-            font-medium hover:text-gray-300 cursor-pointer select-none z-50"
+                     font-medium hover:text-gray-300 cursor-pointer select-none z-50"
                 >
                   + Add 1 more item
                 </span>
