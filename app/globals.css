@@ -190,7 +190,7 @@
 }
 
 .glass-input {
-  @apply w-full pl-6 text-gray-200 text-lg font-normal tracking-wide rounded-2xl;
+  @apply w-full pl-6 text-gray-200 text-xl font-normal tracking-wide rounded-2xl;
 
   box-sizing: border-box;
 

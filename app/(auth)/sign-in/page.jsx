@@ -163,7 +163,7 @@ function Signin() {
           </div>
 
           <div className="flex flex-row items-start justify-between gap-10 mb-10 sm:flex-row sm:items-center sm:mb-18">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2 ">
               <input
                 className="glass-checkbox"
                 type="checkbox"
@@ -181,7 +181,7 @@ function Signin() {
             <div className="flex items-center">
               <h1
                 onClick={() => router.push("/forgot-password")}
-                className="text-white relative inline-block text-lg font-normal cursor-pointer text-[16px] font-vagRounded"
+                className="text-white relative inline-block underline underline-offset-2 text-lg font-normal cursor-pointer text-[16px] font-vagRounded"
               >
                 Forgot password
                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
@@ -217,7 +217,7 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
                 disabled={!isLoaded}
-                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <FcGoogle className="text-2xl sm:text-4xl" />
                 <span className="hidden  sm:inline">Login with Google</span>
@@ -227,7 +227,7 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <div className="p-2 sm:p-1 rounded-md">
                   <svg
