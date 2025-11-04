@@ -265,6 +265,7 @@
   color: white !important;
   border: none !important;
   box-shadow: none !important;
+  
 }
 .Dropdown-control {
   background-color: transparent !important;
@@ -274,6 +275,8 @@
 }
 
 .Dropdown-menu {
+  justify-self: end !important;
+  width: 200px !important;
   position: relative;
   text-align: center;
   background: rgba(255, 255, 255, 0.02) !important;

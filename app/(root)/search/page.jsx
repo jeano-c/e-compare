@@ -25,14 +25,14 @@ function SearchResult() {
     <div className="flex flex-col items-center justify-center w-full min-h-screen h-fit">
       <div className="px-10 mt-10 items-center justify-center flex w-full">
         <div className="flex justify-end w-full text-white">
-          <div className="font-vagRounded py-1 text-[16px] text-white">
+          <div className="font-vagRounded py-1 text-[16px] text-white font-bold">
             <p>Sort by:</p>
           </div>
           <Dropdown
             options={options}
             onChange={handleSelect}
             value={selectedOption}
-            className="w-[200px] text-sm font-vagRounded"
+            className="text-sm font-vagRounded underline underline-white underline-offset-3"
             controlClassName="Dropdown-control"
             menuClassName="Dropdown-menu"
             arrowClassName="text-white"
