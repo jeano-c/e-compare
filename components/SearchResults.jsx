@@ -111,6 +111,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
   //   }
   // }
 
+  //---------------------------------------------MOCK DATA ---------------------------------------------
   async function GetProducts() {
     try {
       setLoading(true);
@@ -247,7 +248,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //mockdata
+  //------------------------------ mockdata ---------------------------------------------
   async function CompareAction() {
     try {
       setLoadingCompare(true);
@@ -301,7 +302,7 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
     }
   }
 
-  //legit
+  //------------------------------------------------------------legit---------------------------------------------------------------------------
   //   async function CompareAction() {
   //   try {
   //     const selected = products.filter((p) => selectedProducts.includes(p.id));
@@ -420,17 +421,17 @@ function SearchResults({ query, onToggleHeader, sortBy }) {
 
           <div className="text-center px-10 pt-20 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
             {loading ? (
-              <div className="col-span-full flex flex-col justify-center items-center gap-4 min-h-[60vh]">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                  className="w-12 h-12 border-4 border-t-white border-gray-400 rounded-full"
-                />
-                <p className="text-white text-lg font-vagRounded tracking-wide">
-                  Loading Products...
-                </p>
+              // <div className="col-span-full flex flex-col justify-center items-center gap-4 min-h-[60vh]">
+              //   <motion.div
+              //     animate={{ rotate: 360 }}
+              //     transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              //     className="w-12 h-12 border-4 border-t-white border-gray-400 rounded-full"
+              //   />
+              //   <p className="text-white text-lg font-vagRounded tracking-wide">
+              //     Loading Products...
+              //   </p>
+              // </div>
                 <SkeletonResult />
-              </div>
             ) : error ? (
               <p className="text-center text-red-400 font-vagRounded mt-10">
                 {error}

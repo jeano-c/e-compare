@@ -296,7 +296,7 @@ function Signup() {
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_google")}
                 disabled={loadingButton !== "" || !isLoaded}
-                className="cursor-pointer flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center text-white justify-center gap-2 px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 {loadingButton === "oauth_google" ? (
                   <VscLoading className="text-3xl sm:text-4xl animate-spin" />
@@ -318,7 +318,7 @@ function Signup() {
                 type="button"
                 onClick={() => handleOAuthSignUp("oauth_facebook")}
                 disabled={loadingButton !== "" || !isLoaded}
-                className="cursor-pointer flex flex-row items-center justify-center text-white px-6 text-base glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="cursor-pointer flex flex-row items-center justify-center text-white px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 {loadingButton === "oauth_facebook" ? (
                   <VscLoading className="text-3xl sm:text-4xl animate-spin" />
