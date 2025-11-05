@@ -47,12 +47,12 @@ function PopoverDemo({
             sideOffset={5}
             side="top"
           >
-            <div className="min-h-96 flex flex-col justify-center items-center gap-2.5 px-3 py-2">
+            <div className="min-h-96 flex flex-col justify-center items-center gap-2.5 px-10 py-5">
               {aiLoading ? (
                 <VscLoading className="animate-spin text-white text-4xl" />
               ) : (
                 <>
-                  <p className="mb-2.5 text-[15px] font-medium leading-[19px]">
+                  <p className="mb-2.5  text-[15px] font-medium leading-[19px]">
                     AI Recommendations
                   </p>
                   <div className="text-center text-sm whitespace-pre-wrap">

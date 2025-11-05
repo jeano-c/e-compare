@@ -159,13 +159,13 @@ function Card({
         </div>
         <Link href={products.link} target="_blank">
           <button className="flex justify-center items-center gap-2 w-[116px] h-[44px] text-[16px] compare-button text-white rounded-2xl hover:opacity-80 transition-opacity">
+            Buy Now
             <Image
               alt = ""
               width={"20"}
               height={"20"}
               src={products.source == "Shopee" ? "/shopee.svg" : "/lazada.svg"}
             />
-            Buy Now
           </button>
         </Link>
       </div>
