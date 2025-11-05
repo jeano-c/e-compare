@@ -162,7 +162,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
         source: "Shopee",
         name: "Mechanical Keyboard",
         link: "https://shopee.ph/product/1023426474/29541632312",
-        image: "https://placehold.co/400",
+        image: "https://placehold.co/400x400/FFFFFF/FFFFFF", // pure white background
         merchant: "Shopee Tech",
         price: 850,
         sales: 120 - i * 10,
@@ -821,7 +821,11 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
         </motion.div>
       )}
 
-      <div className="fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
+      <div className="p-[50px] fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
+      
+
+
+  
         {!showCompare && !isMinimized && (
           <button
             onClick={() => setShowCompare(true)}
@@ -829,8 +833,16 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
           >
             Compare
           </button>
+          
         )}
         {showCompare && !showComparisonTable && !isAddingOneMore && (
+         
+           <div className="flex flex-col items-center gap-3">
+           <div className="text-white text-lg font-semibold bg-black/60 px-4 py-2 rounded-full shadow-md flex justify-center items-center">
+      {selectedProducts.length}/3
+    </div>
+
+
           <button
             disabled={
               selectedProducts.length < 2 || selectedProducts.length > 3
@@ -847,6 +859,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
           >
             Compare Now
           </button>
+          </div>
+         
         )}
         {showComparisonTable && (
           <PopoverDemo

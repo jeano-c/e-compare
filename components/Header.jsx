@@ -37,8 +37,10 @@ function Header({ visible = false }) {
     <>
       <header className="flex justify-between items-center pl-13 pr-10 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
         {/* LEFT SIDE */}
-        <div className="flex items-center gap-4 font-baloo text-[24px]" >
-          E-COMPARE
+        <div className="flex items-center  font-baloo text-[24px] gap-4">
+          <Link href={"/"}>
+            E-COMPARE
+          </Link>
         </div>
 
         {/* CENTER SEARCH BAR */}
