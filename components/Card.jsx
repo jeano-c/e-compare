@@ -113,15 +113,19 @@ function Card({
           </p>
         </div>
 
-        {showCompare ? (
-          <input
-            type="checkbox"
-            className="glass-checkbox cursor-pointer"
-            checked={isSelected}
-            onChange={onToggle}
-            disabled={isDisabled && !isSelected}
-          />
-        ) : (
+     {showCompare ? (
+  <input
+    type="checkbox"
+    className="glass-checkbox cursor-pointer"
+    checked={isSelected}
+    onChange={(e) => {
+      e.stopPropagation(); 
+      onToggle(e);
+    }}
+    onClick={(e) => e.stopPropagation()} 
+    disabled={isDisabled && !isSelected}
+  />
+) : (
           <button
             type="button"
             onClick={handleLike}
