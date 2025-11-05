@@ -37,10 +37,8 @@ function Header({ visible = false }) {
     <>
       <header className="flex justify-between items-center pl-13 pr-10 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
         {/* LEFT SIDE */}
-        <div className="flex items-center gap-4">
-          <Link href={"/"}>
-            <img src="/LOGO 1.1_WHITE.png" width={80} alt="" />
-          </Link>
+        <div className="flex items-center gap-4 font-baloo text-[24px]" >
+          E-COMPARE
         </div>
 
         {/* CENTER SEARCH BAR */}

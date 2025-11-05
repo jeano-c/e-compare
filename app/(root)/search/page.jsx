@@ -32,7 +32,7 @@ function SearchResult() {
             options={options}
             onChange={handleSelect}
             value={selectedOption}
-            className="text-sm font-vagRounded underline underline-white underline-offset-3"
+            className="text-sm font-vagRounded "
             controlClassName="Dropdown-control"
             menuClassName="Dropdown-menu"
             arrowClassName="text-white"
