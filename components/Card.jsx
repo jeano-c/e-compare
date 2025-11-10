@@ -89,8 +89,8 @@ function Card({
   return (
     <div
       className={cn(
-        "flex flex-col w-full  glass-button rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 select-none inner-shadow-y",
-        showCompare && "z-30",
+       "flex flex-col w-full glass-button   rounded-2xl p-4 gap-3 relative cursor-pointer transition-all duration-150 ",
+    showCompare && "z-30",
         isDisabled && "opacity-50",
         isPressed && "scale-95"
       )}
@@ -100,8 +100,19 @@ function Card({
       onTouchStart={!showCompare ? handlePressStart : undefined}
       onTouchEnd={!showCompare ? handlePressEnd : undefined}
       onTouchCancel={!showCompare ? handlePressEnd : undefined}
-      onClick={showCompare && !isDisabled ? onToggle : undefined}
-    >
+       onClick={() => {
+    if (showCompare && !isDisabled) {
+      onToggle?.();
+    } else if (!showCompare && !isDisabled) {
+      // Redirect logic
+      if (products?.source === "Shopee" && products?.link) {
+        window.open(products.link, "_blank");
+      } else if (products?.source === "Lazada" && products?.link) {
+        window.open(products.link, "_blank");
+      }
+    }
+  }}
+>
       {/* Header Section */}
       <div className="flex justify-center items-start">
         <div className="flex flex-col flex-1 min-w-0">

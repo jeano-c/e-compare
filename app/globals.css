@@ -75,7 +75,7 @@
   @apply w-full;
   box-sizing: border-box;
 
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.1);
   border-width: 0.5px;
   border-style: solid;
   border-radius: 23px;

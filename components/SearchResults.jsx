@@ -128,7 +128,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   async function GetProducts() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const lazadaItems = [
         {
@@ -148,7 +148,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
           source: "Lazada",
           name: "Mechanical Keyboard",
           link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-          image: "https://placehold.co/400",
+          image: "https://placehold.co/400x400/FFFFFF/FFFFFF",
           merchant: "Lazada Tech",
           price: 899,
           sales: 89,
@@ -410,9 +410,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${
-            showCompare ? "inner-shadow-y" : "bg-transparent"
-          }`}
+          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
+            }`}
           style={{ top: "5px", overflow: "visible" }}
         >
           {/* ✕ and ━ Buttons */}
@@ -688,8 +687,19 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                         key={p?.id || index}
                         className="flex flex-col flex-1 min-w-[220px]"
                       >
-                        <div className="glass-button1 rounded-t-[23px]">
+
+                        <div className="glass-button1 rounded-t-[23px]"
+                          onClick={() => {
+                            if (p?.link) {
+                              const link =
+                                p.link.startsWith("//") ? "https:" + p.link : p.link;
+                              window.open(link, "_blank");
+                            }
+                          }}
+                        >
+
                           <div className="flex justify-center items-center flex-col p-4">
+
                             <img
                               crossOrigin="anonymous"
                               src={p?.image}
@@ -728,7 +738,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                         <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                           <div className="flex flex-col">
                             <span className="font-semibold text-xs opacity-60">
-                              Source
+                              Store
                             </span>
                             <span>{p?.source || "-"}</span>
                           </div>
@@ -787,11 +797,10 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                                 "_blank"
                               )
                             }
-                            className={`${
-                              p?.source === "Lazada"
+                            className={`${p?.source === "Lazada"
                                 ? "bg-pink-700/20 hover:bg-pink-800/20"
                                 : "bg-orange-700/20 hover:bg-orange-800/20"
-                            } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                              } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
                           >
                             Buy Now
                           </button>
@@ -822,10 +831,10 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
       )}
 
       <div className="p-[50px] fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
-      
 
 
-  
+
+
         {!showCompare && !isMinimized && (
           <button
             onClick={() => setShowCompare(true)}
@@ -833,34 +842,33 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
           >
             Compare
           </button>
-          
+
         )}
         {showCompare && !showComparisonTable && !isAddingOneMore && (
-         
-           <div className="flex flex-col items-center gap-3">
-           <div className="text-white text-lg font-semibold bg-black/60 px-4 py-2 rounded-full shadow-md flex justify-center items-center">
-      {selectedProducts.length}/3
-    </div>
+
+          <div className="flex flex-col items-center gap-3">
+            <div className="text-white text-lg font-semibold bg-black/60 px-4 py-2 rounded-full shadow-md flex justify-center items-center">
+              {selectedProducts.length}/3
+            </div>
 
 
-          <button
-            disabled={
-              selectedProducts.length < 2 || selectedProducts.length > 3
-            }
-            onClick={async () => {
-              await CompareAction();
-              setShowComparisonTable(true);
-            }}
-            className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
-              selectedProducts.length >= 2 && selectedProducts.length <= 3
-                ? "text-white bg-blue-500 hover:bg-black-200"
-                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-            }`}
-          >
-            Compare Now
-          </button>
+            <button
+              disabled={
+                selectedProducts.length < 2 || selectedProducts.length > 3
+              }
+              onClick={async () => {
+                await CompareAction();
+                setShowComparisonTable(true);
+              }}
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
+                  ? "text-white bg-blue-500 hover:bg-black-200"
+                  : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+                }`}
+            >
+              Compare Now
+            </button>
           </div>
-         
+
         )}
         {showComparisonTable && (
           <PopoverDemo

@@ -54,7 +54,7 @@ export default function ComparisonTable({
 
             <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
               <div className="flex flex-col">
-                <span className="font-semibold text-xs opacity-60">Source</span>
+                <span className="font-semibold text-xs opacity-60">Store</span>
                 <span>
                   {result.url.includes("lazada")
                     ? "Lazada"
