@@ -10,6 +10,8 @@ import "react-dropdown/style.css";
 import PopoverDemo from "./ui/PopoverDemo";
 import { TrendingUpDown } from "lucide-react";
 import CompareSkeleton from "./CompareSkeleton";
+import Link from "next/link";
+
 
 function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   const [aiReply, setAiReply] = useState(null);
@@ -128,7 +130,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   async function GetProducts() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       const lazadaItems = [
         {
@@ -271,7 +273,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
     try {
       setLoadingCompare(true);
       setShowComparisonTable(true);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       const selected = products.filter((p) => selectedProducts.includes(p.id));
       const urls = selected.map((p) =>
         p.link.startsWith("//") ? "https:" + p.link : p.link
@@ -284,9 +286,15 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
 
       const mockResults = urls.map((url, i) => ({
         url,
-        title: `Mock Product ${i + 1}`,
+        title:
+          i % 2 === 0
+            ? `Mock Product ${i + 1}`
+            : `MOCKPRODUCTT FOR WWHAT NOW HAHAHHAHAHAHAHHAH HAHAHAHHAH HAHAHAHHAH`,
         brand: i % 2 === 0 ? "Logitech" : "Rakk",
-        description: "This is a mocked product description.",
+        description:
+          i % 2 === 0
+            ? "This is a mocked product description. "
+            : "This is a mocked product description.This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description.",
         rating: (Math.random() * 5).toFixed(1),
         currency: "PHP",
         lowestPrice: 799 + i * 100,
@@ -686,30 +694,32 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                     return (
                       <div
                         key={p?.id || index}
-                        className="flex flex-col flex-1 min-w-[220px]"
+                        className="flex flex-col flex-1 min-w-[220px] pb-5"
                       >
-                        <div className="glass-button1 rounded-t-[23px]">
-                          <div className="flex justify-center items-center flex-col p-4">
-                            <img
-                              crossOrigin="anonymous"
-                              src={p?.image}
-                              alt={result.title}
-                              className="w-32 h-32 object-contain rounded-lg"
-                            />
-                            <p className="font-semibold text-center mt-3">
-                              {result.title}
-                            </p>
-                            {result.brand && (
-                              <p className="text-xs text-white/60 mt-1">
-                                {result.brand}
+                        <Link href={p?.link} target="_blank">
+                          <div className="glass-button1 rounded-t-[23px] min-h-[250px]">
+                            <div className="flex justify-center items-center flex-col p-4">
+                              <img
+                                crossOrigin="anonymous"
+                                src={p?.image}
+                                alt={result.title}
+                                className="w-32 h-32 object-contain rounded-lg"
+                              />
+                              <p className="font-semibold line-clamp-2 text-ellipsis overflow-hidden text-center mt-3">
+                                {result.title}
                               </p>
-                            )}
+                              {result.brand && (
+                                <p className="text-xs text-white/60 mt-1">
+                                  {result.brand}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
+                        </Link>
 
                         <div className="glass-button1 h-16 rounded-0 flex items-center justify-center text-center">
                           <div className="flex flex-col">
-                            <span className="font-semibold text-xs opacity-60">
+                            <span className="font-semibold text-xs opacity-60 ">
                               Price
                             </span>
                             <span>₱{displayPrice}</span>
@@ -739,7 +749,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                             <span className="font-semibold text-xs opacity-60">
                               Description
                             </span>
-                            <span className="text-xs mt-1 line-clamp-3">
+                            <span className="text-xs mt-1 line-clamp-3 text-ellipsis overflow-hidden">
                               {result.description || "-"}
                             </span>
                           </div>
@@ -771,8 +781,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                             }
                             placeholder="Select a variation"
                             className="w-full text-sm font-vagRounded"
-                            controlClassName=""
-                            menuClassName="!absolute !static "
+                            controlClassName="!w-full"
+                            menuClassName="!absolute !static !w-full rounded-none "
                             arrowClassName="text-white"
                           />
                         </div>
@@ -822,10 +832,6 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
       )}
 
       <div className="p-[50px] fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
-      
-
-
-  
         {!showCompare && !isMinimized && (
           <button
             onClick={() => setShowCompare(true)}
@@ -833,34 +839,30 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
           >
             Compare
           </button>
-          
         )}
         {showCompare && !showComparisonTable && !isAddingOneMore && (
-         
-           <div className="flex flex-col items-center gap-3">
-           <div className="text-white text-lg font-semibold bg-black/60 px-4 py-2 rounded-full shadow-md flex justify-center items-center">
-      {selectedProducts.length}/3
-    </div>
+          <div className="flex flex-col items-center gap-3">
+            <div className="text-white text-lg font-semibold bg-black/60 px-4 py-2 rounded-full shadow-md flex justify-center items-center">
+              {selectedProducts.length}/3
+            </div>
 
-
-          <button
-            disabled={
-              selectedProducts.length < 2 || selectedProducts.length > 3
-            }
-            onClick={async () => {
-              await CompareAction();
-              setShowComparisonTable(true);
-            }}
-            className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
-              selectedProducts.length >= 2 && selectedProducts.length <= 3
-                ? "text-white bg-blue-500 hover:bg-black-200"
-                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-            }`}
-          >
-            Compare Now
-          </button>
+            <button
+              disabled={
+                selectedProducts.length < 2 || selectedProducts.length > 3
+              }
+              onClick={async () => {
+                await CompareAction();
+                setShowComparisonTable(true);
+              }}
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+                selectedProducts.length >= 2 && selectedProducts.length <= 3
+                  ? "text-white bg-blue-500 hover:bg-black-200"
+                  : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+              }`}
+            >
+              Compare Now
+            </button>
           </div>
-         
         )}
         {showComparisonTable && (
           <PopoverDemo
