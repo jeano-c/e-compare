@@ -187,7 +187,7 @@ function Signup() {
             className="relative inline-block text-xl font-bold cursor-pointer sm:text-2xl group text-white"
           >
             Go to home
-            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
+              <span class="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
           </h1>
         </div>
 

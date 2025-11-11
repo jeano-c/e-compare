@@ -84,12 +84,12 @@ function Header({ visible = false }) {
         <div className="flex justify-center items-center gap-1">
           <SignedOut>
             <Link href="/sign-in">
-              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:bg-white/10 ease duration-500">
+              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:text-gray-300 ease duration-500">
                 Login
               </button>
             </Link>
             <Link href="/sign-up">
-              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:bg-white/10 ease duration-500">
+              <button className="font-normal text-lg text-white font-vagRounded cursor-pointer rounded-full px-5 py-3 hover:text-gray-300 ease duration-500">
                 Sign Up
               </button>
             </Link>

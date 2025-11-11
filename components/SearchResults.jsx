@@ -227,35 +227,35 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
     };
   }, [query]);
 
- function handleToggle(productId) {
-  setSelectedProducts((prev) => {
-    const isLocked = lockedProducts.includes(productId);
-    const alreadySelected = prev.includes(productId);
-    if (isLocked) return prev;
-    if (alreadySelected) return prev.filter((id) => id !== productId);
+  function handleToggle(productId) {
+    setSelectedProducts((prev) => {
+      const isLocked = lockedProducts.includes(productId);
+      const alreadySelected = prev.includes(productId);
+      if (isLocked) return prev;
+      if (alreadySelected) return prev.filter((id) => id !== productId);
 
-    if (isAddingOneMore) {
+      if (isAddingOneMore) {
+        if (prev.length >= 3) return prev;
+
+        const newSelected = [...prev, productId];
+        if (newSelected.length === 3) {
+          setTimeout(() => {
+            setIsAddingOneMore(false);
+            setLockedProducts([]);
+            setShowCompare(false);
+            CompareAction(newSelected).then(() => {
+              setShowComparisonTable(true);
+            });
+          }, 300);
+        }
+        return newSelected;
+      }
+
+
       if (prev.length >= 3) return prev;
-
-      const newSelected = [...prev, productId];
- if (newSelected.length === 3) {
-  setTimeout(() => {
-    setIsAddingOneMore(false);
-    setLockedProducts([]);
-    setShowCompare(false);
-    CompareAction(newSelected).then(() => {
-      setShowComparisonTable(true);
+      return [...prev, productId];
     });
-  }, 300);
-}
-      return newSelected;
-    }
-
-    // ✅ This was missing — handles the default (non "add one more") case
-    if (prev.length >= 3) return prev;
-    return [...prev, productId];
-  });
-}
+  }
   useEffect(() => {
     let lastScrollY = 0;
     const handleScroll = () => {
@@ -268,58 +268,64 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   }, []);
 
   // ------------------------------ mockdata ---------------------------------------------
- async function CompareAction(selectedList = selectedProducts) {
-  try {
-    setLoadingCompare(true);
-    setShowComparisonTable(true);
+  async function CompareAction(selectedList = selectedProducts) {
+    try {
+      setLoadingCompare(true);
+      setShowComparisonTable(true);
 
-    const selected = products.filter((p) => selectedList.includes(p.id));
-    const urls = selected.map((p) =>
-      p.link.startsWith("//") ? "https:" + p.link : p.link
-    );
+      const selected = products.filter((p) => selectedList.includes(p.id));
+      const urls = selected.map((p) =>
+        p.link.startsWith("//") ? "https:" + p.link : p.link
+      );
 
-    if (!urls.length) {
-      toast.error("No valid URLs selected");
-      return;
+      if (!urls.length) {
+        toast.error("No valid URLs selected");
+        return;
+      }
+
+      const mockResults = urls.map((url, i) => ({
+        url,
+        title:
+          i % 2 === 0
+            ? `Mock Product ${i + 1}`
+            : `MOCKPRODUCTT FOR WWHAT NOW HAHAHHAHAHAHAHHAH HAHAHAHHAH HAHAHAHHAH`,
+        brand: i % 2 === 0 ? "Logitech" : "Rakk",
+        description:
+          i % 2 === 0
+            ? "This is a mocked product description."
+            : "This is a mocked product description.This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description.",
+        rating: (Math.random() * 5).toFixed(1),
+        currency: "PHP",
+        lowestPrice: 799 + i * 100,
+        highestPrice: 999 + i * 100,
+        variations: [
+          {
+            name: "Black / Red",
+            price: (799 + i * 100).toFixed(2),
+            priceBeforeDiscount: (899 + i * 100).toFixed(2),
+            stock: 12,
+            sold: 45 + i * 5,
+          },
+          {
+            name: "White / Blue",
+            price: (849 + i * 100).toFixed(2),
+            priceBeforeDiscount: (949 + i * 100).toFixed(2),
+            stock: 8,
+            sold: 20 + i * 2,
+          },
+        ],
+      }));
+
+      setComparisonResults(mockResults);
+      const res = await axios.post("/api/history", { snapshot: mockResults });
+      setCompareID(res.data.comparisonId);
+    } catch (error) {
+      console.error("Mock CompareAction failed:", error);
+      toast.error("Something went wrong");
+    } finally {
+      setLoadingCompare(false);
     }
-
-    const mockResults = urls.map((url, i) => ({
-      url,
-      title: `Mock Product ${i + 1}`,
-      brand: i % 2 === 0 ? "Logitech" : "Rakk",
-      description: "This is a mocked product description.",
-      rating: (Math.random() * 5).toFixed(1),
-      currency: "PHP",
-      lowestPrice: 799 + i * 100,
-      highestPrice: 999 + i * 100,
-      variations: [
-        {
-          name: "Black / Red",
-          price: (799 + i * 100).toFixed(2),
-          priceBeforeDiscount: (899 + i * 100).toFixed(2),
-          stock: 12,
-          sold: 45 + i * 5,
-        },
-        {
-          name: "White / Blue",
-          price: (849 + i * 100).toFixed(2),
-          priceBeforeDiscount: (949 + i * 100).toFixed(2),
-          stock: 8,
-          sold: 20 + i * 2,
-        },
-      ],
-    }));
-
-    setComparisonResults(mockResults);
-    const res = await axios.post("/api/history", { snapshot: mockResults });
-    setCompareID(res.data.comparisonId);
-  } catch (error) {
-    console.error("Mock CompareAction failed:", error);
-    toast.error("Something went wrong");
-  } finally {
-    setLoadingCompare(false);
   }
-}
 
 
   //------------------------------------------------------------legit---------------------------------------------------------------------------
@@ -434,7 +440,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                     setIsMinimized(false);
                     minimizedSnapshot.current = [];
                   }}
-                  className="text-white text-[36px] font-vagRounded font-light cursor-pointer"
+                  className="text-white text-[32px] font-vagRounded font-light cursor-pointer"
                   title="Close"
                 >
                   ✕
@@ -776,8 +782,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                             className="w-full text-sm font-vagRounded"
                             controlClassName="Dropdown-control !w-full"
                             menuClassName="Dropdown-menu !absolute !static !w-full rounded-none "
-                        
-          
+
+
                             arrowClassName="text-white"
                           />
                         </div>
@@ -793,8 +799,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                               )
                             }
                             className={`${p?.source === "Lazada"
-                                ? "bg-pink-700/20 hover:bg-pink-800/20"
-                                : "bg-orange-700/20 hover:bg-orange-800/20"
+                              ? "bg-pink-700/20 hover:bg-pink-800/20"
+                              : "bg-orange-700/20 hover:bg-orange-800/20"
                               } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
                           >
                             Buy Now
@@ -848,11 +854,10 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                 await CompareAction();
                 setShowComparisonTable(true);
               }}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
-                selectedProducts.length >= 2 && selectedProducts.length <= 3
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
                   ? "text-white bg-blue-500 hover:bg-black-200"
                   : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-              }`}
+                }`}
             >
               Compare Now
             </button>

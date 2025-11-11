@@ -56,7 +56,8 @@ function HomePage() {
               {/* Fading Placeholder */}
               {!search && (
                 <div
-                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${
+                  className={`absolute left-12 top-1/2 transform -translate-y-1/2 
+                    text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${
                     fadeState === "fade-in" ? "opacity-100" : "opacity-0"
                   }`}
                   style={{ whiteSpace: "nowrap" }}
@@ -67,7 +68,8 @@ function HomePage() {
               <div className="relative flex-[22]">
                 <form onSubmit={handleSubmit}>
                   <input
-                    className="glass-search w-full h-[48px] rounded-l-2xl text-white placeholder-white/50 pl-12 text-[16px] font-normal"
+                    className="glass-search w-full h-[48px] rounded-l-2xl text-white 
+                    placeholder-white/50 pl-12 text-[16px] font-normal hover:bg-white/10"
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -94,8 +96,20 @@ function HomePage() {
             style={{ width: "40%" }}
           >
             <p>Powered by </p>
-            <Image src={lazada} alt="Lazada" width={24} height={24} />
-            <Image src={shopee} alt="Shopee" width={16} height={16} />
+
+          
+            <Image className="cursor-pointer"  src={lazada} alt="Lazada" width={24} height={24}   onClick={() =>
+                              window.open(
+                                "https://www.lazada.com.ph/"
+                                 
+                              )
+                            }/>
+            <Image className="cursor-pointer" src={shopee} alt="Shopee" width={16} height={16} onClick={() =>
+                              window.open(
+                                "https://shopee.ph/"
+                                 
+                              )
+                            }/> 
           </div>
         </div>
       </div>

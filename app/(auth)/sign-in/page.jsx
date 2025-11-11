@@ -104,10 +104,10 @@ function Signin() {
         <div className="w-full">
           <h1
             onClick={() => router.push("/")}
-            className="relative inline-block text-xl font-bold cursor-pointer sm:text-2xl group text-white"
+            className="relative inline-block text-[24px] font-vagRounded font-bold cursor-pointer group text-white"
           >
             Go to home
-            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
+            <span class="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
           </h1>
         </div>
         <div className="text-center lg:text-left">
@@ -181,7 +181,7 @@ function Signin() {
             <div className="flex items-center">
               <h1
                 onClick={() => router.push("/forgot-password")}
-                className="text-white relative inline-block underline underline-offset-2 text-lg font-normal cursor-pointer text-[16px] font-vagRounded"
+                className="text-white relative inline-block  hover:text-gray-300 text-lg font-normal cursor-pointer text-[16px] font-vagRounded"
               >
                 Forgot password
                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
@@ -217,7 +217,8 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
                 disabled={!isLoaded}
-                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="glass-button h cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base
+                 !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <FcGoogle className="text-2xl sm:text-4xl" />
                 <span className="hidden  sm:inline">Login with Google</span>
@@ -227,7 +228,8 @@ function Signin() {
                 type="button"
                 onClick={() => handleOAuthSignIn("facebook")}
                 disabled={!isLoaded}
-                className="cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base glass-button !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
+                className="glass-button cursor-pointer flex flex-row items-center text-white justify-center w-full gap-2 px-6 text-base
+                !min-h-[64px] sm:w-auto sm:text-xl sm:px-12 font-vagRounded"
               >
                 <div className="p-2 sm:p-1 rounded-md">
                   <svg
