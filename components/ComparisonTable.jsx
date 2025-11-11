@@ -102,6 +102,7 @@ export default function ComparisonTable({
                   }
                   placeholder="Select a variation"
                   className="w-full text-sm font-vagRounded"
+               
                   disabled={!showActions || !onVariationChange}
                 />
               ) : (

@@ -275,6 +275,7 @@
 }
 
 .Dropdown-menu {
+  
   justify-self: end !important;
   width: 200px !important;
   position: relative;
