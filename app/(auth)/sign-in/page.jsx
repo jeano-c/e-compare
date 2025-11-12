@@ -6,6 +6,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react"; 
 
 function Signin() {
   const { signIn, isLoaded, setActive } = useSignIn();
@@ -16,7 +17,7 @@ function Signin() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+ const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isLoaded) return;
@@ -111,14 +112,14 @@ function Signin() {
           </h1>
         </div>
         <div className="text-center lg:text-left">
-          <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
+          <h1 className="text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
           <p className="font-baloo text-5xl  sm:text-6xl lg:text-8xl">
             E-Compare
           </p>
           <div className="">
-            <p className="font-vagRounded text-lg font-regular sm:text-xl lg:text-2xl mt-1">
+            <p className="font-vagRounded text-lg font-regular sm:text-[24px] lg:text-2xl mt-1">
               Start your <span className="font-semibold">smart</span> online
               shopping here.
             </p>
@@ -135,8 +136,8 @@ function Signin() {
       <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
           <div className="mb-7 sm:mb-10">
-            <p className="mb-2 text-xl  font-light text-white sm:text-2xl font-vagRounded">
-              Email or Username
+            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
+             Email or Username
             </p>
             <input
               type="text"
@@ -144,23 +145,32 @@ function Signin() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="glass-input h-[64px]"
-              placeholder="Enter your username or email"
+              placeholder="Enter your email address or username"
             />
           </div>
 
-          <div className="mb-7">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+         {/* Password with eye toggle 👁️ */}
+          <div className="mb-7 relative">
+            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Password
             </p>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="glass-input h-[64px] "
+              className="glass-input h-[64px] w-full"
               placeholder="Enter your password"
             />
-          </div>
+              <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-8 top-18 -translate-y-1/2 text-white/70 hover:text-white transition"
+    aria-label={showPassword ? "Hide password" : "Show password"}
+  >
+    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+  </button>
+</div>
 
           <div className="flex flex-row items-start justify-between gap-10 mb-10 sm:flex-row sm:items-center sm:mb-18">
             <div className="flex items-center gap-2 ">

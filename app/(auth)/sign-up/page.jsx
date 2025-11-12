@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
 import { toast } from "sonner";
-
+import { Eye, EyeOff } from "lucide-react"; 
 function Signup() {
   const router = useRouter();
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -19,7 +19,7 @@ function Signup() {
   const [code, setCode] = useState("");
   const [loadingButton, setLoadingButton] = useState("");
   const [error, setError] = useState("");
-
+ const [showPassword, setShowPassword] = useState(false);
   // --- Handle Email/Password Signup ---
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -192,7 +192,7 @@ function Signup() {
         </div>
 
         <div className="text-center lg:text-left">
-          <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
+          <h1 className="text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
           <p className="font-baloo text-5xl sm:text-6xl lg:text-8xl">
@@ -213,7 +213,7 @@ function Signup() {
         <form onSubmit={handleSubmit}>
           {/* Email */}
           <div className="mb-7 sm:mb-10">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
               Email
             </p>
             <input
@@ -222,12 +222,13 @@ function Signup() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="glass-input h-[64px]"
+              placeholder="jeacodes@email.com"
             />
           </div>
 
           {/* Username */}
           <div className="mb-7 sm:mb-10">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
               Username
             </p>
             <input
@@ -236,26 +237,36 @@ function Signup() {
               onChange={(e) => setUsername(e.target.value)}
               required
               className="glass-input h-[64px]"
+              placeholder="jeacodes69tayo"
             />
           </div>
 
-          {/* Password */}
-          <div className="mb-7">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+         {/* Password with eye toggle 👁️ */}
+          <div className="mb-7 relative">
+            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Password
             </p>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="glass-input h-[64px]"
+              className="glass-input h-[64px] w-full "
+            placeholder="········"
             />
-          </div>
+              <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-8 top-18 -translate-y-1/2 text-white/70 hover:text-white transition"
+    aria-label={showPassword ? "Hide password" : "Show password"}
+  >
+    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+  </button>
+</div>
 
           {/* Confirm Password */}
           <div className="mb-7">
-            <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded">
+            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
               Confirm Password
             </p>
             <input

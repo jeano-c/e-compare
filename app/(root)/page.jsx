@@ -65,26 +65,24 @@ function HomePage() {
                 />
               )}
 
-              <div className="relative flex-[22]">
-                <form onSubmit={handleSubmit}>
-                  <input
-                    className="glass-search w-full h-[48px] rounded-l-2xl text-white 
-                    placeholder-white/50 pl-12 text-[16px] font-normal hover:bg-white/10"
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <FaMagnifyingGlass className="absolute left-[20px] top-1/2 -translate-y-1/2 text-white/50 text-[16px]" />
-                </form>
-              </div>
-
+    <div className="glass-search relative flex-[22]">
+  <form onSubmit={handleSubmit}>
+    <FaMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-[16px] pointer-events-none" />
+    <input
+      className="w-full rounded-l-2xl text-white placeholder-white/50 text-[16px] font-normal"
+      type="text"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
+  </form>
+</div>
               {/* Search Button */}
               <div onClick={handleSubmit}>
                 <button
                   type="button"
                   className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6"
                 >
-                  <FaMagnifyingGlass className="text-white/70 text-lg" />
+                  <FaMagnifyingGlass className=" text-white/70 text-lg" />
                 </button>
               </div>
             </div>

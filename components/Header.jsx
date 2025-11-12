@@ -43,42 +43,48 @@ function Header({ visible = false }) {
           </Link>
         </div>
 
-        {/* CENTER SEARCH BAR */}
-        <div className="justify-center flex w-[40%] min-w-[300px] relative">
-          {isSearchPage && (
-            <form
-              onSubmit={handleSearch}
-              className="relative flex-[22] flex justify-center items-center"
-            >
-              <input
-                name="q"
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search"
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                className={`glass-search w-full h-[48px] rounded-2xl text-white placeholder-white/50 text-[16px] font-normal transition-all duration-300 bg-white/5 border border-white/20 focus:border-white/50  ${
-                  isFocused ? "pl-12" : "pl-6 "
+    {/* CENTER SEARCH BAR */}
+<div className="justify-center flex w-[40%] min-w-[300px] relative">
+  {isSearchPage && (
+    <div className="flex w-full">
+      {/* Search Input */}
+      <div className="glass-search relative flex-[22]">
+        <form onSubmit={handleSearch}>
+          
+          <input
+            name="q"
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+             className={`glass-search w-full h-[48px] rounded-2xl text-white placeholder-white/50 text-[16px] 
+              font-normal transition-all duration-300 bg-white/5 border border-white/20 focus:border-white/50 
+               ${isFocused ? "!pl-12" : "!pl-4"}
                 }`}
               />
-
-              <FaMagnifyingGlass
-                className={`absolute left-[16px] top-1/2 -translate-y-1/2 text-white/70 text-[16px] transition-all duration-300 ${
+              <FaMagnifyingGlass  className={`absolute left-[16px] top-1/2 -translate-y-1/2 text-white/70 text-[16px] transition-all duration-300 z-100 ${
                   isFocused
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-3"
                 }`}
               />
+        </form>
+      </div>
 
-              <div className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6">
-                <button type="submit">
-                  <FaMagnifyingGlass className="text-white/70 text-lg" />
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
+      {/* Search Button */}
+      <div onClick={handleSearch}>
+        <button
+          type="button"
+          className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6 bg-white/10 hover:bg-white/20 transition-all duration-300"
+        >
+          <FaMagnifyingGlass className="text-white/70 text-lg" />
+        </button>
+      </div>
+    </div>
+  )}
+</div>
 
         {/* RIGHT SIDE */}
         <div className="flex justify-center items-center gap-1">
