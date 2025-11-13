@@ -59,8 +59,8 @@ function Header({ visible = false }) {
             placeholder="Search"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-             className={`glass-search w-full h-[48px] rounded-2xl text-white placeholder-white/50 text-[16px] 
-              font-normal transition-all duration-300 bg-white/5 border border-white/20 focus:border-white/50 
+             className={` w-full h-[48px] rounded-2xl text-white placeholder-white/50 text-[16px] 
+              font-normal transition-all duration-300  
                ${isFocused ? "!pl-12" : "!pl-4"}
                 }`}
               />
@@ -77,7 +77,7 @@ function Header({ visible = false }) {
       <div onClick={handleSearch}>
         <button
           type="button"
-          className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6 bg-white/10 hover:bg-white/20 transition-all duration-300"
+           className="flex-[1] h-[48px] search-button flex items-center justify-center rounded-r-2xl px-6"
         >
           <FaMagnifyingGlass className="text-white/70 text-lg" />
         </button>

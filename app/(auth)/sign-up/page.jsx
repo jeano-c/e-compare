@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
 function Signup() {
   const router = useRouter();
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -19,7 +19,7 @@ function Signup() {
   const [code, setCode] = useState("");
   const [loadingButton, setLoadingButton] = useState("");
   const [error, setError] = useState("");
- const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   // --- Handle Email/Password Signup ---
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -187,7 +187,7 @@ function Signup() {
             className="relative inline-block text-xl font-bold cursor-pointer sm:text-2xl group text-white"
           >
             Go to home
-              <span class="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+            <span class="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
           </h1>
         </div>
 
@@ -209,75 +209,95 @@ function Signup() {
       </div>
 
       {/* Right Side */}
-      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y scrollbar scrollbar-thumb-gray-600 scrollbar-track-transparent">
+      <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
-          {/* Email */}
+          {/* Email or Username */}
           <div className="mb-7 sm:mb-10">
-            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
+            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Email
             </p>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="glass-input h-[64px]"
-              placeholder="jeacodes@email.com"
-            />
+
+            {/* ✅ wrap the input in glass-search div */}
+            <div className="h-[64px] glass-loginInput relative w-full">
+              <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full h-full  text-white placeholder-white/50 text-[16px] 
+               font-normal transition-all duration-300  focus:outline-none"
+                placeholder="jeacodes@email.com"
+              />
+            </div>
           </div>
 
-          {/* Username */}
+
+          {/* Email or Username */}
           <div className="mb-7 sm:mb-10">
-            <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
+            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Username
             </p>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="glass-input h-[64px]"
-              placeholder="jeacodes69tayo"
-            />
+
+            {/* ✅ wrap the input in glass-search div */}
+            <div className="h-[64px] glass-loginInput relative w-full">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="w-full h-full  text-white placeholder-white/50 text-[16px] 
+               font-normal transition-all duration-300  focus:outline-none"
+                placeholder="jeacodes69tayo"
+              />
+            </div>
           </div>
 
-         {/* Password with eye toggle 👁️ */}
-          <div className="mb-7 relative">
+          {/* Password */}
+          <div className="mb-7">
             <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Password
             </p>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="glass-input h-[64px] w-full "
-            placeholder="········"
-            />
+
+            {/* ✅ wrap the input and eye toggle in glass-search div */}
+            <div className="h-[64px] glass-loginInput relative w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full  rounded-2xl text-white placeholder-white/50 text-[16px]
+                       font-normal transition-all duration-300  bg-transparent focus:outline-none"
+                placeholder="········"
+              />
+
               <button
-    type="button"
-    onClick={() => setShowPassword(!showPassword)}
-    className="absolute right-8 top-18 -translate-y-1/2 text-white/70 hover:text-white transition"
-    aria-label={showPassword ? "Hide password" : "Show password"}
-  >
-    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
-  </button>
-</div>
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+              </button>
+            </div>
+          </div>
 
           {/* Confirm Password */}
           <div className="mb-7">
             <p className="mb-3 text-[20px] font-normal text-white  font-vagRounded">
               Confirm Password
             </p>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="glass-input h-[64px]"
-            />
-          </div>
+            <div className="h-[64px] glass-loginInput relative w-full">
+              <input
+                 type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full  rounded-2xl text-white placeholder-white/50 text-[16px]
+                       font-normal transition-all duration-300  bg-transparent focus:outline-none"
 
+              />
+            </div>
+          </div>
           {/* Submit */}
           <div className="flex flex-col items-center justify-between gap-8 sm:gap-10">
             <div id="clerk-captcha"></div>
@@ -377,11 +397,10 @@ function Signup() {
               Already have an account?{" "}
               <span
                 onClick={() => loadingButton === "" && router.push("/sign-in")}
-                className={`font-bold text-white underline underline-offset-2 ${
-                  loadingButton === ""
+                className={`font-bold text-white underline underline-offset-2 ${loadingButton === ""
                     ? "cursor-pointer"
                     : "cursor-not-allowed opacity-50"
-                }`}
+                  }`}
               >
                 Login
               </span>
