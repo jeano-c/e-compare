@@ -16,7 +16,7 @@ export default function ResetWithCodeAndPwd() {
   const [email, setEmail] = useState("");
   const [codeDigits, setCodeDigits] = useState(Array(CODE_LENGTH).fill(""));
   const [newPassword, setNewPassword] = useState("");
-  const [resetId, setResetId] = useState(null); 
+  const [resetId, setResetId] = useState(null);
   const [error, setError] = useState("");
   const [isClient, setIsClient] = useState(false);
 
@@ -149,32 +149,35 @@ export default function ResetWithCodeAndPwd() {
 
   return (
     <div className="min-h-screen flex justify-center items-center ">
-      <div className=" !inner-shadow-y w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
+      <div className="  w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
         {stage === "request" && (
           <>
             <h1 className="text-white text-3xl font-semibold">
-              Forgot your password
+              Reset your password
             </h1>
             <p className="text-white mt-2 text-sm">
-              Enter your email, and we will send you a reset code.
+              Enter the email you signed up with. We'll send you a number code to
+               reset your password.
             </p>
             <form onSubmit={handleRequest} className="flex flex-col gap-4">
               <label className="text-white text-sm">Email address</label>
-              <input
-                type="email"
-                className="glass-input px-3 py-2 rounded-md text-black"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="glass-loginInput !h-[48px]">
+                <input
+                  type="email"
+                  className="px-3 py-2 rounded-md text-black"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
               <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Send code
               </button>
               <div className="flex justify-center">
-                <Link href={`/sign-up`}>
+                <Link href={`/sign-in`}>
                   <button
-                    className="text-white underline text-sm hover:text-gray-300 cursor-pointer"
+                    className="text-white underline underline-offset-5 text-sm hover:text-gray-300 cursor-pointer"
                     onClick={handleReset}
                   >
                     Back to login
@@ -199,43 +202,48 @@ export default function ResetWithCodeAndPwd() {
               className="flex flex-col gap-4"
             >
               <div>
+
                 <label className="text-white text-sm block mb-2 ">
-                  Reset Code
+             Reset Code
                 </label>
                 <div className="grid grid-cols-6 gap-2" onPaste={handlePaste}>
                   {codeDigits.map((digit, idx) => (
+                    <div className="glass-loginInput !w-full" key={idx}>
                     <input
-                      key={idx}
+               key={idx}
                       type="text"
                       inputMode="numeric"
                       autoComplete="one-time-code"
                       maxLength={1}
-                      className="inner-shadow-y text-center px-2 py-3 rounded-md text-white text-xl"
+                     className=" !p-0 w-full h-full  text-center px-2 py-3 rounded-md text-white text-xl"
                       value={digit}
                       ref={(el) => (inputRefs.current[idx] = el)}
                       onChange={(e) => handleDigitChange(idx, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(e, idx)}
                       required
                     />
+                      </div>
                   ))}
                 </div>
               </div>
 
+              
               <div>
                 <label className="text-white text-sm block mb-2">
                   New Password
                 </label>
-                <input
-                  type="password"
-                  className="glass-input px-3 py-2 rounded-md text-black w-full"
-                  placeholder="At least 8 characters"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
+                <div className="glass-loginInput !h-[52px]">
+                  <input
+                    type="password"
+                    className=" px-3 py-2 rounded-md text-black w-full"
+                    placeholder="At least 8 characters"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-
-              <button className="glass-button mt-2 py-2 rounded-md text-white">
+              <button className="glass-buttogn mt-2 py-2 rounded-md text-white">
                 Reset Password
               </button>
               {error && <p className="text-red-500">{error}</p>}
@@ -246,7 +254,7 @@ export default function ResetWithCodeAndPwd() {
         {stage !== "request" && (
           <div className="flex justify-center">
             <button
-              className="text-white underline text-sm hover:text-gray-300"
+              className="text-white underline underline-offset-5 text-sm hover:text-gray-300"
               onClick={handleReset}
             >
               Back & resend

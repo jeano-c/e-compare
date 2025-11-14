@@ -24,7 +24,7 @@ function HomePage() {
     ];
 
     let index = 0;
-    setFadeText(textOptions[index]); 
+    setFadeText(textOptions[index]);
 
     const interval = setInterval(() => {
       setFadeState("fade-out");
@@ -57,25 +57,24 @@ function HomePage() {
               {!search && (
                 <div
                   className={`absolute left-12 top-1/2 transform -translate-y-1/2 
-                    text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${
-                    fadeState === "fade-in" ? "opacity-100" : "opacity-0"
-                  }`}
+                    text-white/50 pointer-events-none z-10 transition-opacity duration-500 ${fadeState === "fade-in" ? "opacity-100" : "opacity-0"
+                    }`}
                   style={{ whiteSpace: "nowrap" }}
                   dangerouslySetInnerHTML={{ __html: fadeText }}
                 />
               )}
 
-    <div className="glass-search relative flex-[22]">
-  <form onSubmit={handleSubmit}>
-    <FaMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-[16px] pointer-events-none" />
-    <input
-      className="w-full rounded-l-2xl text-white placeholder-white/50 text-[16px] font-normal"
-      type="text"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
-  </form>
-</div>
+              <div className="glass-search relative flex-[22]">
+                <form onSubmit={handleSubmit}>
+                  <FaMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-[16px] pointer-events-none" />
+                  <input
+                    className="w-full rounded-l-2xl text-white placeholder-white/50 text-[16px] font-normal"
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </form>
+              </div>
               {/* Search Button */}
               <div onClick={handleSubmit}>
                 <button
@@ -95,19 +94,19 @@ function HomePage() {
           >
             <p>Powered by </p>
 
-          
-            <Image className="cursor-pointer"  src={lazada} alt="Lazada" width={24} height={24}   onClick={() =>
-                              window.open(
-                                "https://www.lazada.com.ph/"
-                                 
-                              )
-                            }/>
+
+            <Image className="cursor-pointer" src={lazada} alt="Lazada" width={24} height={24} onClick={() =>
+              window.open(
+                "https://www.lazada.com.ph/"
+
+              )
+            } />
             <Image className="cursor-pointer" src={shopee} alt="Shopee" width={16} height={16} onClick={() =>
-                              window.open(
-                                "https://shopee.ph/"
-                                 
-                              )
-                            }/> 
+              window.open(
+                "https://shopee.ph/"
+
+              )
+            } />
           </div>
         </div>
       </div>

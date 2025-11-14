@@ -29,6 +29,7 @@
     "drizzle-orm": "^0.44.7",
     "framer-motion": "^12.23.24",
     "gologin": "^2.1.33",
+    "gsap": "^3.13.0",
     "lucide-react": "^0.545.0",
     "modern-screenshot": "^4.6.6",
     "motion": "^12.23.24",
