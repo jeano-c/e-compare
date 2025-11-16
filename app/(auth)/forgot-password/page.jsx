@@ -243,7 +243,7 @@ export default function ResetWithCodeAndPwd() {
                   />
                 </div>
               </div>
-              <button className="glass-buttogn mt-2 py-2 rounded-md text-white">
+              <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Reset Password
               </button>
               {error && <p className="text-red-500">{error}</p>}

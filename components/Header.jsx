@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -20,7 +20,8 @@ function Header({ visible = false }) {
   const isSearchPage = pathname === "/search";
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-
+  const [showIcon, setShowIcon] = useState(false);
+  const hoverTimer = useRef(null);
   useEffect(() => {
     const q = searchParams.get("q") || "";
     setQuery(q);
@@ -37,11 +38,39 @@ function Header({ visible = false }) {
     <>
       <header className="flex justify-between items-center pl-13 pr-10 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
         {/* LEFT SIDE */}
-        <div className="flex items-center  font-baloo text-[24px] gap-4">
-          <Link href={"/"}>
-            E-COMPARE
+        <div className="flex items-center font-baloo text-[24px] gap-4">
+          <Link
+            href="/"
+            onMouseEnter={() => {
+              hoverTimer.current = setTimeout(() => setShowIcon(true), 3000);
+            }}
+            onMouseLeave={() => {
+              clearTimeout(hoverTimer.current);
+              setShowIcon(false);
+            }}
+            className="relative inline-block"
+          >
+            {/* TEXT */}
+            <span
+              className={`absolute left-0 top-0 transition-opacity duration-300 ${showIcon ? "opacity-0" : "opacity-100"
+                }`}
+            >
+              E-COMPARE
+            </span>
+
+            {/* ICON (perfectly overlapping text) */}
+            <img
+              src="/whiteicon.png"
+              alt="icon"
+              className={`absolute left-0 top-0 w-[40px] transition-opacity duration-300 ${showIcon ? "opacity-100" : "opacity-0"
+                }`}
+            />
+
+            {/* Invisible spacer to maintain consistent width */}
+            <span className="opacity-0">E-COMPARE</span>
           </Link>
         </div>
+
 
         {/* CENTER SEARCH BAR */}
         <div className="justify-center flex w-[40%] min-w-[300px] relative">
