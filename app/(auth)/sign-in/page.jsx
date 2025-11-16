@@ -111,7 +111,7 @@ function Signin() {
             <span className="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
           </h1>
         </div>
-        <div className="text-center lg:text-left">
+        <div className="cursor-default text-center lg:text-left">
           <h1 className="text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
@@ -126,7 +126,7 @@ function Signin() {
           </div>
         </div>
 
-        <div className="hidden lg:block">
+        <div className="cursor-default hidden lg:block">
           <p className="text-xl font-bold">by Jeacodes</p>
         </div>
       </div>
@@ -137,7 +137,7 @@ function Signin() {
         <form onSubmit={handleSubmit}>
           {/* Email or Username */}
           <div className="mb-7 sm:mb-10">
-            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
+            <p className="cursor-default mb-3 text-[20px] font-normal text-white font-vagRounded">
               Email or Username
             </p>
 
@@ -156,7 +156,7 @@ function Signin() {
           </div>
           {/* Password */}
           <div className="mb-7">
-            <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
+            <p className="cursor-default mb-3 text-[20px] font-normal text-white font-vagRounded">
               Password
             </p>
 
@@ -228,7 +228,7 @@ function Signin() {
             </div>
 
             <div>
-              <p className=" text-center text-white font-vagRounded text-[24px]">
+              <p className="cursor-default text-center text-white font-vagRounded text-[24px]">
                 or
               </p>
             </div>
@@ -273,7 +273,7 @@ function Signin() {
             </div>
 
             <div>
-              <p className=" text-[16px] text-center text-white ">
+              <p className=" cursor-default text-[16px] text-center text-white ">
                 Don't have account?{" "}
                 <span
                   onClick={() => router.push("/sign-up")}
@@ -287,7 +287,7 @@ function Signin() {
         </form>
 
         {/* Mobile footer */}
-        <div className="mt-8 text-center lg:hidden">
+        <div className="cursor-default mt-8 text-center lg:hidden">
           <p className="text-lg font-bold">by Jeacodes</p>
         </div>
       </div>

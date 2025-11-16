@@ -92,7 +92,7 @@ function HomePage() {
             className="flex justify-center items-center flex-row gap-3 font-vagRounded text-white font-medium text-1xl"
             style={{ width: "40%" }}
           >
-            <p>Powered by </p>
+            <p className="cursor-default">Powered by </p>
 
 
             <Image className="cursor-pointer" src={lazada} alt="Lazada" width={24} height={24} onClick={() =>

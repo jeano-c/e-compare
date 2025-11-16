@@ -191,7 +191,7 @@ function Signup() {
           </h1>
         </div>
 
-        <div className="text-center lg:text-left">
+        <div className="cursor-default text-center lg:text-left">
           <h1 className="text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
@@ -203,7 +203,7 @@ function Signup() {
           </p>
         </div>
 
-        <div className="hidden lg:block">
+        <div className="cursor-default hidden lg:block">
           <p className="text-xl font-bold">by Jeacodes</p>
         </div>
       </div>
@@ -408,7 +408,7 @@ function Signup() {
           </div>
         </form>
 
-        <div className="mt-8 text-center lg:hidden">
+        <div className="cursor-default mt-8 text-center lg:hidden">
           <p className="text-lg font-bold">by Jeacodes</p>
         </div>
       </div>
