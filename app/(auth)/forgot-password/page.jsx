@@ -9,7 +9,8 @@ import Link from "next/link";
 export default function ResetWithCodeAndPwd() {
   const { isLoaded, signIn } = useSignIn();
   const router = useRouter();
-
+  const [showIcon, setShowIcon] = useState(false);
+  const hoverTimer = useRef(null);
   const CODE_LENGTH = 6;
 
   const [stage, setStage] = useState("request"); // "request" | "verifyCode" | "resetPassword"
@@ -148,19 +149,63 @@ export default function ResetWithCodeAndPwd() {
   if (!isClient) return null; // Don't render until client-side
 
   return (
-    <div className="min-h-screen flex justify-center items-center ">
-      <div className="  w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
+      <>
+   <div className="flex flex-col min-h-screen">
+    {/* HEADER */}
+    <header className="flex justify-between items-center pl-13 pr-10 py-15 h-16 font font-black bg-header-gradient text-white relative z-10">
+      {/* LEFT SIDE */}
+      <div className="flex items-center font-baloo text-[24px] gap-4">
+        <Link
+          href="/"
+          onMouseEnter={() => {
+            hoverTimer.current = setTimeout(() => setShowIcon(true), 3000);
+          }}
+          onMouseLeave={() => {
+            clearTimeout(hoverTimer.current);
+            setShowIcon(false);
+          }}
+          className="relative inline-block"
+        >
+          {/* TEXT */}
+          <span
+            className={`absolute left-0 top-0 transition-opacity duration-300 ${
+              showIcon ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            E-COMPARE
+          </span>
+
+          {/* ICON */}
+          <img
+            src="/whiteicon.png"
+            alt="icon"
+            className={`absolute left-0 top-0 w-[40px] transition-opacity duration-300 ${
+              showIcon ? "opacity-100" : "opacity-0"
+            }`}
+          />
+
+          {/* Invisible spacer */}
+          <span className="opacity-0">E-COMPARE</span>
+        </Link>
+      </div>
+    </header>
+
+  
+    <main className="flex-1 flex justify-center items-center">
+      <div className="w-[400px] px-6 py-8 rounded-md flex flex-col gap-8">
         {stage === "request" && (
           <>
-            <h1 className="text-white text-3xl font-semibold">
+            <h1 className="cursor-default text-white text-3xl font-semibold">
               Reset your password
             </h1>
-            <p className="text-white mt-2 text-sm">
+            <p className="cursor-default text-white mt-2 text-sm">
               Enter the email you signed up with. We'll send you a number code to
-               reset your password.
+              reset your password.
             </p>
+
             <form onSubmit={handleRequest} className="flex flex-col gap-4">
               <label className="text-white text-sm">Email address</label>
+
               <div className="glass-loginInput !h-[48px]">
                 <input
                   type="email"
@@ -171,9 +216,11 @@ export default function ResetWithCodeAndPwd() {
                   required
                 />
               </div>
+
               <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Send code
               </button>
+
               <div className="flex justify-center">
                 <Link href={`/sign-in`}>
                   <button
@@ -190,52 +237,47 @@ export default function ResetWithCodeAndPwd() {
 
         {stage === "verifyCode" && (
           <>
-            <h1 className="text-white text-3xl font-semibold">
+            <h1 className="cursor-default text-white text-3xl font-semibold">
               Reset your password
             </h1>
-            <p className="text-white mt-2 text-sm">
+            <p className="cursor-default text-white mt-2 text-sm">
               Enter the {CODE_LENGTH}-digit code we sent to your email and your
               new password.
             </p>
-            <form
-              onSubmit={handleCodeAndPassword}
-              className="flex flex-col gap-4"
-            >
-              <div>
 
-                <label className="text-white text-sm block mb-2 ">
-             Reset Code
-                </label>
+            <form onSubmit={handleCodeAndPassword} className="flex flex-col gap-4">
+              <div>
+                <label className="text-white text-sm block mb-2">Reset Code</label>
+
                 <div className="grid grid-cols-6 gap-2" onPaste={handlePaste}>
                   {codeDigits.map((digit, idx) => (
                     <div className="glass-loginInput !w-full" key={idx}>
-                    <input
-               key={idx}
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                      maxLength={1}
-                     className=" !p-0 w-full h-full  text-center px-2 py-3 rounded-md text-white text-xl"
-                      value={digit}
-                      ref={(el) => (inputRefs.current[idx] = el)}
-                      onChange={(e) => handleDigitChange(idx, e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, idx)}
-                      required
-                    />
-                      </div>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        maxLength={1}
+                        className="!p-0 w-full h-full text-center px-2 py-3 rounded-md text-white text-xl"
+                        value={digit}
+                        ref={(el) => (inputRefs.current[idx] = el)}
+                        onChange={(e) => handleDigitChange(idx, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, idx)}
+                        required
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
 
-              
               <div>
                 <label className="text-white text-sm block mb-2">
                   New Password
                 </label>
+
                 <div className="glass-loginInput !h-[52px]">
                   <input
                     type="password"
-                    className=" px-3 py-2 rounded-md text-black w-full"
+                    className="px-3 py-2 rounded-md text-black w-full"
                     placeholder="At least 8 characters"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -243,9 +285,11 @@ export default function ResetWithCodeAndPwd() {
                   />
                 </div>
               </div>
+
               <button className="glass-button mt-2 py-2 rounded-md text-white">
                 Reset Password
               </button>
+
               {error && <p className="text-red-500">{error}</p>}
             </form>
           </>
@@ -262,6 +306,8 @@ export default function ResetWithCodeAndPwd() {
           </div>
         )}
       </div>
-    </div>
-  );
+    </main>
+  </div>
+   </>
+);
 }
