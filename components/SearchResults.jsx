@@ -12,7 +12,6 @@ import { TrendingUpDown } from "lucide-react";
 import CompareSkeleton from "./CompareSkeleton";
 import Link from "next/link";
 
-
 function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
@@ -53,135 +52,160 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
 
     return result;
   }
+  function slugify(text) {
+    if (!text) return "product";
+    return text
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-")
+      .replace(/^-+/, "")
+      .replace(/-+$/, "");
+  }
 
-  // async function GetProducts(signal) {
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios.get(
-  //       `/api/search?keyword=${encodeURIComponent(query)}`,
-  //       { signal } // 👈 attach abort signal here
-  //     );
-
-  //     const lazadaItems =
-  //       res.data.lazada?.mods?.listItems?.map((item, index) => ({
-  //         id: `lazada-${item.itemId || index}`,
-  //         source: "Lazada",
-  //         name: item.name,
-  //         image: item.image,
-  //         merchant: item.sellerName,
-  //         price: parseFloat(item.price.replace(/[^\d.]/g, "")),
-  //         link: item.itemUrl,
-  //         sales: parseInt(
-  //           (item.itemSoldCntShow || "0").replace(/[^0-9]/g, ""),
-  //           10
-  //         ),
-  //         rating: Math.round((item.ratingScore || 0) * 10) / 10,
-  //       })) || [];
-
-  //     const shopeeItems =
-  //       res.data.shopee?.items
-  //         ?.filter((item) => item.item_basic) // ensure item_basic exists
-  //         ?.map((item, index) => {
-  //           const b = item.item_basic; // shorthand
-
-  //           return {
-  //             id: `shopee-${b.itemid || index}`,
-  //             source: "Shopee",
-  //             name: b.name,
-  //             merchant: b.shop_name || "Unknown Seller",
-  //             image: b.image
-  //               ? `https://down-ph.img.susercontent.com/file/${b.image}`
-  //               : null,
-  //             price: b.price ? b.price / 100000 : 0,
-  //             link: `https://shopee.ph/product/${b.shopid}/${b.itemid}`,
-  //             sales: b.historical_sold || 0,
-  //             rating: Math.round((b.item_rating?.rating_star || 0) * 10) / 10,
-  //           };
-  //         }) || [];
-
-  //     const merged = [...lazadaItems, ...shopeeItems];
-  //     const uniqueProducts = Object.values(
-  //       merged.reduce((acc, product) => {
-  //         if (!acc[product.id]) acc[product.id] = product;
-  //         return acc;
-  //       }, {})
-  //     );
-
-  //     // Store raw unsorted list
-  //     setRawProducts(uniqueProducts);
-
-  //     // ✅ Default to "Best Match" alternating
-  //     const bestMatch = alternateProducts(uniqueProducts);
-  //     setProducts(bestMatch);
-  //   } catch (error) {
-  //     if (axios.isCancel(error)) {
-  //       console.log("❌ Request canceled");
-  //       toast.error(`${error}`);
-  //     } else {
-  //       console.error("Error fetching products:", error);
-  //       toast.error(`${error}`);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-
-  // ---------------------------------------------MOCK DATA ---------------------------------------------
-  async function GetProducts() {
+  async function GetProducts(signal) {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      const res = await axios.get(
+        `/api/search?keyword=${encodeURIComponent(query)}`,
+        { signal }
+      );
 
-      const lazadaItems = [
-        {
-          id: 1,
+      const lazadaItems =
+        res.data.lazada?.mods?.listItems?.map((item, index) => ({
+          id: `lazada-${item.itemId || index}`,
           source: "Lazada",
-          link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
-          name: "Wireless Mouse",
-          image: "https://placehold.co/400",
-          merchant: "Lazada Store",
-          price: 299,
-          sales: 150,
-          rating: 4.6,
-          ratingCount: 230,
-        },
-        {
-          id: 2,
-          source: "Lazada",
-          name: "Mechanical Keyboard",
-          link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
-          image: "https://placehold.co/400x400/FFFFFF/FFFFFF",
-          merchant: "Lazada Tech",
-          price: 899,
-          sales: 89,
-          rating: 4.8,
-          ratingCount: 124,
-        },
-      ];
+          name: item.name,
+          image: item.image,
+          merchant: item.sellerName,
+          price: parseFloat(item.price.replace(/[^\d.]/g, "")),
+          link: item.itemUrl,
+          sales: parseInt(
+            (item.itemSoldCntShow || "0").replace(/[^0-9]/g, ""),
+            10
+          ),
+          rating: Math.round((item.ratingScore || 0) * 10) / 10,
+        })) || [];
 
-      const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
-        id: i + 3,
-        source: "Shopee",
-        name: "Mechanical Keyboard",
-        link: "https://shopee.ph/product/1023426474/29541632312",
-        image: "https://placehold.co/400x400/FFFFFF/FFFFFF", // pure white background
-        merchant: "Shopee Tech",
-        price: 850,
-        sales: 120 - i * 10,
-        rating: (Math.random() * 1.5 + 3.5).toFixed(2), // random between 3.5–5.0
-        ratingCount: Math.floor(Math.random() * 500 + 50), // 50–550
-      }));
+      const shopeeItems =
+        res.data.shopee?.items
+          ?.filter((item) => item.item_basic)
+          ?.map((item, index) => {
+            const b = item.item_basic;
 
-      const newProducts = [...lazadaItems, ...shopeeItems];
-      setRawProducts(newProducts);
-      setProducts(newProducts);
-      ScrapeAllProducts(newProducts);
+            let linkShopId = b.shopid;
+            let linkItemId = b.itemid;
+
+            if (item.real_items && item.real_items.length > 0) {
+              linkShopId = item.real_items[0].shop_id;
+              linkItemId = item.real_items[0].item_id;
+            }
+            // --- END NEW LOGIC ---
+
+            const name = b.name;
+            const slug = slugify(name);
+
+            return {
+              id: `shopee-${b.itemid || index}`,
+              source: "Shopee",
+              name: name,
+              merchant: b.shop_name || "Unknown Seller",
+              image: b.image
+                ? `https://down-ph.img.susercontent.com/file/${b.image}`
+                : null,
+              price: b.price ? b.price / 100000 : 0,
+
+              // Build the link using the prioritized IDs
+              link: `https://shopee.ph/${slug}-i.${linkShopId}.${linkItemId}`,
+
+              sales: b.historical_sold || 0,
+              rating: Math.round((b.item_rating?.rating_star || 0) * 10) / 10,
+            };
+          }) || [];
+
+      const merged = [...lazadaItems, ...shopeeItems];
+      const uniqueProducts = Object.values(
+        merged.reduce((acc, product) => {
+          if (!acc[product.id]) acc[product.id] = product;
+          return acc;
+        }, {})
+      );
+
+      // Store raw unsorted list
+      setRawProducts(uniqueProducts);
+
+      const bestMatch = alternateProducts(uniqueProducts);
+      setProducts(bestMatch);
     } catch (error) {
-      toast.error(error.message);
+      if (axios.isCancel(error)) {
+        console.log("❌ Request canceled");
+        toast.error(`${error}`);
+      } else {
+        console.error("Error fetching products:", error);
+        toast.error(`${error}`);
+      }
     } finally {
       setLoading(false);
     }
   }
+
+  // ---------------------------------------------MOCK DATA ---------------------------------------------
+  // async function GetProducts() {
+  //   try {
+  //     setLoading(true);
+  //     await new Promise((resolve) => setTimeout(resolve, 300));
+
+  //     const lazadaItems = [
+  //       {
+  //         id: 1,
+  //         source: "Lazada",
+  //         link: "//www.lazada.com.ph/products/pdp-i4583025956.html",
+  //         name: "Wireless Mouse",
+  //         image: "https://placehold.co/400",
+  //         merchant: "Lazada Store",
+  //         price: 299,
+  //         sales: 150,
+  //         rating: 4.6,
+  //         ratingCount: 230,
+  //       },
+  //       {
+  //         id: 2,
+  //         source: "Lazada",
+  //         name: "Mechanical Keyboard",
+  //         link: "//www.lazada.com.ph/products/pdp-i5061537266.html",
+  //         image: "https://placehold.co/400x400/FFFFFF/FFFFFF",
+  //         merchant: "Lazada Tech",
+  //         price: 899,
+  //         sales: 89,
+  //         rating: 4.8,
+  //         ratingCount: 124,
+  //       },
+  //     ];
+
+  //     const shopeeItems = Array.from({ length: 8 }).map((_, i) => ({
+  //       id: i + 3,
+  //       source: "Shopee",
+  //       name: "Mechanical Keyboard",
+  //       link: "https://shopee.ph/product/1023426474/29541632312",
+  //       image: "https://placehold.co/400x400/FFFFFF/FFFFFF", // pure white background
+  //       merchant: "Shopee Tech",
+  //       price: 850,
+  //       sales: 120 - i * 10,
+  //       rating: (Math.random() * 1.5 + 3.5).toFixed(2), // random between 3.5–5.0
+  //       ratingCount: Math.floor(Math.random() * 500 + 50), // 50–550
+  //     }));
+
+  //     const newProducts = [...lazadaItems, ...shopeeItems];
+  //     setRawProducts(newProducts);
+  //     setProducts(newProducts);
+  //     ScrapeAllProducts(newProducts);
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
     if (!rawProducts.length) return;
@@ -251,7 +275,6 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
         return newSelected;
       }
 
-
       if (prev.length >= 3) return prev;
       return [...prev, productId];
     });
@@ -268,129 +291,128 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
   }, []);
 
   // ------------------------------ mockdata ---------------------------------------------
-  async function CompareAction(selectedList = selectedProducts) {
-    try {
-      setLoadingCompare(true);
-      setShowComparisonTable(true);
-
-      const selected = products.filter((p) => selectedList.includes(p.id));
-      const urls = selected.map((p) =>
-        p.link.startsWith("//") ? "https:" + p.link : p.link
-      );
-
-      if (!urls.length) {
-        toast.error("No valid URLs selected");
-        return;
-      }
-
-      const mockResults = urls.map((url, i) => ({
-        url,
-        title:
-          i % 2 === 0
-            ? `Mock Product ${i + 1}`
-            : `MOCKPRODUCTT FOR WWHAT NOW HAHAHHAHAHAHAHHAH HAHAHAHHAH HAHAHAHHAH`,
-        brand: i % 2 === 0 ? "Logitech" : "Rakk",
-        description:
-          i % 2 === 0
-            ? "This is a mocked product description."
-            : "This is a mocked product description.This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description.",
-        rating: (Math.random() * 5).toFixed(1),
-        currency: "PHP",
-        lowestPrice: 799 + i * 100,
-        highestPrice: 999 + i * 100,
-        variations: [
-          {
-            name: "Black / Red",
-            price: (799 + i * 100).toFixed(2),
-            priceBeforeDiscount: (899 + i * 100).toFixed(2),
-            stock: 12,
-            sold: 45 + i * 5,
-          },
-          {
-            name: "White / Blue",
-            price: (849 + i * 100).toFixed(2),
-            priceBeforeDiscount: (949 + i * 100).toFixed(2),
-            stock: 8,
-            sold: 20 + i * 2,
-          },
-        ],
-      }));
-
-      setComparisonResults(mockResults);
-      const res = await axios.post("/api/history", { snapshot: mockResults });
-      setCompareID(res.data.comparisonId);
-    } catch (error) {
-      console.error("Mock CompareAction failed:", error);
-      toast.error("Something went wrong");
-    } finally {
-      setLoadingCompare(false);
-    }
-  }
-
-
-  //------------------------------------------------------------legit---------------------------------------------------------------------------
-
-  // async function CompareAction() {
+  // async function CompareAction(selectedList = selectedProducts) {
   //   try {
   //     setLoadingCompare(true);
   //     setShowComparisonTable(true);
-  //     const selected = products.filter((p) => selectedProducts.includes(p.id));
-  //     if (selected.length === 0) {
-  //       toast.error("No products selected");
+
+  //     const selected = products.filter((p) => selectedList.includes(p.id));
+  //     const urls = selected.map((p) =>
+  //       p.link.startsWith("//") ? "https:" + p.link : p.link
+  //     );
+
+  //     if (!urls.length) {
+  //       toast.error("No valid URLs selected");
   //       return;
   //     }
 
-  //     const lazadaUrls = selected
-  //       .filter((p) => p.source === "Lazada")
-  //       .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link));
+  //     const mockResults = urls.map((url, i) => ({
+  //       url,
+  //       title:
+  //         i % 2 === 0
+  //           ? `Mock Product ${i + 1}`
+  //           : `MOCKPRODUCTT FOR WWHAT NOW HAHAHHAHAHAHAHHAH HAHAHAHHAH HAHAHAHHAH`,
+  //       brand: i % 2 === 0 ? "Logitech" : "Rakk",
+  //       description:
+  //         i % 2 === 0
+  //           ? "This is a mocked product description."
+  //           : "This is a mocked product description.This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description. This is a mocked product description.",
+  //       rating: (Math.random() * 5).toFixed(1),
+  //       currency: "PHP",
+  //       lowestPrice: 799 + i * 100,
+  //       highestPrice: 999 + i * 100,
+  //       variations: [
+  //         {
+  //           name: "Black / Red",
+  //           price: (799 + i * 100).toFixed(2),
+  //           priceBeforeDiscount: (899 + i * 100).toFixed(2),
+  //           stock: 12,
+  //           sold: 45 + i * 5,
+  //         },
+  //         {
+  //           name: "White / Blue",
+  //           price: (849 + i * 100).toFixed(2),
+  //           priceBeforeDiscount: (949 + i * 100).toFixed(2),
+  //           stock: 8,
+  //           sold: 20 + i * 2,
+  //         },
+  //       ],
+  //     }));
 
-  //     const shopeeUrls = selected
-  //       .filter((p) => p.source === "Shopee")
-  //       .map((p) => p.link);
-
-  //     const requests = [];
-
-  //     if (lazadaUrls.length > 0) {
-  //       const encodedUrls = encodeURIComponent(JSON.stringify(lazadaUrls));
-  //       requests.push(
-  //         axios
-  //           .get(`/api/lazada-true?urls=${encodedUrls}`)
-  //           .then((res) => res.data.results)
-  //           .catch((err) => {
-  //             console.error(" Lazada scrape failed:", err);
-  //             return [];
-  //           })
-  //       );
-  //     }
-
-  //     if (shopeeUrls.length > 0) {
-  //       requests.push(
-  //         axios
-  //           .post(`/api/shopee-true`, { urls: shopeeUrls })
-  //           .then((res) => res.data.results)
-  //           .catch((err) => {
-  //             console.error("Shopee scrape failed:", err);
-  //             return [];
-  //           })
-  //       );
-  //     }
-
-  //     const resultsArrays = await Promise.all(requests);
-
-  //     const results = resultsArrays.flat();
-
-  //     setComparisonResults(results);
-
-  //     const res = await axios.post("/api/history", { snapshot: results });
+  //     setComparisonResults(mockResults);
+  //     const res = await axios.post("/api/history", { snapshot: mockResults });
   //     setCompareID(res.data.comparisonId);
-  //     setShowComparisonTable(true);
   //   } catch (error) {
-  //     console.error(" CompareAction failed:", error);
-  //     toast.error("Something went wrong while comparing");
+  //     console.error("Mock CompareAction failed:", error);
+  //     toast.error("Something went wrong");
   //   } finally {
   //     setLoadingCompare(false);
   //   }
   // }
+
+  //------------------------------------------------------------legit---------------------------------------------------------------------------
+
+  async function CompareAction() {
+    try {
+      setLoadingCompare(true);
+      setShowComparisonTable(true);
+      const selected = products.filter((p) => selectedProducts.includes(p.id));
+      if (selected.length === 0) {
+        toast.error("No products selected");
+        return;
+      }
+
+      const lazadaUrls = selected
+        .filter((p) => p.source === "Lazada")
+        .map((p) => (p.link.startsWith("//") ? "https:" + p.link : p.link));
+
+      const shopeeUrls = selected
+        .filter((p) => p.source === "Shopee")
+        .map((p) => p.link);
+
+      const requests = [];
+
+      if (lazadaUrls.length > 0) {
+        const encodedUrls = encodeURIComponent(JSON.stringify(lazadaUrls));
+        requests.push(
+          axios
+            .get(`/api/lazada-true?urls=${encodedUrls}`)
+            .then((res) => res.data.results)
+            .catch((err) => {
+              console.error(" Lazada scrape failed:", err);
+              return [];
+            })
+        );
+      }
+
+      if (shopeeUrls.length > 0) {
+        requests.push(
+          axios
+            .post(`/api/shopee-true`, { urls: shopeeUrls })
+            .then((res) => res.data.results)
+            .catch((err) => {
+              console.error("Shopee scrape failed:", err);
+              return [];
+            })
+        );
+      }
+
+      const resultsArrays = await Promise.all(requests);
+
+      const results = resultsArrays.flat();
+
+      setComparisonResults(results);
+
+      const res = await axios.post("/api/history", { snapshot: results });
+      setCompareID(res.data.comparisonId);
+      setShowComparisonTable(true);
+    } catch (error) {
+      console.error(" CompareAction failed:", error);
+      toast.error("Something went wrong while comparing");
+    } finally {
+      setLoadingCompare(false);
+    }
+  }
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -418,8 +440,9 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
-            }`}
+          className={`relative z-30 min-h-screen ${
+            showCompare ? "inner-shadow-y" : "bg-transparent"
+          }`}
           style={{ top: "5px", overflow: "visible" }}
         >
           {/* ✕ and ━ Buttons */}
@@ -782,8 +805,6 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                             className="w-full text-sm font-vagRounded"
                             controlClassName="Dropdown-control !w-full"
                             menuClassName="Dropdown-menu !absolute !static !w-full rounded-none "
-
-
                             arrowClassName="text-white"
                           />
                         </div>
@@ -798,10 +819,11 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                                 "_blank"
                               )
                             }
-                            className={`${p?.source === "Lazada"
-                              ? "bg-pink-700/20 hover:bg-pink-800/20"
-                              : "bg-orange-700/20 hover:bg-orange-800/20"
-                              } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                            className={`${
+                              p?.source === "Lazada"
+                                ? "bg-pink-700/20 hover:bg-pink-800/20"
+                                : "bg-orange-700/20 hover:bg-orange-800/20"
+                            } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
                           >
                             Buy Now
                           </button>
@@ -854,10 +876,11 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                 await CompareAction();
                 setShowComparisonTable(true);
               }}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+                selectedProducts.length >= 2 && selectedProducts.length <= 3
                   ? "text-white bg-blue-500 hover:bg-black-200"
                   : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-                }`}
+              }`}
             >
               Compare Now
             </button>
