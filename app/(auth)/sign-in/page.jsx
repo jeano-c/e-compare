@@ -1,5 +1,5 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useSignIn } from "@clerk/nextjs";
@@ -125,10 +125,12 @@ function Signin() {
             </p>
           </div>
         </div>
-
-        <div className="cursor-default hidden lg:block">
-          <p className="text-xl font-bold">by Jeacodes</p>
-        </div>
+<div className="cursor-default hidden lg:block w-full">
+<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
+     [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
+  <Footer />
+</div>
+</div>
       </div>
 
       {/* right side */}

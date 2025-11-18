@@ -1,5 +1,5 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import { useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { FcGoogle } from "react-icons/fc";
@@ -124,9 +124,12 @@ function Signup() {
             </p>
           </div>
 
-          <div className="hidden lg:block">
-            <p className="text-xl font-bold">by Jeacodes</p>
-          </div>
+      <div className="cursor-default hidden lg:block w-full">
+<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
+     [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
+  <Footer />
+</div>
+</div>
         </div>
 
         <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y min-h-screen flex justify-center items-center ">
@@ -202,11 +205,14 @@ function Signup() {
             Sign up for free.
           </p>
         </div>
-
-        <div className="cursor-default hidden lg:block">
-          <p className="text-xl font-bold">by Jeacodes</p>
-        </div>
-      </div>
+<div className="cursor-default hidden lg:block w-full">
+<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
+     [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
+  <Footer />
+</div>
+</div>
+</div>
+      
 
       {/* Right Side */}
       <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
