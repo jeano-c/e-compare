@@ -1,38 +1,142 @@
 "use client";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+
 function Signup() {
   const router = useRouter();
   const { isLoaded, signUp, setActive } = useSignUp();
 
+  // form fields
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // other state
   const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState("");
   const [loadingButton, setLoadingButton] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // validation states (Option B styling will be applied where rendered)
+  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  // debounce ref for email validation
+  const emailDebounceRef = useRef(null);
+
+  // --- Helpers: validation logic ---
+const validateEmailValue = (value) => {
+  // Strong TLD validation: 2–10 alphabetical characters
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,10}$/;
+  return emailRegex.test(value);
+};
+
+  const validatePasswordComplexity = (value) => {
+    // must contain at least one uppercase, one number, one symbol (non-alphanumeric)
+    const hasUpper = /[A-Z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSymbol = /[^A-Za-z0-9]/.test(value);
+    return hasUpper && hasNumber && hasSymbol;
+  };
+
+  // Clear debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (emailDebounceRef.current) {
+        clearTimeout(emailDebounceRef.current);
+      }
+    };
+  }, []);
+
+  // Live password + confirm validation (ensures length >= 8 and complexity)
+  useEffect(() => {
+    // password validations
+    if (password.length === 0) {
+      setPasswordError("");
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long. Password must contain a capital letter, number, and symbol.");
+    } else if (!validatePasswordComplexity(password)) {
+      setPasswordError(
+        "Password must contain a capital letter, number, and symbol."
+      );
+    } else {
+      setPasswordError("");
+    }
+
+    // confirm password validation
+    if (confirmPassword.length === 0) {
+      setConfirmPasswordError("");
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+    } else {
+      setConfirmPasswordError("");
+    }
+  }, [password, confirmPassword]);
+
   // --- Handle Email/Password Signup ---
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // if Clerk not loaded, don't proceed (button is disabled until isLoaded true)
     if (!isLoaded) return;
+
+    // perform final validation check before submitting
+    let hasError = false;
+
+    // Email
+    if (!validateEmailValue(email)) {
+      setEmailError("Please enter a valid email address (e.g. user@example.com).");
+      hasError = true;
+    } else {
+      setEmailError("");
+    }
+
+
+    if (username.trim().length < 8) {
+      setUsernameError("Username must be at least 8 characters long (e.g. jeacodes23).");
+      hasError = true;
+    } else {
+      setUsernameError("");
+    }
+
+    // Password: check length + complexity here synchronously to ensure final check
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long. Password must contain a capital letter, number, and symbol.");
+      hasError = true;
+    } else if (!validatePasswordComplexity(password)) {
+      setPasswordError(
+        "Password must contain a capital letter, number, and symbol."
+      );
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
+
+    // Confirm password matches
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Password do not match.");
+      hasError = true;
+    } else {
+      setConfirmPasswordError("");
+    }
+
+    if (hasError) {
+      // don't proceed with sign up if validation errors present
+      return;
+    }
 
     setLoadingButton("signup");
     setError("");
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords don't match");
-      setLoadingButton("");
-      return;
-    }
 
     try {
       await signUp.create({
@@ -49,7 +153,7 @@ function Signup() {
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
       const message =
-        err.errors?.[0]?.message || "An error occurred during sign up";
+        err?.errors?.[0]?.message || "An error occurred during sign up";
       setError(message);
       toast.error(message);
     } finally {
@@ -79,7 +183,7 @@ function Signup() {
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
-      const message = err.errors?.[0]?.message || "Invalid verification code";
+      const message = err?.errors?.[0]?.message || "Invalid verification code";
       setError(message);
       toast.error(message);
     } finally {
@@ -124,16 +228,18 @@ function Signup() {
             </p>
           </div>
 
-      <div className="cursor-default hidden lg:block w-full">
-<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
-     [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
-  <Footer />
-</div>
-</div>
+          <div className="cursor-default hidden lg:block w-full">
+            <div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px] [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
+              <Footer />
+            </div>
+          </div>
         </div>
 
         <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto !bg-black/20 inner-shadow-y min-h-screen flex justify-center items-center ">
-          <form onSubmit={handleVerify} className="w-full min-h-screen flex justify-center items-center flex-col">
+          <form
+            onSubmit={handleVerify}
+            className="w-full min-h-screen flex justify-center items-center flex-col"
+          >
             <div className="mb-7 sm:mb-10 w-full">
               <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded w-full ">
                 Verification Code
@@ -190,7 +296,7 @@ function Signup() {
             className="relative inline-block text-xl font-bold cursor-pointer sm:text-2xl group text-white"
           >
             Go to home
-            <span class="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+            <span className="absolute left-1/2 bottom-0 h-[2px] w-0 bg-white transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
           </h1>
         </div>
 
@@ -198,64 +304,110 @@ function Signup() {
           <h1 className="text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
             Welcome to
           </h1>
-          <p className="font-baloo text-5xl sm:text-6xl lg:text-8xl">
-            E-Compare
-          </p>
+          <p className="font-baloo text-5xl sm:text-6xl lg:text-8xl">E-Compare</p>
           <p className="font-semibold font-vagRounded text-lg sm:text-xl lg:text-2xl mt-2">
             Sign up for free.
           </p>
         </div>
-<div className="cursor-default hidden lg:block w-full">
-<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
-     [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
-  <Footer />
-</div>
-</div>
-</div>
-      
+        <div className="cursor-default hidden lg:block w-full">
+          <div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px] [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
+            <Footer />
+          </div>
+        </div>
+      </div>
 
       {/* Right Side */}
       <div className="w-full px-6 py-10 lg:w-1/2 sm:px-10 lg:overflow-y-auto scrollbar !bg-black/20 inner-shadow-y border-l border-gray-500">
         <form onSubmit={handleSubmit}>
-          {/* Email or Username */}
+          {/* Email */}
           <div className="mb-7 sm:mb-10">
             <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Email
             </p>
 
-            {/* ✅ wrap the input in glass-search div */}
             <div className="h-[64px] glass-loginInput relative w-full">
               <input
                 type="text"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                // live update + debounced validation
+              onChange={(e) => {
+  const value = e.target.value;
+  setEmail(value);
+
+  // clear previous timer
+  if (emailDebounceRef.current) {
+    clearTimeout(emailDebounceRef.current);
+  }
+
+  // debounce validation
+  emailDebounceRef.current = setTimeout(() => {
+    if (value.trim() === "") {
+      setEmailError("");
+    } else if (!validateEmailValue(value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+  }, 800);
+}}
+
+onBlur={() => {
+  if (emailDebounceRef.current) {
+    clearTimeout(emailDebounceRef.current);
+  }
+
+  if (email.trim() === "") {
+    setEmailError("");
+  } else if (!validateEmailValue(email)) {
+    setEmailError("Please enter a valid email address.");
+  } else {
+    setEmailError("");
+  }
+}}
                 required
                 className="w-full h-full  text-white placeholder-white/50 text-[16px] 
                font-normal transition-all duration-300  focus:outline-none"
                 placeholder="jeacodes@email.com"
               />
             </div>
+
+            {/* Option B: smaller, lighter text under input */}
+            {emailError && (
+              <p className="text-white/70 text-sm mt-1">{emailError}</p>
+            )}
           </div>
 
-
-          {/* Email or Username */}
+          {/* Username */}
           <div className="mb-7 sm:mb-10">
             <p className="mb-3 text-[20px] font-normal text-white font-vagRounded">
               Username
             </p>
 
-            {/* ✅ wrap the input in glass-search div */}
             <div className="h-[64px] glass-loginInput relative w-full">
               <input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setUsername(v);
+                  if (v.trim().length === 0) {
+                    setUsernameError("");
+                  } else if (v.trim().length < 8) {
+                    setUsernameError("Username must be at least 8 characters long.");
+                  } else {
+                    setUsernameError("");
+                  }
+                }}
                 required
                 className="w-full h-full  text-white placeholder-white/50 text-[16px] 
                font-normal transition-all duration-300  focus:outline-none"
-                placeholder="jeacodes69tayo"
+                placeholder="jeacodes23"
               />
             </div>
+
+            {usernameError && (
+              <p className="text-white/70 text-sm mt-1">{usernameError}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -264,12 +416,15 @@ function Signup() {
               Password
             </p>
 
-            {/* ✅ wrap the input and eye toggle in glass-search div */}
             <div className="h-[64px] glass-loginInput relative w-full">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setPassword(v);
+                  // live validation is handled in useEffect
+                }}
                 required
                 className="w-full  rounded-2xl text-white placeholder-white/50 text-[16px]
                        font-normal transition-all duration-300  bg-transparent focus:outline-none"
@@ -285,6 +440,10 @@ function Signup() {
                 {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
               </button>
             </div>
+
+            {passwordError && (
+              <p className="text-white/70 text-sm mt-1">{passwordError}</p>
+            )}
           </div>
 
           {/* Confirm Password */}
@@ -294,16 +453,24 @@ function Signup() {
             </p>
             <div className="h-[64px] glass-loginInput relative w-full">
               <input
-                 type="password"
+                type="password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setConfirmPassword(v);
+                  // live validation handled in useEffect
+                }}
                 required
                 className="w-full  rounded-2xl text-white placeholder-white/50 text-[16px]
                        font-normal transition-all duration-300  bg-transparent focus:outline-none"
-
               />
             </div>
+
+            {confirmPasswordError && (
+              <p className="text-white/70 text-sm mt-1">{confirmPasswordError}</p>
+            )}
           </div>
+
           {/* Submit */}
           <div className="flex flex-col items-center justify-between gap-8 sm:gap-10">
             <div id="clerk-captcha"></div>
@@ -403,10 +570,9 @@ function Signup() {
               Already have an account?{" "}
               <span
                 onClick={() => loadingButton === "" && router.push("/sign-in")}
-                className={`font-bold text-white underline underline-offset-2 ${loadingButton === ""
-                    ? "cursor-pointer"
-                    : "cursor-not-allowed opacity-50"
-                  }`}
+                className={`font-bold text-white underline underline-offset-2 ${
+                  loadingButton === "" ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                }`}
               >
                 Login
               </span>

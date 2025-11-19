@@ -13,6 +13,7 @@ import CompareSkeleton from "./CompareSkeleton";
 import Link from "next/link";
 
 function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
+  
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const targetRef = useRef(null);

@@ -125,12 +125,12 @@ function Signin() {
             </p>
           </div>
         </div>
-<div className="cursor-default hidden lg:block w-full">
-<div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
+        <div className="cursor-default hidden lg:block w-full">
+          <div className="cursor-default hidden lg:block w-full self-end mt-auto mb-[-16px]
      [&_footer]:!static [&_footer]:!bottom-auto [&_footer]:!left-auto [&_footer]:w-full">
-  <Footer />
-</div>
-</div>
+            <Footer />
+          </div>
+        </div>
       </div>
 
       {/* right side */}
@@ -144,17 +144,17 @@ function Signin() {
             </p>
 
             {/* ✅ wrap the input in glass-search div */}
-          <div className="h-[64px] glass-loginInput relative w-full">
-  <input
-    type="text"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    required
-    className="w-full h-full  text-white placeholder-white/50 text-[16px] 
+            <div className="h-[64px] glass-loginInput relative w-full">
+              <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full h-full  text-white placeholder-white/50 text-[16px] 
                font-normal transition-all duration-300  focus:outline-none"
-    placeholder="Enter your email address or username"
-  />
-</div>
+                placeholder="Enter your email address or username"
+              />
+            </div>
           </div>
           {/* Password */}
           <div className="mb-7">
