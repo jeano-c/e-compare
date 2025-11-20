@@ -35,11 +35,11 @@ function Signup() {
   const emailDebounceRef = useRef(null);
 
   // --- Helpers: validation logic ---
-const validateEmailValue = (value) => {
-  // Strong TLD validation: 2–10 alphabetical characters
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,10}$/;
-  return emailRegex.test(value);
-};
+  const validateEmailValue = (value) => {
+    // Strong TLD validation: 2–10 alphabetical characters
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,10}$/;
+    return emailRegex.test(value);
+  };
 
   const validatePasswordComplexity = (value) => {
     // must contain at least one uppercase, one number, one symbol (non-alphanumeric)
@@ -244,21 +244,25 @@ const validateEmailValue = (value) => {
               <p className="mb-2 text-xl font-light text-white sm:text-2xl font-vagRounded w-full ">
                 Verification Code
               </p>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                required
-                className="glass-input h-[64px] w-full"
-                placeholder="Enter 6-digit code"
-              />
+              <div className="h-[64px] glass-loginInput relative w-full">
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={code}
+
+                  onChange={(e) => setCode(e.target.value.slice(0, 6))}
+                  required
+                  className=" "
+                  placeholder="Enter 6-digit code"
+                />
+              </div>
             </div>
 
             <div className="flex flex-col items-center justify-between gap-8 w-full ">
               <button
                 type="submit"
                 disabled={loadingButton !== "" || !isLoaded}
-                className="cursor-pointer px-8 text-lg glass-button sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white !w-[50%]"
+                className=" w-full relative cursor-pointer px-8 text-lg glass-loginButton sm:w-auto sm:text-xl sm:px-12 font-vagRounded text-white "
               >
                 {loadingButton === "verify" ? (
                   <span className="flex items-center justify-center gap-2">
@@ -330,40 +334,40 @@ const validateEmailValue = (value) => {
                 type="text"
                 value={email}
                 // live update + debounced validation
-              onChange={(e) => {
-  const value = e.target.value;
-  setEmail(value);
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setEmail(value);
 
-  // clear previous timer
-  if (emailDebounceRef.current) {
-    clearTimeout(emailDebounceRef.current);
-  }
+                  // clear previous timer
+                  if (emailDebounceRef.current) {
+                    clearTimeout(emailDebounceRef.current);
+                  }
 
-  // debounce validation
-  emailDebounceRef.current = setTimeout(() => {
-    if (value.trim() === "") {
-      setEmailError("");
-    } else if (!validateEmailValue(value)) {
-      setEmailError("Please enter a valid email address.");
-    } else {
-      setEmailError("");
-    }
-  }, 800);
-}}
+                  // debounce validation
+                  emailDebounceRef.current = setTimeout(() => {
+                    if (value.trim() === "") {
+                      setEmailError("");
+                    } else if (!validateEmailValue(value)) {
+                      setEmailError("Please enter a valid email address.");
+                    } else {
+                      setEmailError("");
+                    }
+                  }, 800);
+                }}
 
-onBlur={() => {
-  if (emailDebounceRef.current) {
-    clearTimeout(emailDebounceRef.current);
-  }
+                onBlur={() => {
+                  if (emailDebounceRef.current) {
+                    clearTimeout(emailDebounceRef.current);
+                  }
 
-  if (email.trim() === "") {
-    setEmailError("");
-  } else if (!validateEmailValue(email)) {
-    setEmailError("Please enter a valid email address.");
-  } else {
-    setEmailError("");
-  }
-}}
+                  if (email.trim() === "") {
+                    setEmailError("");
+                  } else if (!validateEmailValue(email)) {
+                    setEmailError("Please enter a valid email address.");
+                  } else {
+                    setEmailError("");
+                  }
+                }}
                 required
                 className="w-full h-full  text-white placeholder-white/50 text-[16px] 
                font-normal transition-all duration-300  focus:outline-none"
@@ -570,9 +574,8 @@ onBlur={() => {
               Already have an account?{" "}
               <span
                 onClick={() => loadingButton === "" && router.push("/sign-in")}
-                className={`font-bold text-white underline underline-offset-2 ${
-                  loadingButton === "" ? "cursor-pointer" : "cursor-not-allowed opacity-50"
-                }`}
+                className={`font-bold text-white underline underline-offset-2 ${loadingButton === "" ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                  }`}
               >
                 Login
               </span>
