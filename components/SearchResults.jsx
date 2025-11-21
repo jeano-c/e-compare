@@ -12,8 +12,13 @@ import { TrendingUpDown } from "lucide-react";
 import CompareSkeleton from "./CompareSkeleton";
 import Link from "next/link";
 
-function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
-  
+function SearchResults({
+  query,
+  onToggleHeader,
+  setIsComparisonView,
+  sortBy = "Best Match"
+}) {
+
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const targetRef = useRef(null);
@@ -39,7 +44,11 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
       onToggleHeader(!showComparisonTable);
     }
   });
-
+  useEffect(() => {
+    if (typeof setIsComparisonView === "function") {
+      setIsComparisonView(showComparisonTable);
+    }
+  }, [showComparisonTable]);
   function alternateProducts(productList) {
     const shopee = productList.filter((p) => p.source === "Shopee");
     const lazada = productList.filter((p) => p.source === "Lazada");
@@ -441,9 +450,8 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${
-            showCompare ? "inner-shadow-y" : "bg-transparent"
-          }`}
+          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
+            }`}
           style={{ top: "5px", overflow: "visible" }}
         >
           {/* ✕ and ━ Buttons */}
@@ -820,11 +828,10 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                                 "_blank"
                               )
                             }
-                            className={`${
-                              p?.source === "Lazada"
+                            className={`${p?.source === "Lazada"
                                 ? "bg-pink-700/20 hover:bg-pink-800/20"
                                 : "bg-orange-700/20 hover:bg-orange-800/20"
-                            } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                              } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
                           >
                             Buy Now
                           </button>
@@ -877,11 +884,10 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                 await CompareAction();
                 setShowComparisonTable(true);
               }}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
-                selectedProducts.length >= 2 && selectedProducts.length <= 3
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
                   ? "text-white bg-blue-500 hover:bg-black-200"
                   : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-              }`}
+                }`}
             >
               Compare Now
             </button>

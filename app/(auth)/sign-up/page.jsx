@@ -220,10 +220,10 @@ function Signup() {
           </div>
 
           <div className="text-center lg:text-left">
-            <h1 className="text-3xl font-semibold font-vagRounded sm:text-4xl lg:text-5xl text-white">
+            <h1 className=" cursor-default text-3xl font-bold font-vagRounded sm:text-4xl lg:text-5xl text-white">
               Verify Your Email
             </h1>
-            <p className="font-sans text-lg sm:text-xl lg:text-2xl mt-4">
+            <p className="cursor-default font-vagRounded text-lg sm:text-xl lg:text-2xl mt-4">
               We sent a code to {email}
             </p>
           </div>
@@ -278,7 +278,7 @@ function Signup() {
                 type="button"
                 onClick={() => setVerifying(false)}
                 disabled={loadingButton !== ""}
-                className="cursor-pointer text-white underline underline-offset-2 disabled:opacity-50"
+                className="cursor-pointer text-white underline underline-offset-5 hover:text-gray-300 disabled:opacity-50"
               >
                 Back to sign up
               </button>
