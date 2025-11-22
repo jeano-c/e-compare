@@ -11,12 +11,22 @@ export default function ComparisonTable({
 }) {
   return (
     <div className="w-full mx-auto flex gap-4 overflow-x-auto text-white">
-      {snapshot.map((result, index) => {
-        const product = selectedProducts[index]; // May be undefined in history view
-        const selectedVar = selectedVariations?.[product?.id];
-        const displayPrice = selectedVar
-          ? selectedVar.price
-          : `${result.lowestPrice} - ${result.highestPrice}`;
+{snapshot.map((result, index) => {
+ const invalid = (val) =>
+  val === null ||
+  val === undefined ||
+  val === "" ||
+  val === "null" ||
+  val === "undefined" ||
+  Number.isNaN(val);
+
+const safeLow = invalid(result.lowestPrice) ? "-" : result.lowestPrice;
+const safeHigh = invalid(result.highestPrice) ? "-" : result.highestPrice;
+
+const displayPrice = selectedVar?.price
+  ? (invalid(selectedVar.price) ? "-" : selectedVar.price)
+  : `${safeLow} - ${safeHigh}`;
+
         return (
           <div key={index} className="flex flex-col flex-1 min-w-[220px]">
             <div className="glass-button1 rounded-t-[23px]">
@@ -84,7 +94,8 @@ export default function ComparisonTable({
                 <Dropdown
                   options={result.variations.map(
                     (variation) =>
-                      `${variation.name} — ${result.currency}${variation.price}`
+                      `${variation.name ?? "Unknown"} — ${result.currency}${variation.price ?? "-"}`
+
                   )}
                   onChange={(option) => {
                     if (onVariationChange && product) {

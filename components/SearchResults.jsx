@@ -714,13 +714,37 @@ function SearchResults({
               <div className="overflow-x-hidden overflow-hidden relative z-10">
                 <div className="w-3/4 mx-auto flex gap-4">
                   {comparisonResults.map((result, index) => {
-                    const p = products.find(
-                      (x) => x.id === selectedProducts[index]
-                    );
+                    const p = products.find((x) => x.id === selectedProducts[index]);
+                    const variations = result.variations || [];
+                    let minPrice = null;
+                    let maxPrice = null;
+
+                    if (variations.length > 0) {
+                      const prices = variations
+                        .map(v => Number(v.price))
+                        .filter(v => !isNaN(v));
+
+                      if (prices.length > 0) {
+                        minPrice = Math.min(...prices);
+                        maxPrice = Math.max(...prices);
+                      }
+                    }
+
+                    // Check if a variation is selected
                     const selectedVar = selectedVariations[p?.id];
-                    const displayPrice = selectedVar
-                      ? selectedVar.price
-                      : `${result.lowestPrice} - ${result.highestPrice}`;
+                    const variationPrice = selectedVar && !isNaN(Number(selectedVar.price))
+                      ? Number(selectedVar.price)
+                      : null;
+
+                    // Final display logic
+                    let displayPrice = "-";
+                    if (variationPrice !== null) {
+                      displayPrice = variationPrice;
+                    } else if (minPrice !== null && maxPrice !== null) {
+                      displayPrice = minPrice === maxPrice ? `${minPrice}` : `${minPrice} - ${maxPrice}`;
+                    }
+
+
 
                     return (
                       <div
@@ -820,18 +844,11 @@ function SearchResults({
 
                         <div className="text-center pt-6">
                           <button
-                            onClick={() =>
-                              window.open(
-                                p?.source === "Lazada"
-                                  ? "https://www.lazada.com.ph/"
-                                  : "https://shopee.ph/",
-                                "_blank"
-                              )
-                            }
-                            className={`${p?.source === "Lazada"
-                                ? "bg-pink-700/20 hover:bg-pink-800/20"
-                                : "bg-orange-700/20 hover:bg-orange-800/20"
-                              } text-white text-sm px-5 py-2 rounded-full shadow-md compare-button1`}
+                            onClick={() => window.open(p?.link, "_blank")}
+                            className={`
+      glass-button1
+      rounded-full shadow-md compare-button1 text-white text-sm px-5 py-2
+    `}
                           >
                             Buy Now
                           </button>
@@ -885,8 +902,8 @@ function SearchResults({
                 setShowComparisonTable(true);
               }}
               className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
-                  ? "text-white bg-blue-500 hover:bg-black-200"
-                  : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+                ? "text-white bg-blue-500 hover:bg-black-200"
+                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
                 }`}
             >
               Compare Now
