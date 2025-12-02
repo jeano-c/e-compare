@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Card from "@/components/Card";
 import SkeletonResult from "./SkeletonResult";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,11 +38,12 @@ function SearchResults({
   const [compareid, setCompareID] = useState();
   const minimizedSnapshot = useRef([]);
   const [loadingCompare, setLoadingCompare] = useState(false);
+
   useEffect(() => {
     if (typeof onToggleHeader === "function") {
       onToggleHeader(!showComparisonTable);
     }
-  });
+  }, [showComparisonTable, onToggleHeader]);
   useEffect(() => {
     if (typeof setIsComparisonView === "function") {
       setIsComparisonView(showComparisonTable);
@@ -260,38 +261,41 @@ function SearchResults({
     };
   }, [query]);
 
-  function handleToggle(productId) {
-    setSelectedProducts((prev) => {
-      const isLocked = lockedProducts.includes(productId);
-      const alreadySelected = prev.includes(productId);
-      if (isLocked) return prev;
-      if (alreadySelected) return prev.filter((id) => id !== productId);
+  const handleToggle = useCallback(
+    (productId) => {
+      setSelectedProducts((prev) => {
+        const isLocked = lockedProducts.includes(productId);
+        const alreadySelected = prev.includes(productId);
+        if (isLocked) return prev;
+        if (alreadySelected) return prev.filter((id) => id !== productId);
 
-      if (isAddingOneMore) {
-        if (prev.length >= 3) return prev;
+        if (isAddingOneMore) {
+          if (prev.length >= 3) return prev;
 
-        const newSelected = [...prev, productId];
+          const newSelected = [...prev, productId];
 
-        // If we hit 3 items, trigger comparison immediately
-        if (newSelected.length === 3) {
-          setTimeout(() => {
-            setIsAddingOneMore(false);
-            setLockedProducts([]);
-            setShowCompare(false);
+          // If we hit 3 items, trigger comparison immediately
+          if (newSelected.length === 3) {
+            setTimeout(() => {
+              setIsAddingOneMore(false);
+              setLockedProducts([]);
+              setShowCompare(false);
 
-            // This now works because CompareAction accepts 'newSelected'
-            CompareAction(newSelected).then(() => {
-              setShowComparisonTable(true);
-            });
-          }, 300);
+              // This now works because CompareAction accepts 'newSelected'
+              CompareAction(newSelected).then(() => {
+                setShowComparisonTable(true);
+              });
+            }, 300);
+          }
+          return newSelected;
         }
-        return newSelected;
-      }
 
-      if (prev.length >= 3) return prev;
-      return [...prev, productId];
-    });
-  }
+        if (prev.length >= 3) return prev;
+        return [...prev, productId];
+      });
+    },
+    [lockedProducts, isAddingOneMore]
+  );
   useEffect(() => {
     let lastScrollY = 0;
     const handleScroll = () => {
@@ -395,8 +399,9 @@ function SearchResults({
             .get(`/api/lazada-true?urls=${encodedUrls}`)
             .then((res) => res.data.results)
             .catch((err) => {
-              console.error(" Lazada scrape failed:", err);
-              return [];
+              console.error("Lazada scrape failed:", err);
+              // Return dummy error object instead of null to prevent filtering issues if needed
+              return [{ error: "Scrape Failed", source: "Lazada" }];
             })
         );
       }
@@ -408,13 +413,15 @@ function SearchResults({
             .then((res) => res.data.results)
             .catch((err) => {
               console.error("Shopee scrape failed:", err);
-              return [];
+              return [{ error: "Scrape Failed", source: "Shopee" }];
             })
         );
       }
 
       const resultsArrays = await Promise.all(requests);
-      const results = resultsArrays.flat();
+      const results = resultsArrays
+        .flat()
+        .filter((item) => item !== null && item !== undefined);
 
       setComparisonResults(results);
 
@@ -728,7 +735,42 @@ function SearchResults({
                     const p = products.find(
                       (x) => x.id === selectedProducts[index]
                     );
-                    const variations = result.variations || [];
+
+                    if (!result || result.error) {
+                      return (
+                        <div
+                          key={p?.id || index}
+                          className="flex flex-col flex-1 min-w-[220px] pb-5"
+                        >
+                          <div className="glass-button1 rounded-[23px] h-full min-h-[600px] flex flex-col items-center justify-center p-6 text-center gap-4 border border-red-500/30">
+                            {p?.image && (
+                              <img
+                                src={p.image}
+                                className="w-24 h-24 object-contain opacity-50 grayscale rounded-lg"
+                                alt="Unavailable"
+                              />
+                            )}
+                            <div>
+                              <p className="font-bold text-red-300 text-lg">
+                                Data Unavailable
+                              </p>
+                              <p className="text-sm text-white/60 mt-1">
+                                We couldn't fetch the latest details for this
+                                item.
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => window.open(p?.link, "_blank")}
+                              className="bg-white/10 hover:bg-white/20 text-white text-sm px-4 py-2 rounded-full transition-colors"
+                            >
+                              View on Store
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    const variations = result?.variations || [];
                     let minPrice = null;
                     let maxPrice = null;
 
@@ -743,14 +785,12 @@ function SearchResults({
                       }
                     }
 
-                    // Check if a variation is selected
                     const selectedVar = selectedVariations[p?.id];
                     const variationPrice =
                       selectedVar && !isNaN(Number(selectedVar.price))
                         ? Number(selectedVar.price)
                         : null;
 
-                    // Final display logic
                     let displayPrice = "-";
                     if (variationPrice !== null) {
                       displayPrice = variationPrice;
@@ -830,13 +870,14 @@ function SearchResults({
                             Variations
                           </span>
                           <Dropdown
-                            options={result.variations.map(
+                            // ✅ FIXED: Using the safe local 'variations' array
+                            options={variations.map(
                               (variation) =>
                                 `${variation.name} — ₱${variation.price}`
                             )}
                             onChange={(option) => {
                               const [name] = option.value.split(" — ₱");
-                              const selected = result.variations.find(
+                              const selected = variations.find(
                                 (v) => v.name === name
                               );
                               setSelectedVariations((prev) => ({
@@ -894,7 +935,7 @@ function SearchResults({
       )}
 
       <div className="p-[50px] fixed bottom-5 right-5 flex flex-col items-end gap-3 z-50">
-        {!showCompare && !isMinimized && (
+        {!showCompare && !isMinimized && !showComparisonTable && (
           <button
             onClick={() => setShowCompare(true)}
             className="compare-button transition-all text-center text-[20px] text-white rounded-full font-bold w-[215px] h-[52px]"

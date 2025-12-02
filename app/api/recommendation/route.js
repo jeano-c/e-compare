@@ -16,30 +16,47 @@ export async function POST(req) {
 
     const { userId } = await auth();
 
-    const [comparison] = await db
-      .select()
-      .from(comparisonsTb)
-      .where(eq(comparisonsTb.id, comparisonId));
-
-    if (!comparison) {
-      return NextResponse.json(
-        { error: "Comparison not found or invalid ID" },
-        { status: 404 }
-      );
-    }
-
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `${promt}  ${JSON.stringify(reply)}`,
     });
 
-    await db.insert(recommendationTb).values({
-      comparisionId: comparisonId,
-      aiRecomendation: response.text,
-    });
+    let text = response.text || "";
 
-    return NextResponse.json({ message: response.text });
+    if (typeof text === "function") {
+      text = text();
+    }
+
+    text = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    if (userId && comparisonId) {
+      const [comparison] = await db
+        .select()
+        .from(comparisonsTb)
+        .where(eq(comparisonsTb.id, comparisonId));
+
+      if (comparison) {
+        await db.insert(recommendationTb).values({
+          comparisionId: comparisonId,
+          aiRecomendation: text,
+        });
+      }
+    }
+
+    // Attempt to parse JSON for the response
+    let jsonResponse;
+    try {
+      jsonResponse = JSON.parse(text);
+    } catch {
+      jsonResponse = { index: 0, explanation: text };
+    }
+
+    return NextResponse.json({ data: jsonResponse });
   } catch (err) {
+    console.error("AI Route Error:", err);
     return NextResponse.json({ details: err.message }, { status: 500 });
   }
 }

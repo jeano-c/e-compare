@@ -15,22 +15,31 @@ function PopoverDemo({
   setAiLoading,
   images = [],
 }) {
-  // Removed the useEffect that was clearing setAiReply(null) on mount
-  // This allows the response to persist even if the popover is closed/re-opened
-
   async function AI() {
     try {
       if (aiLoading) return;
+
+      // ✅ FIX: Allow guests. We only check if there is data to analyze.
+      if (!results || results.length === 0) {
+        toast.error("No comparison data found. Please try comparing again.");
+        return;
+      }
+
       setAiLoading(true);
+
+      // We send comparisonId (if logged in) and the data.
+      // The backend will handle the rest.
       const res = await axios.post("/api/recommendation", {
         comparisonId: compareId,
         reply: results,
       });
-      // The API now returns { data: { index: ..., explanation: ... } }
-      // But we handled the structure below in parsing
+
       setAiReply(res.data.data || res.data.message);
     } catch (error) {
-      toast.error(`${error}`);
+      console.error(error);
+      toast.error(
+        error.response?.data?.details || "Failed to generate recommendation."
+      );
     } finally {
       setAiLoading(false);
     }
@@ -42,12 +51,10 @@ function PopoverDemo({
 
   if (aiReply) {
     try {
-      // If aiReply is already an object (from the new backend), use it directly
       if (typeof aiReply === "object" && aiReply !== null) {
         parsedReply = aiReply;
         isJson = true;
       } else {
-        // Clean potential markdown blocks if it's a string
         const cleanJson = aiReply
           .replace(/```json/g, "")
           .replace(/```/g, "")
@@ -56,7 +63,6 @@ function PopoverDemo({
         isJson = true;
       }
     } catch (e) {
-      // Fallback if AI returns plain text
       parsedReply.explanation = typeof aiReply === "string" ? aiReply : "";
     }
   }
@@ -115,9 +121,12 @@ function PopoverDemo({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-center text-white/60 italic py-5">
-                    Click the button to generate a comparison analysis.
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-5 gap-2 text-center">
+                    <HiSparkles className="text-3xl text-yellow-300 opacity-80" />
+                    <p className="text-white/60 italic text-sm">
+                      Click the button to generate a comparison analysis.
+                    </p>
+                  </div>
                 )}
               </>
             )}
