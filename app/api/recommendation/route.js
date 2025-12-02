@@ -4,17 +4,18 @@ import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+
 const ai = new GoogleGenAI({ apiKey: process.env.GENAI });
-const promt = `based on this data what is the best one to get each product has variation so take account on those too and the prices if there anomaly on them you can say it to me and reply you your breif evaluation and what is the best one to get just reply the one you recomend no need for long explanation just short explanation`;
+
+const promt = `Analyze this product data. Return a valid JSON object (no markdown) with this structure: { "index": number, "explanation": "string" }. The "index" must be the array index (0, 1, or 2) of the recommended product from the provided list. The "explanation" should be a short, brief evaluation of why it is the best.`;
+
 export async function POST(req) {
   try {
     const body = await req.json();
     const { comparisonId, reply } = body;
 
     const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+
     const [comparison] = await db
       .select()
       .from(comparisonsTb)
@@ -31,12 +32,14 @@ export async function POST(req) {
       model: "gemini-2.5-flash",
       contents: `${promt}  ${JSON.stringify(reply)}`,
     });
+
     await db.insert(recommendationTb).values({
       comparisionId: comparisonId,
       aiRecomendation: response.text,
     });
+
     return NextResponse.json({ message: response.text });
   } catch (err) {
-    return NextResponse.json({ details: err.message });
+    return NextResponse.json({ details: err.message }, { status: 500 });
   }
 }

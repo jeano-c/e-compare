@@ -16,9 +16,8 @@ function SearchResults({
   query,
   onToggleHeader,
   setIsComparisonView,
-  sortBy = "Best Match"
+  sortBy = "Best Match",
 }) {
-
   const [aiReply, setAiReply] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const targetRef = useRef(null);
@@ -272,11 +271,15 @@ function SearchResults({
         if (prev.length >= 3) return prev;
 
         const newSelected = [...prev, productId];
+
+        // If we hit 3 items, trigger comparison immediately
         if (newSelected.length === 3) {
           setTimeout(() => {
             setIsAddingOneMore(false);
             setLockedProducts([]);
             setShowCompare(false);
+
+            // This now works because CompareAction accepts 'newSelected'
             CompareAction(newSelected).then(() => {
               setShowComparisonTable(true);
             });
@@ -362,11 +365,14 @@ function SearchResults({
 
   //------------------------------------------------------------legit---------------------------------------------------------------------------
 
-  async function CompareAction() {
+  async function CompareAction(idsToCompare = selectedProducts) {
     try {
       setLoadingCompare(true);
       setShowComparisonTable(true);
-      const selected = products.filter((p) => selectedProducts.includes(p.id));
+
+      // FIX: Use the passed argument instead of the state directly
+      const selected = products.filter((p) => idsToCompare.includes(p.id));
+
       if (selected.length === 0) {
         toast.error("No products selected");
         return;
@@ -408,7 +414,6 @@ function SearchResults({
       }
 
       const resultsArrays = await Promise.all(requests);
-
       const results = resultsArrays.flat();
 
       setComparisonResults(results);
@@ -438,6 +443,11 @@ function SearchResults({
     fetchLikes();
   }, [query]);
 
+  const selectedImages = selectedProducts.map((id) => {
+    const p = products.find((prod) => prod.id === id);
+    return p ? p.image : null;
+  });
+
   return (
     <>
       {!showComparisonTable && (
@@ -450,8 +460,9 @@ function SearchResults({
               : { y: 0, backdropFilter: "blur(0px)" }
           }
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className={`relative z-30 min-h-screen ${showCompare ? "inner-shadow-y" : "bg-transparent"
-            }`}
+          className={`relative z-30 min-h-screen ${
+            showCompare ? "inner-shadow-y" : "bg-transparent"
+          }`}
           style={{ top: "5px", overflow: "visible" }}
         >
           {/* ✕ and ━ Buttons */}
@@ -714,15 +725,17 @@ function SearchResults({
               <div className="overflow-x-hidden overflow-hidden relative z-10">
                 <div className="w-3/4 mx-auto flex gap-4">
                   {comparisonResults.map((result, index) => {
-                    const p = products.find((x) => x.id === selectedProducts[index]);
+                    const p = products.find(
+                      (x) => x.id === selectedProducts[index]
+                    );
                     const variations = result.variations || [];
                     let minPrice = null;
                     let maxPrice = null;
 
                     if (variations.length > 0) {
                       const prices = variations
-                        .map(v => Number(v.price))
-                        .filter(v => !isNaN(v));
+                        .map((v) => Number(v.price))
+                        .filter((v) => !isNaN(v));
 
                       if (prices.length > 0) {
                         minPrice = Math.min(...prices);
@@ -732,19 +745,21 @@ function SearchResults({
 
                     // Check if a variation is selected
                     const selectedVar = selectedVariations[p?.id];
-                    const variationPrice = selectedVar && !isNaN(Number(selectedVar.price))
-                      ? Number(selectedVar.price)
-                      : null;
+                    const variationPrice =
+                      selectedVar && !isNaN(Number(selectedVar.price))
+                        ? Number(selectedVar.price)
+                        : null;
 
                     // Final display logic
                     let displayPrice = "-";
                     if (variationPrice !== null) {
                       displayPrice = variationPrice;
                     } else if (minPrice !== null && maxPrice !== null) {
-                      displayPrice = minPrice === maxPrice ? `${minPrice}` : `${minPrice} - ${maxPrice}`;
+                      displayPrice =
+                        minPrice === maxPrice
+                          ? `${minPrice}`
+                          : `${minPrice} - ${maxPrice}`;
                     }
-
-
 
                     return (
                       <div
@@ -901,10 +916,11 @@ function SearchResults({
                 await CompareAction();
                 setShowComparisonTable(true);
               }}
-              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${selectedProducts.length >= 2 && selectedProducts.length <= 3
-                ? "text-white bg-blue-500 hover:bg-black-200"
-                : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
-                }`}
+              className={`text-center text-[20px] rounded-full font-bold w-[215px] h-[52px] compare-button ${
+                selectedProducts.length >= 2 && selectedProducts.length <= 3
+                  ? "text-white bg-blue-500 hover:bg-black-200"
+                  : "text-gray-300 bg-gray-300 cursor-not-allowed pointer-events-none"
+              }`}
             >
               Compare Now
             </button>
@@ -918,6 +934,7 @@ function SearchResults({
             setAiReply={setAiReply}
             aiLoading={aiLoading}
             setAiLoading={setAiLoading}
+            images={selectedImages}
           />
         )}
       </div>
