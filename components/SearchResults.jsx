@@ -753,7 +753,7 @@ function SearchResults({ query, onToggleHeader, sortBy = "Best Match" }) {
                             <span className="font-semibold text-xs opacity-60">
                               Rating
                             </span>
-                            <span>{result.rating || "-"} ⭐</span>
+                            <span>{result.rating.ToFixed(2) || "-"} ⭐</span>
                           </div>
                         </div>
 
