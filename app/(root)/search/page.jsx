@@ -11,6 +11,9 @@ function SearchResult() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
+  // Added state to detect comparison view
+  const [isComparisonView, setIsComparisonView] = useState(false);
+
   const options = [
     "Best Match",
     "Top Sales",
@@ -24,23 +27,33 @@ function SearchResult() {
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen h-fit">
       <div className="px-10 mt-10 items-center justify-center flex w-full">
-        <div className="flex justify-end w-full text-white">
-          <div className="font-vagRounded py-1 text-[16px] text-white font-bold">
-            <p>Sort by:</p>
+
+        {/* ⬇⬇ HIDE SORT BAR ONLY WHEN isComparisonView === true */}
+        {!isComparisonView && (
+          <div className="flex justify-end w-full text-white">
+            <div className="font-vagRounded py-1 text-[16px] text-white font-bold">
+              <p>Sort by:</p>
+            </div>
+            <Dropdown
+              options={options}
+              onChange={handleSelect}
+              value={selectedOption}
+              className="text-sm font-vagRounded "
+              controlClassName="Dropdown-control"
+              menuClassName="Dropdown-menu"
+              arrowClassName="text-white"
+            />
           </div>
-          <Dropdown
-            options={options}
-            onChange={handleSelect}
-            value={selectedOption}
-            className="text-sm font-vagRounded "
-            controlClassName="Dropdown-control"
-            menuClassName="Dropdown-menu"
-            arrowClassName="text-white"
-          />
-        </div>
+        )}
       </div>
+
       <div className="w-full">
-        <SearchResults query={q} sortBy={selectedOption} />
+        <SearchResults
+          query={q}
+          sortBy={selectedOption}
+          // Pass setter so SearchResults can toggle the comparison view
+          setIsComparisonView={setIsComparisonView}
+        />
       </div>
     </div>
   );

@@ -20,18 +20,23 @@ function TextureMesh() {
   );
 
   useFrame((state) => {
-    const { clock, mouse, gl } = state;
+    const { clock, mouse, size } = state; // ✅ Get size directly from state
     if (mesh.current) {
       uniforms.u_mouse.value.set(mouse.x / 2 + 0.5, mouse.y / 2 + 0.5);
       uniforms.u_time.value = clock.getElapsedTime();
-      const rect = gl.domElement.getBoundingClientRect();
-      uniforms.u_resolution.value.set(rect.width, rect.height);
+      
+      // ❌ REMOVED: This caused layout thrashing (re-calculating layout every frame)
+      // const rect = gl.domElement.getBoundingClientRect(); 
+      // uniforms.u_resolution.value.set(rect.width, rect.height);
+
+      // ✅ FIXED: Use React-Three-Fiber's efficient size state
+      uniforms.u_resolution.value.set(size.width, size.height);
     }
   });
 
   return (
     <mesh ref={mesh}>
-      <planeGeometry args={[1024, 1024, 1, 1]} />
+      <planeGeometry args={[100, 100, 1, 1]} /> {/* Reduced size, still covers screen */}
       <shaderMaterial
         fragmentShader={fragmentShader}
         vertexShader={vertexShader}
@@ -76,7 +81,8 @@ const fragmentShader = `
     vec3 cl = vec3(0.0);
     float d = 2.5;
     
-    float maxSteps = 1.0 + 20.0 * u_detail;
+    // Optimization: Lowered max detail multiplier slightly to prevent GPU choking
+    float maxSteps = 1.0 + 16.0 * u_detail; 
 
     for (float i = 0.; i < 21.; i++) {
       if (i >= maxSteps) break;
@@ -109,15 +115,16 @@ export default function ShaderBackground() {
         width: "100vw",
         height: "100vh",
         zIndex: -1,
+        pointerEvents: "none", // ✅ Optimization: Let clicks pass through to UI without checking canvas
       }}
-      dpr={[1, 1.5]}
+      dpr={[1, 1]} // ✅ Optimization: Force 1x pixel ratio (high DPR kills performance on full-screen shaders)
       gl={{
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false, // ✅ Optimization: Don't need to preserve buffer for a background
         premultipliedAlpha: false,
         alpha: true,
         antialias: false,
-        precision: "mediump",
-        powerPreference: "high-performance",
+        precision: "mediump", // Keep mediump for mobile performance
+        powerPreference: "default", // ✅ Optimization: 'high-performance' drains battery, 'default' is fine for BG
       }}
       camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }}
     >
